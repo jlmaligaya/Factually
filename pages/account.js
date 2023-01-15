@@ -1,16 +1,19 @@
+
 import Layout from '../components/layout'
 
+
 export default function Account() {
+
     return (
         <div class="flex items-center justify-center h-screen">
             <div class="bg-white min-h-screen rounded-md lg:w-1/2 font-raleway pt-2 shadow-sm my-16">
                 <div class="container mx-auto">
                     <div class="inputs w-full max-w-2xl p-6 mx-auto">
-                        <h2 class="text-2xl text-gray-900">Account Setting</h2>
+                        <h2 class="text-2xl text-gray-900"></h2>
                         <form class="mt-6 border-t border-gray-400 pt-4">
                             <div class='flex flex-wrap -mx-3 mb-6'>
                                 <div class='w-full md:w-full px-3 mb-6'>
-                                    <label class='text-label' for='grid-text-1'>email address</label>
+                                    <label class='text-label' for='grid-text-1'>Email</label>
                                     <input class='text-box' id='grid-text-1' type='text' placeholder='Enter email'  required/>
                                 </div>
                                 <div class='w-full md:w-full px-3 mb-6 '>
@@ -46,7 +49,8 @@ export default function Account() {
       
     );
   }
-  
+
+
   Account.getLayout = function getLayout(page) {
     return (
       <Layout>

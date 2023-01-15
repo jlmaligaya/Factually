@@ -1,49 +1,47 @@
+import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Layout from '../components/layout'
 
-
-export default function Home() {
+export default function Home({data}, {user}) {
   const router = useRouter();
+  
 
   return (
     <>
-      <p className="text-4xl text-black font-extrabold p-4">Welcome to Factually!</p>
       
-      <div className="h-50">
-      <div className="lg:p-4 grid grid-flow-row lg:grid-cols-3 gap-6">
-        <div className="bg-white lg:row-span-2 lg:col-span-2 p-10 overflow-auto scrollbar scrollbar-thumb-red-500 scrollbar-track-slate-300">
+      <p className="text-4xl font-black text-slate-900 px-4">{user.firstName}</p>
+      <div className>
+      <div className="lg:max-h-screen p-4 flex flex-col lg:flex-row justify-evenly gap-4">
+        <div className="grow bg-white lg:row-span-2 lg:col-span-2 p-10 overflow-auto scrollbar scrollbar-thumb-red-500 scrollbar-track-slate-300">
         
+        {data.map(item => (
           <div className="topic-border">
-            <p className="topic-header">Topic 1</p>
-            <div className="-z-50 flex flex-row gap-4 overflow-x-auto scrollbar scrollbar-thumb-red-500">
-              <div className="card w-80 h-30 bg-base-100 shadow-xl">
-                <figure><img src="https://s3-ap-south-1.amazonaws.com/ricedigitals3bucket/AUPortalContent/2020/07/02030224/mediaimgblog.jpg" alt="Shoes" /></figure>
-                <div className="card-body">
-                  <h2 className="card-title">Activity 1</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
-                  <div className="card-actions justify-end">
-                    <button className="btn bg-red-500 hover:bg-red-600 text-white">Start</button>
-                  </div>
-                </div>
-              </div>
-              <div className="card w-80 h-30 bg-base-100 shadow-xl">
-                <figure><img src="https://s3-ap-south-1.amazonaws.com/ricedigitals3bucket/AUPortalContent/2020/07/02030224/mediaimgblog.jpg" alt="Shoes" /></figure>
-                <div className="card-body">
-                  <h2 className="card-title">Activity 2</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
-                  <div className="card-actions justify-end">
-                    <button className="btn bg-red-500 hover:bg-red-600 text-white">Start</button>
-                  </div>
+          <p className="topic-header">{item.topic}</p>
+          <div className="-z-50 flex flex-row gap-4 overflow-x-auto scrollbar scrollbar-thumb-red-500">
+            <div className="card w-80 h-30 bg-base-100 shadow-xl">
+              <figure><img src="https://s3-ap-south-1.amazonaws.com/ricedigitals3bucket/AUPortalContent/2020/07/02030224/mediaimgblog.jpg" alt="Shoes" /></figure>
+              <div className="card-body">
+                <h2 className="card-title">{item.activity}</h2>
+                <p>{item.desc}</p>
+                <div className="card-actions justify-end">
+                  <button className="btn bg-red-500 hover:bg-red-600 text-white">Start</button>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+        ))}
+          
+
+
+          
 
           
         </div>
 
-        <div>
+        <div className="">
+          <div className="grid grid-row">
           <div className="flex flex-col py-5 items-center">
             <p className="text-2xl text-black font-extrabold mb-5">Current Level</p>
             <div className="flex flex-row items-center divide-x-2 divide-red-500 mb-5">
@@ -95,6 +93,8 @@ export default function Home() {
             </Link>
           </div>
         </div>
+          </div>
+          
        
 
       </div>
@@ -102,6 +102,44 @@ export default function Home() {
       
     </>
   );
+}
+
+export async function getServerSideProps() {
+  const prisma = new PrismaClient();
+  const user = await prisma.userInfo.findUnique({
+    where: {
+      id: "UID000001",
+    },
+    select: {
+      email: true,
+      firstName: true,
+    },
+  })
+
+  const data = [
+    {
+      "topic": 'Topic 1',
+      'activity': 'Activity 1',
+      'desc': 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.'
+    },
+    {
+      "topic": 'Topic 2',
+      'activity': 'Activity 1',
+      'desc': 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.'
+    },
+    {
+      "topic": 'Topic 3',
+      'activity': 'Activity 1',
+      'desc': 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.'
+    },
+  ];
+
+  return {
+    props: {
+      data,
+      user
+    }
+  }
 }
 
 Home.getLayout = function getLayout(page) {

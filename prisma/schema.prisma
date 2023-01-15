@@ -14,3 +14,10 @@ model UserInfo {
   email     String
   password  String
 }
+
+model Achievements {
+  id String @id
+  achv_1 Boolean
+  achv_2 Boolean
+  achv_3 Boolean
+}
