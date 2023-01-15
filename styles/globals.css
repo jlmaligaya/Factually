@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-slate-300
+}
+
+/*Mission Box Classes*/
+.mission-box {
+  @apply flex justify-between items-center h-16 p-4 my-2  rounded-lg border border-gray-100 
+}
+
+
+/*Topic Box Classes*/
+
+.button-red {
+  @apply bg-red-500 hover:bg-red-400 p-2 rounded-full shadow-md flex justify-center items-center
+}
+
+.topic-border {
+  @apply mb-5 bg-slate-100 rounded p-10
+}
+
+.topic-header {
+  @apply text-black font-black text-2xl mb-4
+}
+
+/*General Textbox Class*/
+.text-label {
+  @apply block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2
+}
+.text-box {
+  @apply appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500 rounded-full
+}
