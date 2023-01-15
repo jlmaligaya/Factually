@@ -1,0 +1,25 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- CreateTable
+CREATE TABLE [dbo].[Activities] (
+    [id] NVARCHAR(1000) NOT NULL,
+    [topic] NVARCHAR(1000) NOT NULL,
+    [activity] NVARCHAR(1000) NOT NULL,
+    [desc] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [Activities_pkey] PRIMARY KEY CLUSTERED ([id])
+);
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH

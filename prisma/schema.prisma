@@ -16,8 +16,15 @@ model UserInfo {
 }
 
 model Achievements {
-  id String @id
+  id     String  @id
   achv_1 Boolean
   achv_2 Boolean
   achv_3 Boolean
+}
+
+model Activities {
+  id       String @id
+  topic    String
+  activity String
+  desc     String
 }

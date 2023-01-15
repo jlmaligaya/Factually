@@ -3,8 +3,10 @@ import Link from "next/link";
 import { NewspaperIcon ,HomeIcon, TrophyIcon, UserIcon, ArrowLeftOnRectangleIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 
-const SideBar = forwardRef(({ showNav }, ref) => {
-  const router = useRouter();
+
+const SideBar = forwardRef(({ showNav }, ref,) => {
+const router = useRouter();
+
 
   return (
     <div ref={ref} className="fixed w-auto h-full bg-[#1C3253] shadow-sm">
@@ -13,14 +15,14 @@ const SideBar = forwardRef(({ showNav }, ref) => {
         <div><h1 className="text-white">Factually</h1></div>
       </div>
     
-      <div class="text-center mb-9">
+      {/*<div class="text-center mb-9">
         <img
           src="https://img.freepik.com/premium-vector/owl-face-square-baby-owl-illustration-colored-bird-avatar-icon-childrens-game_421321-207.jpg?w=2000"
           class="rounded-full w-32 mb-4 mx-auto"
           alt="Avatar"
         />
-        <h5 class="text-xl font-medium leading-tight mb-2">Test User</h5>
-      </div>
+        <h5 class="text-xl font-medium leading-tight mb-2"></h5>
+      </div>*/}
           
       
     <div className="rounded-3xl bg-white h-auto w-auto pt-5 mx-7 shadow-sm"><div className="flex flex-col">
@@ -91,6 +93,7 @@ const SideBar = forwardRef(({ showNav }, ref) => {
     </div>
   );
 });
+
 
 SideBar.displayName = "SideBar";
 

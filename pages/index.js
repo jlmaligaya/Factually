@@ -3,19 +3,20 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Layout from '../components/layout'
 
-export default function Home({data}, {user}) {
+
+export default function Home({user, actv}) {
   const router = useRouter();
-  
+  const username = user.map(item => item.firstName);
 
   return (
     <>
       
-      <p className="text-4xl font-black text-slate-900 px-4">{user.firstName}</p>
-      <div className>
+      <div>
+      <p className="text-4xl font-black text-slate-900 px-4">Welcome to Factually, {username}!</p>
       <div className="lg:max-h-screen p-4 flex flex-col lg:flex-row justify-evenly gap-4">
         <div className="grow bg-white lg:row-span-2 lg:col-span-2 p-10 overflow-auto scrollbar scrollbar-thumb-red-500 scrollbar-track-slate-300">
         
-        {data.map(item => (
+        {actv.map(item => (
           <div className="topic-border">
           <p className="topic-header">{item.topic}</p>
           <div className="-z-50 flex flex-row gap-4 overflow-x-auto scrollbar scrollbar-thumb-red-500">
@@ -32,12 +33,7 @@ export default function Home({data}, {user}) {
           </div>
         </div>
         ))}
-          
-
-
-          
-
-          
+                           
         </div>
 
         <div className="">
@@ -106,38 +102,15 @@ export default function Home({data}, {user}) {
 
 export async function getServerSideProps() {
   const prisma = new PrismaClient();
-  const user = await prisma.userInfo.findUnique({
-    where: {
-      id: "UID000001",
-    },
-    select: {
-      email: true,
-      firstName: true,
-    },
-  })
-
-  const data = [
-    {
-      "topic": 'Topic 1',
-      'activity': 'Activity 1',
-      'desc': 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.'
-    },
-    {
-      "topic": 'Topic 2',
-      'activity': 'Activity 1',
-      'desc': 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.'
-    },
-    {
-      "topic": 'Topic 3',
-      'activity': 'Activity 1',
-      'desc': 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.'
-    },
-  ];
+  const [user, actv] = await prisma.$transaction([
+    prisma.userInfo.findMany(),
+    prisma.activities.findMany(),
+  ])
+ 
 
   return {
     props: {
-      data,
-      user
+      user, actv
     }
   }
 }
