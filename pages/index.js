@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '../db'
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Layout from '../components/layout'
@@ -6,7 +6,7 @@ import Layout from '../components/layout'
 
 export default function Home({user, actv}) {
   const router = useRouter();
-  const username = user.map(item => item.firstName);
+  const username = user.firstName
 
   return (
     <>
@@ -101,12 +101,17 @@ export default function Home({user, actv}) {
 }
 
 export async function getServerSideProps() {
-  const prisma = new PrismaClient();
   const [user, actv] = await prisma.$transaction([
-    prisma.userInfo.findMany(),
+    prisma.userInfo.findUnique({
+      where: {
+        email: 'test@gmail.com',
+      },
+    }),
     prisma.activities.findMany(),
   ])
- 
+
+
+ console.log(user)
 
   return {
     props: {

@@ -11,7 +11,7 @@ model UserInfo {
   id        String @id
   firstName String
   lastName  String
-  email     String
+  email     String @unique
   password  String
 }
 
@@ -20,6 +20,9 @@ model Achievements {
   achv_1 Boolean
   achv_2 Boolean
   achv_3 Boolean
+  achv_4 Boolean
+  level  Int
+  uid    String  @unique
 }
 
 model Activities {

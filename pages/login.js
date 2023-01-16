@@ -6,7 +6,6 @@ export default function Login() {
 
     return (
         <>
-            <p>sss</p>
             <section className="bg-gray-100 min-h-screen flex items-center justify-center">
                 <div className="bg-gray-200 flex rounded-xl shadow-lg p-5">
 

@@ -12,7 +12,7 @@ const router = useRouter();
     <div ref={ref} className="fixed w-auto h-full bg-[#1C3253] shadow-sm">
       <div className="flex justify-center items-center mt-6 mb-14">
         <div><NewspaperIcon className="h-10 w-10 fill-white"></NewspaperIcon></div>
-        <div><h1 className="text-white">Factually</h1></div>
+        <div><h1 className="text-white text-lg">Factually</h1></div>
       </div>
     
       {/*<div class="text-center mb-9">
