@@ -13,7 +13,7 @@ export default function Home({user, actv}) {
       
       <div>
       <p className="text-4xl font-black text-slate-900 px-4">Welcome to Factually, {username}!</p>
-      <div className="lg:max-h-screen p-4 flex flex-col flex-col-reverse lg:flex-row justify-evenly gap-4">
+      <div className="lg:max-h-screen p-4 flex flex-col-reverse lg:flex-row justify-evenly gap-4">
         <div className="grow bg-white lg:row-span-2 lg:col-span-2 p-10 overflow-auto scrollbar scrollbar-thumb-red-500 scrollbar-track-slate-300">
         
         {actv.map(item => (
@@ -104,7 +104,7 @@ export async function getServerSideProps() {
   const [user, actv] = await prisma.$transaction([
     prisma.userInfo.findUnique({
       where: {
-        email: 'test@gmail.com',
+        email: 'test@test.com',
       },
     }),
     prisma.activities.findMany(),

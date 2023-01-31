@@ -82,7 +82,6 @@ export default function Register() {
                                 }
                             }}> Sign Up </button>
 
-                            <button class="bg-[#CE4044] hover:bg-[#1C3253] rounded-full text-white py-2 mt-3" type="submit"> Sign Up </button>
                         
                         </form>
 
