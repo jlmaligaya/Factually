@@ -8,9 +8,9 @@ export default function Achievements({data}) {
     let complete = checkCompletion([data.achv_1, data.achv_2, data.achv_3])
     
     return (
-          <div className='lg:h-screen p-5 bg-white rounded'>
+          <div className='p-5 bg-white rounded'>
           <p className='text-3xl m-14 font-black text-slate-900 mb-5'>Achievements</p>
-          <div className='grid md:grid-flow-row lg:grid-cols-4'>
+          <div className='grid md:grid-flow-row lg:grid-cols-4 gap-6 mr-24'>
 
             <div 
               className={`m-14 w-72 h-72 h-200 bg-white rounded-lg shadow-md flex gap-4 flex-col items-center ${

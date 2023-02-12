@@ -9,19 +9,18 @@ export default function Account() {
             <div class="bg-white min-h-screen rounded-md lg:w-1/2 font-raleway pt-2 shadow-sm my-16">
                 <div class="container mx-auto">
                     <div class="inputs w-full max-w-2xl p-6 mx-auto">
-                        <h2 class="text-2xl text-gray-900"></h2>
+                        <h2 class="text-2xl text-gray-900">Account Settings</h2>
                         <form class="mt-6 border-t border-gray-400 pt-4">
                             <div class='flex flex-wrap -mx-3 mb-6'>
                                 <div class='w-full md:w-full px-3 mb-6'>
                                     <label class='text-label' for='grid-text-1'>Email</label>
                                     <input class='text-box' id='grid-text-1' type='text' placeholder='Enter email'  required/>
                                 </div>
-                                <div class='w-full md:w-full px-3 mb-6 '>
-                                    <label class='text-label'>password</label>
-                                    <button class="appearance-none bg-gray-200 text-gray-900 px-2 py-1 shadow-sm border border-gray-400 rounded-md ">change your password</button>
+                                <div class='w-full md:w-full px-3 mb-6'>
+                                    <label class='text-label' for='grid-text-1'>Password</label>
+                                    <input class='text-box' id='grid-text-1' type='text' placeholder='Enter password'  required/>
                                 </div>
-                                <div class="personal w-full border-t border-gray-400 pt-4">
-                                    <h2 class="text-2xl text-gray-900">Personal info:</h2>
+                                <div class="personal w-full pt-4">
                                     <div class="flex items-center justify-between mt-4">
                                         <div class='w-full md:w-1/2 px-3 mb-6'>
                                             <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' >first name</label>
