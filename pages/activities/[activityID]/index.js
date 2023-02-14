@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 import Layout from '../../../components/layout'
-import Introduction from './introduction'
-import Activity from './activity'
-import Summary from './summary'
+import Introduction from '../../../components/introduction'
+import Activity from '../../../components/activity'
+import Summary from '../../../components/summary'
 
 
 

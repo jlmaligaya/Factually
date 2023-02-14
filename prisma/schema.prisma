@@ -7,27 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model UserInfo {
-  id        String @id
-  firstName String
-  lastName  String
-  email     String @unique
-  password  String
-}
+model User {
+  id         Int      @default(autoincrement())
+  uid        String   @unique @default(dbgenerated("('UID'::text || lpad((nextval('user_id_seq'::regclass))::text, 6, '0'::text))"))
+  level      Int      @default(0)
+  username   String
+  first_name String
+  last_name  String
+  email      String
+  password   String
+  Scores     Scores[]
 
-model Achievements {
-  id     String  @id
-  achv_1 Boolean
-  achv_2 Boolean
-  achv_3 Boolean
-  achv_4 Boolean
-  level  Int
-  uid    String  @unique
+  @@id([id, uid])
 }
 
 model Activities {
-  id       String @id
-  topic    String
-  activity String
-  desc     String
+  aid         String  @id @default(dbgenerated("('AID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
+  topic       String
+  activity    String
+  description String
+  img         String?
+  video       String?
+  quiz        String?
+}
+
+model Scores {
+  id      String   @id
+  tid     String   @default(dbgenerated("('SID'::text || lpad((nextval('scores_id_seq'::regclass))::text, 6, '0'::text))"))
+  uid     String
+  score   Int      @default(0)
+  retries Int      @default(0)
+  date    DateTime @default(now()) @db.Timestamp(6)
+  User    User     @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction)
 }

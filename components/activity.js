@@ -5,19 +5,19 @@ const Activity = () => {
   const [currentQuestion, setCurrentQuestion] = React.useState(0)
   const [questions, setQuestions] = React.useState([
     {
-      question: 'What is the capital of France?',
-      options: ['Paris', 'London', 'Berlin', 'Rome'],
-      answer: 'Paris',
+      question: 'Question 1',
+      options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+      answer: 'Option 3',
     },
     {
-      question: 'What is the currency used in Japan?',
-      options: ['Yen', 'Dollar', 'Euro', 'Pound'],
-      answer: 'Yen',
+      question: 'Question 1',
+      options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+      answer: 'Option 2',
     },
     {
-      question: 'What is the tallest mountain in the world?',
-      options: ['Mount Everest', 'K2', 'Kangchenjunga', 'Lhotse'],
-      answer: 'Mount Everest',
+      question: 'Question 1',
+      options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+      answer: 'Option 1',
     },
   ])
 
