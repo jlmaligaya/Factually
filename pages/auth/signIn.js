@@ -28,7 +28,7 @@ const SignIn = (props) => {
                   <h2 className="font-bold text-3xl text-[#1C3253]">Sign In</h2>
                   <p className="mt-3 text-[#1C3253] font-medium"> Connect and continue your progress. </p>
                                   
-                  <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
                       <input
                       value={userInfo.email}
                       onChange={({ target }) =>

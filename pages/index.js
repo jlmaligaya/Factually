@@ -6,11 +6,11 @@ import { useSession } from 'next-auth/react';
 import { getSession } from 'next-auth/react';
 
 
-export default function Home({data}) {
+export default function Home({user, actv}) {
   const {data: session, status} = useSession();
   console.log(session)
   const router = useRouter();
-  
+  const experience = user.exp 
   
  
   if (status === "authenticated"){
@@ -22,7 +22,7 @@ export default function Home({data}) {
         <div className="lg:max-h-screen p-4 flex flex-col-reverse lg:flex-row justify-evenly gap-4">
           <div className="grow bg-white lg:row-span-2 lg:col-span-2 p-10 overflow-auto scrollbar scrollbar-thumb-red-500 scrollbar-track-slate-300">
           
-          {data.map(item => (
+          {actv.map(item => (
             <div className="topic-border">
             <p className="topic-header">{item.topic}</p>
             <div className="-z-50 flex flex-row gap-4 overflow-x-auto scrollbar scrollbar-thumb-red-500">
@@ -30,7 +30,7 @@ export default function Home({data}) {
                 <figure><img src={item.img} /></figure>
                 <div className="card-body">
                   <h2 className="card-title">{item.activity}</h2>
-                  <p>{item.description}</p>
+                  <p>{item.desc}</p>
                   <div className="card-actions justify-end">
                     <Link href={`/activities/${item.aid}`}>
                       <button className="btn bg-red-500 hover:bg-red-600 text-white">Start</button>
@@ -49,9 +49,9 @@ export default function Home({data}) {
             <div className="flex flex-col py-5 items-center">
               <p className="text-2xl text-black font-extrabold mb-5">Current Level</p>
               <div className="flex flex-row items-center divide-x-2 divide-red-500 mb-5">
-                <p className="text-lg text-black font-extrabold">Level {session.user.level}</p>
+                <p className="text-lg text-black font-extrabold">Level {user.level}</p>
               </div>
-              <div className="radial-progress bg-green-500 text-primary-content font-bold text-3xl border-4 border-green-500" style={{"--value":0, "--size": "12rem"}}>0/100</div>
+              <div className="radial-progress bg-green-500 text-primary-content font-bold text-3xl border-4 border-green-500" style={{"--value":experience, "--size": "12rem"}}>{experience}/100</div>
             </div>
           </div>
   
@@ -123,14 +123,21 @@ export async function getServerSideProps(context) {
     }
   }
 
-  const data = await prisma.activities.findMany()
+  const [user, actv] = await prisma.$transaction([
+    prisma.user.findUnique({
+      where: {
+        email: session.user.email,
+      },
+    }),
+    prisma.activities.findMany(),
+  ])
 
 
- console.log(data)
+
 
   return {
     props: {
-      data
+      user, actv
     }
   }
 }

@@ -2,7 +2,8 @@ import { useSession, getSession } from 'next-auth/react';
 import Layout from '../components/layout'
 
 
-export default function Account() {
+
+export default function Account(data) {
     const {data: session, status} = useSession();
     console.log(session)
     return (
@@ -15,7 +16,7 @@ export default function Account() {
                             <div class='flex flex-wrap -mx-3 mb-6'>
                                 <div class='w-full md:w-full px-3 mb-6'>
                                     <label class='text-label' for='grid-text-1'>Email</label>
-                                    <input class='text-box' id='grid-text-1' type='text' placeholder='Enter email'  required/>
+                                    <input class='text-box' id='grid-text-1' type='text' placeholder={session.user.email} required/>
                                 </div>
                                 <div class='w-full md:w-full px-3 mb-6'>
                                     <label class='text-label' for='grid-text-1'>Password</label>
@@ -62,6 +63,7 @@ export default function Account() {
       },
     }
   }
+
 
 
 
