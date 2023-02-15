@@ -2,8 +2,14 @@ import { useState, useEffect, Fragment } from "react";
 import SideBar from "./SideBar";
 import TopBar from "./TopBar";
 import { Transition } from "@headlessui/react";
+import { useRouter } from "next/router";
 
 export default function Layout({ children }) {
+  const router = useRouter();
+  if (router.pathname == 'auth/signIn') {
+    return null;
+  }
+
   const [showNav, setShowNav] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 

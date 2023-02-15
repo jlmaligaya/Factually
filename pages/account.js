@@ -1,9 +1,10 @@
-
+import { useSession, getSession } from 'next-auth/react';
 import Layout from '../components/layout'
 
 
 export default function Account() {
-
+    const {data: session, status} = useSession();
+    console.log(session)
     return (
         <div class="flex items-center justify-center h-screen">
             <div class="bg-white min-h-screen rounded-md lg:w-1/2 font-raleway pt-2 shadow-sm my-16">
@@ -49,6 +50,26 @@ export default function Account() {
     );
   }
 
+
+  export async function getServerSideProps(context) {
+  
+  const session = await getSession(context)
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth/signIn',
+        permanent: false,
+      },
+    }
+  }
+
+
+
+ return {
+    props: {},
+  }
+  
+}
 
   Account.getLayout = function getLayout(page) {
     return (

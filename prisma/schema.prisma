@@ -8,35 +8,31 @@ datasource db {
 }
 
 model User {
-  id         Int      @default(autoincrement())
-  uid        String   @unique @default(dbgenerated("('UID'::text || lpad((nextval('user_id_seq'::regclass))::text, 6, '0'::text))"))
-  level      Int      @default(0)
-  username   String
-  first_name String
-  last_name  String
-  email      String
-  password   String
-  Scores     Scores[]
-
-  @@id([id, uid])
+  username  String @unique
+  firstName String
+  lastName  String
+  email     String @unique
+  password  String
+  level     Int    @default(1)
+  uid       String @id @unique @default(dbgenerated("('UID'::text || lpad((nextval('user_id_seq'::regclass))::text, 6, '0'::text))"))
+  exp       Int    @default(0)
 }
 
 model Activities {
-  aid         String  @id @default(dbgenerated("('AID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
-  topic       String
-  activity    String
-  description String
-  img         String?
-  video       String?
-  quiz        String?
+  topic    String
+  activity String
+  desc     String
+  aid      String @id @unique @default(dbgenerated("('AID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
+  img      String @default("https://edukasyon-production.s3.amazonaws.com/uploads/facility/image/5321/j4d6loBhPR2zRk4gtnAB75GWqmq2ZXkr.jpg")
+  quiz     String
+  video    String
 }
 
 model Scores {
   id      String   @id
-  tid     String   @default(dbgenerated("('SID'::text || lpad((nextval('scores_id_seq'::regclass))::text, 6, '0'::text))"))
+  tid     String   @unique
   uid     String
   score   Int      @default(0)
   retries Int      @default(0)
   date    DateTime @default(now()) @db.Timestamp(6)
-  User    User     @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction)
 }

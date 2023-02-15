@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import Link from "next/link";
 import { NewspaperIcon ,HomeIcon, TrophyIcon, UserIcon, ArrowLeftOnRectangleIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react"
 
 
 const SideBar = forwardRef(({ showNav }, ref,) => {
@@ -15,7 +16,8 @@ const router = useRouter();
         <div><h1 className="text-white text-lg">Factually</h1></div>
       </div>
     
-      {/*<div class="text-center mb-9">
+      {/* 
+      <div class="text-center mb-9">
         <img
           src="https://img.freepik.com/premium-vector/owl-face-square-baby-owl-illustration-colored-bird-avatar-icon-childrens-game_421321-207.jpg?w=2000"
           class="rounded-full w-32 mb-4 mx-auto"
@@ -74,9 +76,9 @@ const router = useRouter();
             </div>
           </div>
         </Link>
-        <Link href="/login">
-          <div
-            className="pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors text-red-400 hover:bg-red-500 hover:text-white"
+        
+          <button
+            className="pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors text-red-400 hover:bg-red-500 hover:text-white" onClick={() => signOut({ callbackUrl: 'http://localhost:3000/auth/signIn' })}
           >
             <div className="mr-2">
               <ArrowLeftOnRectangleIcon className="h-5 w-5" />
@@ -84,8 +86,8 @@ const router = useRouter();
             <div>
               <p>Logout</p>
             </div>
-          </div>
-        </Link>
+          </button>
+          
       </div>
       </div>
 
