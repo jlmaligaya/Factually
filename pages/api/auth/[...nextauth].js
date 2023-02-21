@@ -6,6 +6,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 const authOptions = {
     session: {
         strategy: "jwt",
+        
     },
     adapter: PrismaAdapter(prisma),
     providers: [
@@ -27,13 +28,7 @@ const authOptions = {
                     throw new Error("invalid credentials");
                 }
                 // if everything is fine
-                return {
-                  
-                    name: user.firstName + ' ' + user.lastName,
-                    email: user.email,
-                    
-                    
-                };
+                return user
             },
         }),
     ],
@@ -43,15 +38,25 @@ const authOptions = {
         // signOut: '/auth/signout'
     },
     callbacks: {
-        jwt(params) {
-            var _a;
-            // update token
-            if ((_a = params.user) === null || _a === void 0 ? void 0 : _a.role) {
-                params.token.role = params.user.role;
-            }
-            // return final_token
-            return params.token;
-        },
+        async session({ session, token }) {
+            // Get user from token
+            const user = await prisma.user.findUnique({
+              where: {
+                email: token.email
+              }
+            });
+        
+            // Add the additional user data to the session object
+            session.user.email= user.email;
+            session.user.firstName= user.firstName;
+            session.user.lastName= user.lastName;
+            session.user.uid= user.uid;
+            session.user.exp = user.exp;
+            session.user.level= user.level;
+            session.user.username = user.username;
+
+            return session;
+          }
     },
 };
 export default NextAuth(authOptions);

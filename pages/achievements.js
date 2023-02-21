@@ -1,6 +1,6 @@
 
 import Layout from '../components/layout'
-import { prisma } from '../db'
+// import { prisma } from '../db'
 
 
 export default function Achievements({data}) {
@@ -98,7 +98,12 @@ export default function Achievements({data}) {
 
   export async function getServerSideProps() {
     
-    const data = await prisma.achievements.findUnique({ where: {id: "ACV000001"} });
+    //const data = await prisma.achievements.findUnique({ where: {id: "ACV000001"} });
+    const data = {
+      achv_1: true,
+      achv_2: false,
+      achv_3: true
+    }
   
     return {
       props: {

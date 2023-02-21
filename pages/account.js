@@ -20,22 +20,22 @@ export default function Account(data) {
                                 </div>
                                 <div class='w-full md:w-full px-3 mb-6'>
                                     <label class='text-label' for='grid-text-1'>Password</label>
-                                    <input class='text-box' id='grid-text-1' type='text' placeholder='Enter password'  required/>
+                                    <input class='text-box' id='grid-text-1' type='password' placeholder='Enter password'  required/>
                                 </div>
                                 <div class="personal w-full pt-4">
                                     <div class="flex items-center justify-between mt-4">
                                         <div class='w-full md:w-1/2 px-3 mb-6'>
                                             <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' >first name</label>
-                                            <input class='text-box' type='text' disabled/>
+                                            <input class='text-box' type='text' placeholder={session.user.firstName} disabled/>
                                         </div>
                                         <div class='w-full md:w-1/2 px-3 mb-6'>
                                             <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' >last name</label>
-                                            <input class='text-box' type='text'  required/>
+                                            <input class='text-box' type='text' placeholder={session.user.lastName} required/>
                                         </div>
                                     </div>
                                     <div class='w-full md:w-full px-3 mb-6'>
                                         <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'>user name</label>
-                                        <input class='text-box' type='text'  required/>
+                                        <input class='text-box' type='text' placeholder={session.user.username} required/>
                                     </div>
                                     <div class="flex justify-end">
                                         <button class="appearance-none bg-red-500 w-full text-white px-2 py-3 shadow-sm border rounded-full hover:bg-red-600 mr-3 sm-3 transition-colors" type="submit">Save Changes</button>

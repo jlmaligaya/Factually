@@ -14,7 +14,7 @@ export default function Layout({ children }) {
   const [isMobile, setIsMobile] = useState(false);
 
   function handleResize() {
-    if (innerWidth <= 640) {
+    if (window.innerWidth <= 640) {
       setShowNav(false);
       setIsMobile(true);
     } else {
@@ -24,12 +24,12 @@ export default function Layout({ children }) {
   }
 
   useEffect(() => {
-    if (typeof window != undefined) {
-      addEventListener("resize", handleResize);
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
     }
 
     return () => {
-      removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 

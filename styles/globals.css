@@ -19,7 +19,7 @@ body {
 }
 
 .topic-border {
-  @apply mb-5 bg-slate-100 rounded p-10
+  @apply bg-slate-100 rounded
 }
 
 .topic-header {

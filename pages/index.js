@@ -4,44 +4,47 @@ import { useRouter } from "next/router";
 import Layout from '../components/layout'
 import { useSession } from 'next-auth/react';
 import { getSession } from 'next-auth/react';
+import stars from '../components/stars';
 
 
-export default function Home({user, actv}) {
+export default function Home({data, actv}) {
   const {data: session, status} = useSession();
-  console.log(session)
   const router = useRouter();
-  const experience = user.exp 
   
  
   if (status === "authenticated"){
+    const experience = session.user.exp
+    const level = session.user.level
     return (
       <>
-        
         <div>
-        <h1 class="mb-4 px-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-4xl">Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r to-red-400 from-indigo-800">{session.user.name}</span></h1>
+        <h1 className="mb-4 px-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-4xl">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r to-red-400 from-indigo-800">Factually</span></h1>
         <div className="lg:max-h-screen p-4 flex flex-col-reverse lg:flex-row justify-evenly gap-4">
-          <div className="grow bg-white lg:row-span-2 lg:col-span-2 p-10 overflow-auto scrollbar scrollbar-thumb-red-500 scrollbar-track-slate-300">
-          
-          {actv.map(item => (
-            <div className="topic-border">
-            <p className="topic-header">{item.topic}</p>
-            <div className="-z-50 flex flex-row gap-4 overflow-x-auto scrollbar scrollbar-thumb-red-500">
-              <div className="card w-80 h-30 bg-base-100 shadow-xl">
-                <figure><img src={item.img} /></figure>
-                <div className="card-body">
-                  <h2 className="card-title">{item.activity}</h2>
-                  <p>{item.desc}</p>
-                  <div className="card-actions justify-end">
-                    <Link href={`/activities/${item.aid}`}>
-                      <button className="btn bg-red-500 hover:bg-red-600 text-white">Start</button>
-                    </Link>
-                  </div>
+          <div className="grow max-w-6xl h-screen bg-white">
+            
+            {actv.map(item => (
+              
+              <div class="flex justify-center">
+              <div class="rounded-lg shadow-lg bg-white max-w-sm">
+                <a href="#!">
+                  <img class="rounded-t-lg" src="https://mdbootstrap.com/img/new/standard/nature/184.jpg" alt=""/>
+                </a>
+                <div class="p-6">
+                  <h5 class="text-gray-900 text-xl font-medium mb-2">Card title</h5>
+                  <p class="text-gray-700 text-base mb-4">
+                    Some quick example text to build on the card title and make up the bulk of the card's
+                    content.
+                  </p>
+                  <stars
+                  rating = {1}
+                  
+                  />
+                  <button type="button" class=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Button</button>
                 </div>
               </div>
             </div>
-          </div>
-          ))}
-                             
+            ))}
+                          
           </div>
   
           <div className="">
@@ -49,17 +52,17 @@ export default function Home({user, actv}) {
             <div className="flex flex-col py-5 items-center">
               <p className="text-2xl text-black font-extrabold mb-5">Current Level</p>
               <div className="flex flex-row items-center divide-x-2 divide-red-500 mb-5">
-                <p className="text-lg text-black font-extrabold">Level {user.level}</p>
+                <p className="text-lg text-black font-extrabold">Level {level}</p>
               </div>
-              <div className="radial-progress bg-green-500 text-primary-content font-bold text-3xl border-4 border-green-500" style={{"--value":experience, "--size": "12rem"}}>{experience}/100</div>
+              <div className="radial-progress bg-green-500 text-primary-content font-bold text-3xl border-4 border-green-500" style={{"--value":level, "--size": "12rem"}}>{experience}/100</div>
             </div>
           </div>
   
           <div className="bg-white rounded-lg border-slate-400 border-2 text-black text-sm">
             <div className="flex flex-col p-5 divide-y border-gray-300">
-              <div class="flex items-center justify-between space-x-6 p-6">
-                <div class="flex items-center space-x-4">
-                  <div class="flex flex-col space-y-2">
+              <div className="flex items-center justify-between space-x-6 p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="flex flex-col space-y-2">
                     <p>Mission 1</p>
                     <p>Aliquam tincidunt mauris eu risus.</p>
                   </div>
@@ -68,9 +71,9 @@ export default function Home({user, actv}) {
                   <p>0/5</p>
                 </div>
               </div>
-              <div class="flex items-center justify-between space-x-6 p-6">
-                <div class="flex items-center space-x-4">
-                  <div class="flex flex-col space-y-2">
+              <div className="flex items-center justify-between space-x-6 p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="flex flex-col space-y-2">
                     <p>Mission 2</p>
                     <p>Aliquam tincidunt mauris eu risus.</p>
                   </div>
@@ -79,9 +82,9 @@ export default function Home({user, actv}) {
                   <p>0/5</p>
                 </div>
               </div>
-              <div class="flex items-center justify-between space-x-6 p-6">
-                <div class="flex items-center space-x-4">
-                  <div class="flex flex-col space-y-2">
+              <div className="flex items-center justify-between space-x-6 p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="flex flex-col space-y-2">
                     <p>Mission 3</p>
                     <p>Aliquam tincidunt mauris eu risus.</p>
                   </div>
@@ -92,7 +95,7 @@ export default function Home({user, actv}) {
               </div>
               <Link href="/achievements">
               <div>
-                <button class="w-full bg-red-500 text-white rounded-md border p-2 transition hover:opacity-60">View all</button>
+                <button className="w-full bg-red-500 text-white rounded-md border p-2 transition hover:opacity-60">View all</button>
               </div>
               </Link>
             </div>
@@ -123,21 +126,18 @@ export async function getServerSideProps(context) {
     }
   }
 
-  const [user, actv] = await prisma.$transaction([
-    prisma.user.findUnique({
-      where: {
-        email: session.user.email,
-      },
-    }),
-    prisma.activities.findMany(),
-  ])
+  const actv = await prisma.activities.findMany({
+    orderBy: [{
+      aid: 'asc'
+    }]
+  })
 
-
+  
 
 
   return {
     props: {
-      user, actv
+      actv
     }
   }
 }
