@@ -63,7 +63,7 @@ export default function Register() {
     
     return (      
          <>
-             <section className="bg-gray-100 min-h-screen flex items-center justify-center">
+             <section className="bg-[url('https://thumbs.dreamstime.com/b/news-sketch-vector-seamless-doodle-pattern-news-sketch-vector-seamless-doodle-pattern-gray-icons-white-background-181811845.jpg')] min-h-screen flex items-center justify-center">
       <div className="bg-gray-200 flex rounded-xl shadow-lg p-5">
         <div className="md:block hidden w-1/2">
           <img className="rounded-xl" src="logo.png" alt="" />
@@ -83,7 +83,7 @@ export default function Register() {
               <input
                 className={`p-2 mt-8 rounded-full border ${
                   firstNameError ? "border-red-500" : ""
-                }`}
+                }text-black`}
                 type="text"
                 name="firstname"
                 placeholder="First Name"
@@ -96,7 +96,7 @@ export default function Register() {
               <input
                 className={`p-2 mt-8 rounded-full border ${
                   lastNameError ? "border-red-500" : ""
-                }`}
+                }text-black`}
                 type="text"
                 name="lastname"
                 placeholder="Last Name"
@@ -110,7 +110,7 @@ export default function Register() {
             <input
               className={`p-2 rounded-full border ${
                 usernameError ? "border-red-500" : ""
-              }`}
+              }text-black`}
               type="text"
               name="username"
               placeholder="Username"
@@ -123,7 +123,7 @@ export default function Register() {
             <input
               className={`p-2 rounded-full border ${
                 emailError ? "border-red-500" : ""
-              }`}
+              }text-black`}
               type="email"
               name="email"
               placeholder="Email"
@@ -136,7 +136,7 @@ export default function Register() {
             <input
               className={`p-2 rounded-full border ${
                 passwordError ? "border-red-500" : ""
-              }`}
+              }text-black`}
               type="password"
               name="password"
               placeholder="Password"
@@ -149,7 +149,7 @@ export default function Register() {
             <input
               className={`p-2 rounded-full border ${
                 confirmPasswordError ? "border-red-500" : ""
-              }`}
+              }text-black`}
               type="password"
               name="confirmPass"
               placeholder="Confirm Password"

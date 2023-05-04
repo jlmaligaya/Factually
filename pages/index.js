@@ -5,11 +5,21 @@ import Layout from '../components/layout'
 import { useSession } from 'next-auth/react';
 import { getSession } from 'next-auth/react';
 import stars from '../components/stars';
+import { useState } from 'react';
 
 
 export default function Home({data, actv}) {
   const {data: session, status} = useSession();
   const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
+
+  function handlePlayClick() {
+    setShowModal(true);
+  }
+
+  function handleModalClose() {
+    setShowModal(false);
+  }
   
  
   if (status === "authenticated"){
@@ -20,30 +30,49 @@ export default function Home({data, actv}) {
         <div>
         <h1 className="mb-4 px-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-4xl">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r to-red-400 from-indigo-800">Factually</span></h1>
         <div className="lg:max-h-screen p-4 flex flex-col-reverse lg:flex-row justify-evenly gap-4">
-          <div className="grow max-w-6xl h-screen bg-white">
+          <div className="grow max-w-6xl h-screen bg-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-10">
             
             {actv.map(item => (
-              
-              <div class="flex justify-center">
-              <div class="rounded-lg shadow-lg bg-white max-w-sm">
-                <a href="#!">
-                  <img class="rounded-t-lg" src="https://mdbootstrap.com/img/new/standard/nature/184.jpg" alt=""/>
-                </a>
-                <div class="p-6">
-                  <h5 class="text-gray-900 text-xl font-medium mb-2">Card title</h5>
-                  <p class="text-gray-700 text-base mb-4">
-                    Some quick example text to build on the card title and make up the bulk of the card's
-                    content.
-                  </p>
-                  <stars
-                  rating = {1}
-                  
-                  />
-                  <button type="button" class=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Button</button>
+              <div className="bg-white shadow-md h-max rounded-md overflow-hidden">
+              <img className="object-cover w-full h-" src={item.img} alt="Card Image"/>
+              <div className="p-4">
+                <h2 className="text-xl font-medium mb-2 text-black">{item.topic}</h2>
+                
+                <div className="flex items-center mb-4">
+                  <span className="text-yellow-400 mr-1">&#9733;</span>
+                  <span className="text-yellow-400 mr-1">&#9733;</span>
+                  <span className="text-yellow-400">&#9733;</span>
                 </div>
+                <Link href={`/activities/${item.aid}`}>
+                      <button className="btn bg-red-500 hover:bg-red-600 text-white">Start</button>
+                  </Link>
               </div>
             </div>
+             
             ))}
+            {showModal && (
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-10">
+    <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50"></div>
+    <div className="bg-white rounded-md p-4 z-20">
+      <div className="flex items-center mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M2.5 5A2.5 2.5 0 0 1 5 2.5h10A2.5 2.5 0 0 1 17.5 5v10a2.5 2.5 0 0 1-2.5 2.5h-10A2.5 2.5 0 0 1 2.5 15v-10zm12.5 2.5h-5v-2.5h5v2.5zm0 5h-5v-2.5h5v2.5z" clipRule="evenodd" />
+        </svg>
+        <h2 className="text-xl font-medium text-black">Level Description</h2>
+      </div>
+      <p className="text-gray-500 mb-4 max-w-sm">
+      Suspendisse dictum luctus commodo. Integer viverra, tortor vitae tincidunt dapibus, ex velit commodo turpis, non pellentesque ex elit eu augue. Nam mollis nisi euismod, tincidunt ipsum sit amet, gravida eros. Donec et arcu et enim mollis pellentesque. Curabitur interdum elit quam, at malesuada ex cursus vel.
+      </p>
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={handleModalClose}
+      >
+        Proceed
+      </button>
+    </div>
+  </div>
+)}
+            
                           
           </div>
   

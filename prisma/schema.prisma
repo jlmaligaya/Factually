@@ -8,24 +8,40 @@ datasource db {
 }
 
 model User {
-  username  String @unique
+  username  String   @unique
   firstName String
   lastName  String
-  email     String @unique
+  email     String   @unique
   password  String
-  level     Int    @default(1)
-  uid       String @id @unique @default(dbgenerated("('UID'::text || lpad((nextval('user_id_seq'::regclass))::text, 6, '0'::text))"))
-  exp       Int    @default(0)
+  level     Int      @default(1)
+  uid       String   @unique
+  exp       Int      @default(0)
+  id        Int      @id @default(autoincrement())
+  Scores    Scores[]
 }
 
 model Activities {
-  topic    String
-  activity String
-  desc     String
-  aid      String @id @unique @default(dbgenerated("('AID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
-  img      String @default("https://edukasyon-production.s3.amazonaws.com/uploads/facility/image/5321/j4d6loBhPR2zRk4gtnAB75GWqmq2ZXkr.jpg")
-  quiz     String
-  video    String
+  topic     String
+  activity  String
+  desc      String
+  aid       String     @unique @default(dbgenerated("('AID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
+  img       String     @default("https://edukasyon-production.s3.amazonaws.com/uploads/facility/image/5321/j4d6loBhPR2zRk4gtnAB75GWqmq2ZXkr.jpg")
+  video     String
+  id        Int        @id @default(autoincrement())
+  questions Question[] 
+}
+
+model Question {
+  id            Int        @id @default(autoincrement())
+  activityId    Int
+  question      String
+  optionOne     String
+  optionTwo     String
+  optionThree   String
+  optionFour    String
+  correctOption String
+  explanation   String
+  activity      Activities @relation(fields: [activityId], references: [id])
 }
 
 model Scores {
@@ -35,4 +51,5 @@ model Scores {
   score   Int      @default(0)
   retries Int      @default(0)
   date    DateTime @default(now()) @db.Timestamp(6)
+  User    User     @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction)
 }

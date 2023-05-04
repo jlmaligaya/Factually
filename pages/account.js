@@ -5,7 +5,6 @@ import Layout from '../components/layout'
 
 export default function Account(data) {
     const {data: session, status} = useSession();
-    console.log(session)
     return (
         <div class="flex items-center justify-center h-screen">
             <div class="bg-white min-h-screen rounded-md lg:w-1/2 font-raleway pt-2 shadow-sm my-16">
@@ -30,7 +29,7 @@ export default function Account(data) {
                                         </div>
                                         <div class='w-full md:w-1/2 px-3 mb-6'>
                                             <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' >last name</label>
-                                            <input class='text-box' type='text' placeholder={session.user.lastName} required/>
+                                            <input class='text-box' type='text' placeholder={session.user.lastName} disabled/>
                                         </div>
                                     </div>
                                     <div class='w-full md:w-full px-3 mb-6'>

@@ -15,7 +15,7 @@ export default function Index() {
     <div className="flex w-full h-screen gap-4">
       <div className='w-2/3'>{currentStep === 0 ? <Introduction /> : currentStep === 1 ? <Activity /> : <Summary />}</div>
       <div className='w-1/4 h-full bg-[#1C3253] shadow-sm grid place-items-center grid-flow-row '>
-      <h2 class="text-4xl font-extrabold dark:text-white">Topic 1</h2>
+      <h2 class="text-4xl font-extrabold dark:text-white">Topic</h2>
         <ul class="steps steps-vertical ">
           <li class={`step ${
                 currentStep >= 0

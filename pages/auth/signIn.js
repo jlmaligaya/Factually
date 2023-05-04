@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 
 const SignIn = (props) => {
   const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
     const [userInfo, setUserInfo] = useState({ email: "", password: "" });
     const handleSubmit = async (e) => {
         // validate your userinfo
@@ -16,14 +17,30 @@ const SignIn = (props) => {
             password: userInfo.password,
             redirect: false,
         });
-        router.push("/");
+        if (res.status === 401) {
+            setShowModal(true);
+          } else {
+            router.push("/");
+          }
     };
     return ( 
       <>
-            
-      <section className="bg-gray-100 min-h-screen flex items-center justify-center">
-          <div className="bg-gray-200 flex rounded-xl shadow-lg p-5">
-
+              {showModal && (
+      <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-8 rounded-lg">
+        <div className="flex items-center mb-4">
+          <svg className="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <p className="text-black font-bold">Incorrect email or password</p>
+        </div>
+        <button className="bg-red-500 text-white py-2 px-4 rounded w-full" onClick={() => setShowModal(false)}>OK</button>
+      </div>
+    </div>
+    
+      )}
+      <section className="bg-[url('https://thumbs.dreamstime.com/b/news-sketch-vector-seamless-doodle-pattern-news-sketch-vector-seamless-doodle-pattern-gray-icons-white-background-181811845.jpg')] min-h-screen flex items-center justify-center">
+          <div className="bg-gray-100 flex rounded-xl shadow-lg p-5">
               <div className="md:w-1/2 px-8 mt-16">
                   <h2 className="font-bold text-3xl text-[#1C3253]">Sign In</h2>
                   <p className="mt-3 text-[#1C3253] font-medium"> Connect and continue your progress. </p>
@@ -34,14 +51,14 @@ const SignIn = (props) => {
                       onChange={({ target }) =>
                         setUserInfo({ ...userInfo, email: target.value })
                       }
-                      className = "p-2 mt-8 rounded-full border focus:outline-none focus:border-[#1C3253] focus:ring-1 focus:ring-[#1C3253] invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" type="email" name="email" placeholder="Email" />
+                      className = "p-2 mt-8 rounded-full border focus:outline-none focus:border-[#1C3253] focus:ring-1 focus:ring-[#1C3253] invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 text-black" type="email" name="email" placeholder="Email" />
 
                       <input
                       value={userInfo.password}
                       onChange={({ target }) =>
                         setUserInfo({ ...userInfo, password: target.value })
                       }
-                      className = "p-2 rounded-full border w-full focus:outline-none focus:border-[#1C3253] focus:ring-1 focus:ring-[#1C3253]" type="password" name="password" placeholder="Password" />     
+                      className = "p-2 rounded-full border w-full focus:outline-none focus:border-[#1C3253] focus:ring-1 focus:ring-[#1C3253] text-black" type="password" name="password" placeholder="Password" />     
 
                       <input 
                       type="submit"
@@ -64,7 +81,7 @@ const SignIn = (props) => {
               </div>
           
               <div className="md:block hidden w-1/2">
-                  <img className="rounded-xl" src="logo.png" alt="" />
+                  <img className="rounded-xl" src="/logo.png" alt="" />
               </div>
           
           </div>
