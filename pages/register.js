@@ -1,69 +1,104 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-
+import * as Yup from 'yup';
+import Link from 'next/link'
 
 
 export default function Register() {
   const router = useRouter();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPass, setConfirmPass] = useState('');
+  const [form, setForm] = useState({
+    username: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPass: '',
+  })
+
+  const registerSchema = Yup.object().shape({
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
+    username: Yup.string().required('Username is required'),
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    password: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .required('Password is required'),
+    confirmPass: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+      .required('Confirm password is required'),
+  });
+
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false)
+  const [showModal, setShowModal] = useState(false);
 
+  const handleChange = e => {
+    
+    const { name, value } = e.target
+    setForm(prevState => ({ ...prevState, [name]: value }))
+
+  }
 
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-
-     // Validation
-     if (firstName === '') {
-        setFirstNameError(true);
-        return;
-      }
-      if (lastName === '') {
-        setLastNameError(true);
-        return;
-      }
-      if (email === '') {
-        setEmailError(true);
-        return;
-      }
-      if (username === '') {
-        setUsernameError(true);
-        return;
-      }
-      if (password === '') {
-        setPasswordError(true);
-        return;
-      }
-      if (confirmPass === '') {
-        setConfirmPasswordError(true);
-        return;
-      }
-    // Save user to database
+    e.preventDefault();
     try {
-        const res = await axios.post('/api/register', { firstName, lastName, email, username, password})
-
-      // Redirect to login page after successful registration
-      router.push('/auth/signIn');
+      // Validate form using Yup schema
+      await registerSchema.validate(form, { abortEarly: false });
+      const res = await axios.post('/api/register', form);
+      setShowModal(true);
     } catch (error) {
-        console.log(error)
-      alert('An error occurred. Please try again');
+      if (error instanceof Yup.ValidationError) {
+        // If there are validation errors, update state with error messages
+        const errors = {};
+        error.inner.forEach((e) => {
+          errors[e.path] = e.message;
+        });
+  
+        setFirstNameError(errors.firstName || false);
+        setLastNameError(errors.lastName || false);
+        setUsernameError(errors.username || false);
+        setEmailError(errors.email || false);
+        setPasswordError(errors.password || false);
+  
+        // Add validation for confirm password
+        if (errors.confirmPass === 'Confirm password is required') {
+          setConfirmPasswordError('Confirm password is required');
+        } else {
+          setConfirmPasswordError(errors.confirmPass || false);
+        }
+      } else {
+        console.error(error);
+      }
     }
   };
+  
+  
     
     return (      
          <>
-             <section className="bg-[url('https://thumbs.dreamstime.com/b/news-sketch-vector-seamless-doodle-pattern-news-sketch-vector-seamless-doodle-pattern-gray-icons-white-background-181811845.jpg')] min-h-screen flex items-center justify-center">
+              {showModal && (
+                        <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-8 rounded-lg">
+            <div className="flex items-center mb-4">
+              <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-black font-bold">You are now registered!</p>
+            </div>
+            <Link href="/auth/signIn">
+            <button className="bg-green-500 text-white py-2 px-4 rounded w-full" onClick={() => setShowModal(false)}>OK</button>
+            </Link>
+            
+          </div>
+        </div>
+      )}
+             <section className="bg-[url('/background.jpg')] bg-cover min-h-screen flex items-center justify-center">
       <div className="bg-gray-200 flex rounded-xl shadow-lg p-5">
         <div className="md:block hidden w-1/2">
           <img className="rounded-xl" src="logo.png" alt="" />
@@ -75,100 +110,107 @@ export default function Register() {
             Register below and join Factually today!
           </p>
 
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={handleSubmit}
-          >
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                className={`p-2 mt-8 rounded-full border ${
-                  firstNameError ? "border-red-500" : ""
-                }text-black`}
-                type="text"
-                name="firstname"
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) => {
-                  setFirstName(e.target.value);
-                  setFirstNameError(false);
-                }}
-              />
-              <input
-                className={`p-2 mt-8 rounded-full border ${
-                  lastNameError ? "border-red-500" : ""
-                }text-black`}
-                type="text"
-                name="lastname"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => {
-                  setLastName(e.target.value);
-                  setLastNameError(false);
-                }}
-              />
-            </div>
-            <input
-              className={`p-2 rounded-full border ${
-                usernameError ? "border-red-500" : ""
-              }text-black`}
-              type="text"
-              name="username"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-                setUsernameError(false);
-              }}
-            />
-            <input
-              className={`p-2 rounded-full border ${
-                emailError ? "border-red-500" : ""
-              }text-black`}
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setEmailError(false);
-              }}
-            />
-            <input
-              className={`p-2 rounded-full border ${
-                passwordError ? "border-red-500" : ""
-              }text-black`}
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setPasswordError(false);
-              }}
-            />
-            <input
-              className={`p-2 rounded-full border ${
-                confirmPasswordError ? "border-red-500" : ""
-              }text-black`}
-              type="password"
-              name="confirmPass"
-              placeholder="Confirm Password"
-              value={confirmPass}
-              onChange={(e) => {
-                setConfirmPass(e.target.value);
-                setConfirmPasswordError(false);
-              }}
-            />
-            {/* {error && (
-              <p className="text-red-500 text-sm">Error: {error.message}</p>
-            )} */}
-            <button
-              className="bg-[#CE4044] hover:bg-[#1C3253] rounded-full text-white py-2 mt-3"
-              onClick={handleSubmit}
-            >
-              Sign Up
-            </button>
-          </form>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+  <div className="grid grid-cols-2 gap-4">
+    <div>
+    <input
+      className={`p-2 mt-8 rounded-full border ${
+        firstNameError ? 'border-red-500' : ''
+      } text-black`}
+      type="text"
+      name="firstName"
+      placeholder="First Name"
+      value={form.firstName}
+      onChange={handleChange}
+    />
+    {firstNameError && (
+      <p className="text-red-500 text-sm">{firstNameError}</p>
+    )}
+    </div>
+
+    <div>
+    <input
+      className={`p-2 mt-8 rounded-full border ${
+        lastNameError ? 'border-red-500' : ''
+      } text-black`}
+      type="text"
+      name="lastName"
+      placeholder="Last Name"
+      value={form.lastName}
+      onChange={handleChange}
+    />
+    {lastNameError && (
+      <p className="text-red-500 text-sm">{lastNameError}</p>
+    )}
+    </div>
+
+  </div>
+
+  <input
+    className={`p-2 rounded-full border ${
+      usernameError ? 'border-red-500' : ''
+    } text-black`}
+    type="text"
+    name="username"
+    placeholder="Username"
+    value={form.username}
+    onChange={handleChange}
+  />
+  {usernameError && (
+    <p className="text-red-500 text-sm">{usernameError}</p>
+  )}
+
+  <input
+    className={`p-2 rounded-full border ${
+      emailError ? 'border-red-500' : ''
+    } text-black`}
+    type="email"
+    name="email"
+    placeholder="Email"
+    value={form.email}
+    onChange={handleChange}
+  />
+  {emailError && (
+    <p className="text-red-500 text-sm">{emailError}</p>
+  )}
+
+  <input
+    className={`p-2 rounded-full border ${
+      passwordError ? 'border-red-500' : ''
+    } text-black`}
+    type="password"
+    name="password"
+    placeholder="Password"
+    value={form.password}
+    onChange={handleChange}
+  />
+  {passwordError && (
+    <p className="text-red-500 text-sm">{passwordError}</p>
+  )}
+
+<input
+  className={`p-2 rounded-full border ${
+    confirmPasswordError ? 'border-red-500' : ''
+  } text-black`}
+  type="password"
+  name="confirmPass"
+  placeholder="Confirm Password"
+  value={form.confirmPass}
+  onChange={handleChange}
+/>
+{confirmPasswordError && (
+  <p className="text-red-500 text-sm">{confirmPasswordError}</p>
+)}
+
+
+  <button
+    className="bg-[#CE4044] hover:bg-[#1C3253] rounded-full text-white py-2 mt-3"
+    onClick={handleSubmit}
+  >
+    Sign Up
+  </button>
+</form>
+
 
                         <div class="mt-10 grid grid-cols-3 items-center text-gray-50">
                             <hr class="border-gray-500" />

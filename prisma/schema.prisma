@@ -8,16 +8,16 @@ datasource db {
 }
 
 model User {
-  username  String   @unique
+  username  String @unique
   firstName String
   lastName  String
-  email     String   @unique
+  email     String @unique
   password  String
-  level     Int      @default(1)
-  uid       String   @unique
-  exp       Int      @default(0)
-  id        Int      @id @default(autoincrement())
-  Scores    Scores[]
+  level     Int    @default(1)
+  uid       String @unique @default(dbgenerated("('UID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
+  exp       Int    @default(0)
+  id        Int    @id @default(autoincrement())
+  scores  Score[]
 }
 
 model Activities {
@@ -28,28 +28,18 @@ model Activities {
   img       String     @default("https://edukasyon-production.s3.amazonaws.com/uploads/facility/image/5321/j4d6loBhPR2zRk4gtnAB75GWqmq2ZXkr.jpg")
   video     String
   id        Int        @id @default(autoincrement())
-  questions Question[] 
+  scores Score[]
 }
 
-model Question {
-  id            Int        @id @default(autoincrement())
-  activityId    Int
-  question      String
-  optionOne     String
-  optionTwo     String
-  optionThree   String
-  optionFour    String
-  correctOption String
-  explanation   String
-  activity      Activities @relation(fields: [activityId], references: [id])
-}
-
-model Scores {
-  id      String   @id
-  tid     String   @unique
-  uid     String
-  score   Int      @default(0)
-  retries Int      @default(0)
-  date    DateTime @default(now()) @db.Timestamp(6)
-  User    User     @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction)
+model Score {
+  id        Int      @id @default(autoincrement())
+  activity  Activities @relation(fields: [activityId], references: [aid])
+  activityId String
+  user      User     @relation(fields: [userId], references: [uid])
+  userId    String
+  score     Int
+  retries   Int
+  timeLeft  Int
+  livesLeft Int
+  createdAt DateTime @default(now())
 }

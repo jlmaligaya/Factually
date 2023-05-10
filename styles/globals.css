@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-slate-300
+  @apply bg-gradient-to-b from-slate-300 to-gray-100
 }
 
 /*Mission Box Classes*/

@@ -21,7 +21,7 @@ export default function TopBar({ showNav, setShowNav }) {
     >
       <div className="pl-10 md:pl-16">
         <Bars3CenterLeftIcon
-          className="h-8 w-8 text-gray-700 cursor-pointer"
+          className="h-8 w-8 text-gray-700 cursor-pointer lg:hidden"
           onClick={() => setShowNav(!showNav)}
         />
       </div>

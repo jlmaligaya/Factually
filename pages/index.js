@@ -12,6 +12,7 @@ export default function Home({data, actv}) {
   const {data: session, status} = useSession();
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+ 
 
   function handlePlayClick() {
     setShowModal(true);
@@ -25,16 +26,17 @@ export default function Home({data, actv}) {
   if (status === "authenticated"){
     const experience = session.user.exp
     const level = session.user.level
+    
     return (
       <>
         <div>
-        <h1 className="mb-4 px-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-4xl">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r to-red-400 from-indigo-800">Factually</span></h1>
+        <h1 className="mb-4 px-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-4xl">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r to-red-400 from-indigo-800">Factually</span>, {session.user.firstName}</h1>
         <div className="lg:max-h-screen p-4 flex flex-col-reverse lg:flex-row justify-evenly gap-4">
           <div className="grow max-w-6xl h-screen bg-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-10">
             
             {actv.map(item => (
-              <div className="bg-white shadow-md h-max rounded-md overflow-hidden">
-              <img className="object-cover w-full h-" src={item.img} alt="Card Image"/>
+              <div className="bg-white shadow-xl h-max md:max-h-80 rounded-md overflow-hidden">
+              <img className="object-cover w-full h-40" src={item.img} alt="Card Image"/>
               <div className="p-4">
                 <h2 className="text-xl font-medium mb-2 text-black">{item.topic}</h2>
                 
@@ -44,7 +46,7 @@ export default function Home({data, actv}) {
                   <span className="text-yellow-400">&#9733;</span>
                 </div>
                 <Link href={`/activities/${item.aid}`}>
-                      <button className="btn bg-red-500 hover:bg-red-600 text-white">Start</button>
+                      <button className="btn bg-red-500 hover:bg-red-600 text-white transform active:scale-75 transition-transform">Start</button>
                   </Link>
               </div>
             </div>

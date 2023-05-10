@@ -22,6 +22,7 @@ const SignIn = (props) => {
           } else {
             router.push("/");
           }
+        
     };
     return ( 
       <>
@@ -32,14 +33,14 @@ const SignIn = (props) => {
           <svg className="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
-          <p className="text-black font-bold">Incorrect email or password</p>
+          <p className="text-black font-bold">Account does not exist.</p>
         </div>
         <button className="bg-red-500 text-white py-2 px-4 rounded w-full" onClick={() => setShowModal(false)}>OK</button>
       </div>
     </div>
     
       )}
-      <section className="bg-[url('https://thumbs.dreamstime.com/b/news-sketch-vector-seamless-doodle-pattern-news-sketch-vector-seamless-doodle-pattern-gray-icons-white-background-181811845.jpg')] min-h-screen flex items-center justify-center">
+      <section className="bg-[url('/background.jpg')] bg-cover min-h-screen flex items-center justify-center">
           <div className="bg-gray-100 flex rounded-xl shadow-lg p-5">
               <div className="md:w-1/2 px-8 mt-16">
                   <h2 className="font-bold text-3xl text-[#1C3253]">Sign In</h2>

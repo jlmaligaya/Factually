@@ -34,19 +34,18 @@ const Introduction = () => {
     role="status">
     <span
       class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
-      >Loading...</span
-    >
+      >Loading...</span>
   </div>
 
   
     
     return (
-      <div className=' bg-white h-full w-full overflow-auto scrollbar scrollbar-thumb-red-500 scrollbar-track-slate-300'>
+      <div className=' bg-slate-100 h-full w-full overflow-auto scrollbar scrollbar-thumb-red-500 scrollbar-track-slate-300'>
       <h2 class="text-4xl font-extrabold text-black my-10 ml-10">{topicName}</h2>
         <div class="aspect-w-16 aspect-h-9 max-w-full m-10">
-          <iframe class="absolute top-0 left-0 w-full h-full" src={videoURL} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe class="absolute top-0 left-0 w-full h-full" src={`${videoURL}?rel=0`} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
-        <p class="px-10 mb-10 text-lg font-normal text-gray-500 dark:text-gray-400">{description}</p>
+        <p class="px-10 mb-10 text-lg font-normal text-black dark:text-gray-400 bg-white border-4 m-10 p-4">{description}</p>
         
       </div>
     )

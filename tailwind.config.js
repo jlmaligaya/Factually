@@ -8,7 +8,23 @@ module.exports = {
     "./node_modules/flowbite/**/*.js",
   ],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        float: {
+          '0%': {
+            transform: 'translate(0, 0)',
+            opacity: 1,
+          },
+          '100%': {
+            transform: 'translate(0, -50px)',
+            opacity: 0,
+          },
+        },
+      },
+      animation: {
+        'heart-float': 'float 0.8s forwards',
+      },
+    },
   },
   plugins: [require("daisyui"), require('tailwind-scrollbar')({ nocompatible: true }),  require('@tailwindcss/aspect-ratio'), require('tw-elements/dist/plugin'), require('flowbite/plugin')],
 

@@ -36,7 +36,7 @@ export default function Index() {
         <div className="mt-10 p-5">
           {currentStep > 0 && (
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-5"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-5 transform active:scale-x-75 transition-transform"
               onClick={() => setCurrentStep(currentStep - 1)}
             >
               Back
@@ -44,18 +44,22 @@ export default function Index() {
           )}
           {currentStep < 2 && (
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transform active:scale-x-75 transition-transform"
               onClick={() => setCurrentStep(currentStep + 1)}
             >
               Next
             </button>
           )}
           {currentStep == 2 && (
+            <Link href="/">
+
+          
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transform active:scale-x-75 transition-transform"
             >
               Finish
             </button>
+            </Link>
           )}
         </div>
       </div>

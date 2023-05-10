@@ -23,6 +23,7 @@
     "next-auth-client": "^1.5.0",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.4",
+    "react-confetti": "^6.1.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.1",
     "react-modal": "^3.16.1",
@@ -30,7 +31,7 @@
     "swr": "^2.1.5",
     "tw-elements": "^1.0.0-alpha13",
     "validator": "^13.9.0",
-    "yup": "^1.0.0"
+    "yup": "^1.1.1"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
