@@ -1,19 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router'
 
-// const dummyScores = [
-//   { id: 1, name: 'Player 1', score: 10, lives: 3, retries: 2, timeFinished: '36s'},
-//   { id: 2, name: 'Player 2', score: 8, lives: 2, retries: 1, timeFinished: '15s'},
-//   { id: 3, name: 'Player 3', score: 6, lives: 1, retries: 0, timeFinished:  '48s'},
-//   { id: 4, name: 'Player 4', score: 5, lives: 3, retries: 1, timeFinished:  '27s'},
-//   { id: 5, name: 'Player 5', score: 7, lives: 2, retries: 0, timeFinished: '9s' },
-//   { id: 6, name: 'Player 6', score: 2, lives: 1, retries: 0, timeFinished: '54s'},
-//   { id: 7, name: 'Player 7', score: 8, lives: 3, retries: 2, timeFinished:  '21s'},
-//   { id: 8, name: 'Player 8', score: 10, lives: 2, retries: 1, timeFinished: '41s'},
-//   { id: 9, name: 'Player 9', score: 1, lives: 1, retries: 0, timeFinished:'7s'},
-//   { id: 10, name: 'Player 10', score: 6, lives: 3, retries: 0, timeFinished: '33s'},
-// ];
-
 
 const Leaderboard = () => {
   const [scores, setScores] = useState([]);
@@ -61,11 +48,11 @@ const Leaderboard = () => {
         <div key={score.id} className="w-72 border-2 border-gray-200 p-4 rounded-lg flex items-center justify-center transform hover:-translate-y-1 transition duration-300">
           <img src={score.icon} alt="Player Icon" className="w-16 h-16 rounded-full" />
           <div className="ml-4">
-            <h2 className="text-2xl font-bold">{score.name}</h2>
+            <h2 className="text-2xl font-bold">{score.userId}</h2>
             <p className="text-lg">Score: {score.score}</p>
             <p className="text-lg">Lives left: {score.livesLeft}</p>
             <p className="text-lg">Retries: {score.retries}</p>
-            <p className="text-lg">Time finished: {score.timeFinished}</p>
+            <p className="text-lg">Time finished: {score.timeLeft}</p>
           </div>
         </div>
       ))}
@@ -85,11 +72,11 @@ const Leaderboard = () => {
         {otherScores.map((score, index) => (
           <tr key={score.id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
             <td className="border border-gray-200 px-4 py-2">{index + 4}</td>
-            <td className="border border-gray-200 px-4 py-2">{score.name}</td>
+            <td className="border border-gray-200 px-4 py-2">{score.userId}</td>
             <td className="border border-gray-200 px-4 py-2">{score.score}</td>
-            <td className="border border-gray-200 px-4 py-2">{score.lives}</td>
+            <td className="border border-gray-200 px-4 py-2">{score.livesLeft}</td>
             <td className="border border-gray-200 px-4 py-2">{score.retries}</td>
-            <td className="border border-gray-200 px-4 py-2">{score.timeFinished}</td>
+            <td className="border border-gray-200 px-4 py-2">{score.timeLeft}</td>
           </tr>
         ))}
       </tbody>
