@@ -13,6 +13,14 @@ export default function Home({data, actv}) {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
  
+    function handleCardClick(id) {
+    setActiveCard(id);
+  }
+
+  function handleCardLeave() {
+    setActiveCard(null);
+  }
+
 
   function handlePlayClick() {
     setShowModal(true);
@@ -34,47 +42,29 @@ export default function Home({data, actv}) {
         <div className="lg:max-h-screen p-4 flex flex-col-reverse lg:flex-row justify-evenly gap-4">
           <div className="grow max-w-6xl h-screen bg-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-10">
             
-            {actv.map(item => (
-              <div className="bg-white shadow-xl h-max md:max-h-80 rounded-md overflow-hidden">
-              <img className="object-cover w-full h-40" src={item.img} alt="Card Image"/>
-              <div className="p-4">
-                <h2 className="text-xl font-medium mb-2 text-black">{item.topic}</h2>
-                
-                <div className="flex items-center mb-4">
-                  <span className="text-yellow-400 mr-1">&#9733;</span>
-                  <span className="text-yellow-400 mr-1">&#9733;</span>
-                  <span className="text-yellow-400">&#9733;</span>
-                </div>
-                <Link href={`/activities/${item.aid}`}>
-                      <button className="btn bg-red-500 hover:bg-red-600 text-white transform active:scale-75 transition-transform">Start</button>
-                  </Link>
-              </div>
-            </div>
-             
-            ))}
-            {showModal && (
-  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-10">
-    <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50"></div>
-    <div className="bg-white rounded-md p-4 z-20">
-      <div className="flex items-center mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M2.5 5A2.5 2.5 0 0 1 5 2.5h10A2.5 2.5 0 0 1 17.5 5v10a2.5 2.5 0 0 1-2.5 2.5h-10A2.5 2.5 0 0 1 2.5 15v-10zm12.5 2.5h-5v-2.5h5v2.5zm0 5h-5v-2.5h5v2.5z" clipRule="evenodd" />
-        </svg>
-        <h2 className="text-xl font-medium text-black">Level Description</h2>
+          {actv.map(item => (
+  <div className="group relative cursor-pointer items-center justify-center overflow-scroll-auto transition-shadow hover:shadow-xl hover:shadow-black/30 bg-white shadow-xl h-max md:max-h-80 rounded-md overflow-hidden">
+    <div className="h-80 w-full">
+      
+      <img class="h-full w-full object-cover transition-transform duration-500 group-hover:rotate-3 group-hover:scale-125" src={item.img} alt="Card Image" />
+      
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70">
       </div>
-      <p className="text-gray-500 mb-4 max-w-sm">
-      Suspendisse dictum luctus commodo. Integer viverra, tortor vitae tincidunt dapibus, ex velit commodo turpis, non pellentesque ex elit eu augue. Nam mollis nisi euismod, tincidunt ipsum sit amet, gravida eros. Donec et arcu et enim mollis pellentesque. Curabitur interdum elit quam, at malesuada ex cursus vel.
-      </p>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={handleModalClose}
-      >
-        Proceed
-      </button>
+      <div className="absolute inset-0 flex translate-y-[60%] flex-col items-center justify-center px-9 text-center transition-all duration-500 group-hover:translate-y-0">
+        <h1 className="font-bold text-white">{item.topic}</h1>
+        <p className="mb-3 text-sm italic text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">{item.desc}</p>
+      <Link href={`/activities/${item.aid}`}>
+        <button className="btn bg-red-500 hover:bg-red-600 text-white transform active:scale-75 transition-transform">Start</button>
+      </Link>
+      </div>
+    </div>
+    <div className="p-4">
+    <p className="text-sm">Best score: 10</p>
     </div>
   </div>
-)}
-            
+))}
+
+=        
                           
           </div>
   

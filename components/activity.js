@@ -11,6 +11,7 @@ const Index = () => {
   const [totalScore, setTotalScore] = useState(0);
   const [lives, setLives] = useState(5);
   const [timer, setTimer] = useState(60);
+  const [retries, setRetries] = useState(0);
   const [lostLives, setLostLives] = useState([]);
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [quizEnded, setQuizEnded] = useState(false);
@@ -20,6 +21,7 @@ const Index = () => {
   const {data: session, status} = useSession();
   const userID = session.user.uid;
   const activityID = router.query.activityID
+
  
   
 
@@ -41,11 +43,18 @@ const Index = () => {
     const interval = setInterval(() => {
       setTimer(timer => timer - 1);
     }, 1000);
+  
+    if (quizEnded) {
+      
+      clearInterval(interval);
+    }
+  
     return () => clearInterval(interval);
-  }, []);
+  }, [quizEnded]);
+  
 
   const postScore = async (uid, aid, score, retries, timeLeft, livesLeft) => {
-    console.log(uid, aid)
+
     try {
       const response = await axios.post("/api/scores", {
         uid,
@@ -91,7 +100,7 @@ const Index = () => {
       setLives(5);
       setTimer(60);
       setQuizEnded(true);
-      postScore(userID, activityID, totalScore, 0, 5 - lives, timer - 60, 5 - lives);
+      postScore(userID, activityID, totalScore, retries, 60 - timer, 5 - lives);
 
      
     } 
@@ -100,10 +109,13 @@ const Index = () => {
       setLives(5);
       setTimer(60);
       setQuizEnded(true);
-      postScore(userID, activityID, totalScore, 0, 5 - lives, timer - 60, 5 - lives);
-
-      
+      postScore(userID, activityID, totalScore, retries, 60 - timer, 5 - lives);
     }
+    else {
+      postScore(userID, activityID, totalScore, retries, 60 - timer, 5 - lives);
+    }
+
+
   };
   
   
@@ -115,6 +127,7 @@ const Index = () => {
     setQuizEnded(false);
     setIsQuestionAnswered(false);
     setTotalScore(0);
+    setRetries(retries + 1)
     setQuizQuestions(shuffleArray(quizQuestions));
     setChoice(null); // Reset choice state variable to null
     setLostLives([]);
