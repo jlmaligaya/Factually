@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       //Bale okay na yung nasa taas dito lang yung problema di ko alam anong di ko ginagawang tama pero pag ginawa ko naman yung prisma statement na hardcoded directly may nababasa naman kaso isa nga lang kasi isa pa lang talaga HAHAXHAXHAXHAXH
     } else if (req.method === "GET") {
       const router = useRouter();
-      const activityID = router.query.activityID;
+     const activityId = router.query.activityId;
 
       const scores = await prisma.score.findMany({ //Eto yung statement gumana yan
         where: { activityId},
