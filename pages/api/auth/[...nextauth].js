@@ -4,6 +4,7 @@ import { prisma } from "../../../db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 const authOptions = {
+    secret: "73618696c457e815d8851a8d4190be3e",
     session: {
         strategy: "jwt",
         
