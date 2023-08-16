@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
-import Layout from '../../../components/layout'
+import Layout from '../../../components/Layout'
 import Introduction from '../../../components/introduction'
 import Activity from '../../../components/activity'
 import Summary from '../../../components/summary'

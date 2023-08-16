@@ -1,7 +1,7 @@
 import { prisma } from '../db'
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Layout from '../components/layout'
+import Layout from '../components/Layout'
 import { useSession } from 'next-auth/react';
 import { getSession } from 'next-auth/react';
 import stars from '../components/stars';
