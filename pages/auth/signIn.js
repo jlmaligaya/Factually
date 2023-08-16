@@ -74,7 +74,7 @@ const SignIn = (props) => {
                       <hr className="border-gray-500" />
                   </div>
 
-                  <p className="mt-5 text-[#1C3253] font-medium"> Don't have an account yet? Join us! </p>
+                  <p className="mt-5 text-[#1C3253] font-medium"> Don&apos;t have an account yet? Join us! </p>
 
                   <button className="bg-[#CE4044] hover:bg-[#1C3253] border py-2 w-full rounded-full text-white mt-4" onClick={() => router.push('/register')}>Sign Up</button>
                   <hr className="border-gray-500 mt-10" />

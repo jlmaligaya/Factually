@@ -43,7 +43,7 @@ export default function Home({data, actv}) {
           <div className="grow max-w-6xl h-screen bg-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-10">
             
           {actv.map(item => (
-  <div className="group relative cursor-pointer items-center justify-center overflow-scroll-auto transition-shadow hover:shadow-xl hover:shadow-black/30 bg-white shadow-xl h-max md:max-h-80 rounded-md overflow-hidden">
+  <div key={item.aid} className="group relative cursor-pointer items-center justify-center overflow-scroll-auto transition-shadow hover:shadow-xl hover:shadow-black/30 bg-white shadow-xl h-max md:max-h-80 rounded-md overflow-hidden">
     <div className="h-80 w-full">
       
       <img class="h-full w-full object-cover transition-transform duration-500 group-hover:rotate-3 group-hover:scale-125" src={item.img} alt="Card Image" />

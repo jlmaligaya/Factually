@@ -6,10 +6,6 @@ import { useRouter } from "next/router";
 
 export default function Layout({ children }) {
   const router = useRouter();
-  if (router.pathname == 'auth/signIn') {
-    return null;
-  }
-
   const [showNav, setShowNav] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -31,7 +27,12 @@ export default function Layout({ children }) {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, []); // This effect should only run once, regardless of the condition
+
+  // If the route matches, return null to render nothing
+  if (router.pathname === "auth/signIn") {
+    return null;
+  }
 
   return (
     <>
