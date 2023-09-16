@@ -20,12 +20,8 @@ export default function TopBar({ showNav, setShowNav }) {
       }`}
     >
       <div className="pl-10 md:pl-16">
-        <Bars3CenterLeftIcon
-          className="h-8 w-8 text-gray-700 cursor-pointer lg:hidden"
-          onClick={() => setShowNav(!showNav)}
-        />
       </div>
-      {/* <div className="flex items-center pr-4 md:pr-16">
+      <div className="flex items-center pr-4 md:pr-16">
         <Menu as="div" className="relative inline-block text-left">
           <div>
             <Menu.Button className="inline-flex w-full justify-center items-center">
@@ -66,7 +62,7 @@ export default function TopBar({ showNav, setShowNav }) {
             </Menu.Items>
           </Transition>
         </Menu>
-      </div> */}
+      </div>
     </div>
   );
 }

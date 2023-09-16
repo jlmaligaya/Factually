@@ -1,12 +1,11 @@
-import { useState, useEffect, Fragment } from "react";
-import SideBar from "./SideBar";
+import { useState, useEffect } from "react";
 import TopBar from "./TopBar";
 import { Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 
 export default function Layout({ children }) {
   const router = useRouter();
-  const [showNav, setShowNav] = useState(true);
+  const [showNav, setShowNav] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   function handleResize() {
@@ -14,7 +13,7 @@ export default function Layout({ children }) {
       setShowNav(false);
       setIsMobile(true);
     } else {
-      setShowNav(true);
+      setShowNav(false);
       setIsMobile(false);
     }
   }
@@ -30,27 +29,16 @@ export default function Layout({ children }) {
   }, []); // This effect should only run once, regardless of the condition
 
   // If the route matches, return null to render nothing
-  if (router.pathname === "auth/signIn") {
+  if (router.pathname === "/auth/signIn") {
     return null;
   }
 
   return (
     <>
       <TopBar showNav={showNav} setShowNav={setShowNav} />
-      <Transition
-        as={Fragment}
-        show={showNav}
-        enter="transform transition duration-[400ms]"
-        enterFrom="-translate-x-full"
-        enterTo="translate-x-0"
-        leave="transform duration-[400ms] transition ease-in-out"
-        leaveFrom="translate-x-0"
-        leaveTo="-translate-x-full"
-      >
-        <SideBar showNav={showNav} />
-      </Transition>
+
       <main
-        className={`pt-16 transition-all duration-[400ms] ${
+        className={`min-h-screen pt-16 transition-all duration-[400ms] ${
           showNav && !isMobile ? "pl-56" : ""
         }`}
       >
