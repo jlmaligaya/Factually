@@ -34,6 +34,7 @@ module.exports = {
       animation: {
         'heart-float': 'float 0.8s forwards',
         text: 'text 5s ease infinite',
+        'spin-slow': 'spin 2s linear infinite', 
       },
       fontFamily: {
         heading: ['Play', 'sans-serif']
