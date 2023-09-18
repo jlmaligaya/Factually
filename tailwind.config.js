@@ -37,8 +37,8 @@ module.exports = {
         'spin-slow': 'spin 2s linear infinite', 
       },
       fontFamily: {
-        heading: ['Play', 'sans-serif']
-      }
+        'retropix': ['retropix', 'mono']
+      },
     },
   },
   plugins: [require("daisyui"), require('tailwind-scrollbar')({ nocompatible: true }),  require('@tailwindcss/aspect-ratio'), require('tw-elements/dist/plugin'), require('flowbite/plugin')],
