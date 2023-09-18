@@ -20,10 +20,24 @@ module.exports = {
             opacity: 0,
           },
         },
+        text: {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center',
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center',
+          },
+        },
       },
       animation: {
         'heart-float': 'float 0.8s forwards',
+        text: 'text 5s ease infinite',
       },
+      fontFamily: {
+        heading: ['Play', 'sans-serif']
+      }
     },
   },
   plugins: [require("daisyui"), require('tailwind-scrollbar')({ nocompatible: true }),  require('@tailwindcss/aspect-ratio'), require('tw-elements/dist/plugin'), require('flowbite/plugin')],

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,25 +7,6 @@ body {
   @apply bg-[url('/bground_menu.png')] bg-blend-darken
 }
 
-/*Mission Box Classes*/
-.mission-box {
-  @apply flex justify-between items-center h-16 p-4 my-2  rounded-lg border border-gray-100 
-}
-
-
-/*Topic Box Classes*/
-
-.button-red {
-  @apply bg-red-500 hover:bg-red-400 p-2 rounded-full shadow-md flex justify-center items-center
-}
-
-.topic-border {
-  @apply bg-slate-100 rounded
-}
-
-.topic-header {
-  @apply text-black font-black text-2xl mb-4
-}
 
 /*General Textbox Class*/
 .text-label {
@@ -34,7 +16,7 @@ body {
   @apply appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500 rounded-full
 }
 
-/* Add the custom styles */
+/* Menu styling */
 .circle {
   width: 75px;
   height: 75px;
@@ -50,9 +32,10 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border: 10px solid white;
+  border: 5px solid white;
   border-radius: 50%;
   transition: filter 0.3s ease-in-out;
+  
 }
 
 .circle:hover img {
@@ -65,4 +48,10 @@ body {
   align-items: center;
   padding-bottom: 150px;
   height: 100vb; /* Center the line vertically */
+}
+
+.text-with-stroke {
+  -webkit-text-stroke: 2px black; /* WebKit-based browsers like Chrome and Safari */
+  text-stroke: 5px black; /* Standard syntax */
+  color: white; /* Fill color of the text */
 }

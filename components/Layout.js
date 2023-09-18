@@ -35,8 +35,6 @@ export default function Layout({ children }) {
 
   return (
     <>
-      <TopBar showNav={showNav} setShowNav={setShowNav} />
-
       <main
         className={`min-h-screen pt-16 transition-all duration-[400ms] ${
           showNav && !isMobile ? "pl-56" : ""
