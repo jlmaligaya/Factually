@@ -26,8 +26,8 @@ export default function Home({ data, actv }) {
               </svg>
             </div>
           </a>
-          <div>
-          <h1 className="mb-4 px-4 font-heading text-white dark:text-white md:text-3xl lg:text-5xl text-with-stroke select-none">Welcome to <span className="select-none animate-text bg-gradient-to-r from-red-800 via-blue-500 to-white bg-clip-text text-transparent text-5xl font-heading">Factually</span>, {session.user.firstName}</h1>
+          <div className='flex flex-row select-none'>
+            <img src="/assets/r_hi.svg" className='h-50 w-20 animate-bounce' alt="Description" /><h1 className="mb-4 px-4 font-heading text-white dark:text-white md:text-3xl lg:text-5xl text-with-stroke select-none">Welcome to <span className="select-none animate-text bg-gradient-to-r from-red-800 via-blue-500 to-white bg-clip-text text-transparent text-5xl font-heading">Factually</span>, {session.user.firstName}</h1>
           </div>
           {/* Logout icon */}
           <a href="#" onClick={signOut}>
