@@ -276,9 +276,7 @@ const Index = () => {
         // Render a loading indicator or message while quizQuestions is empty
         
         <div className="h-screen w-full flex justify-center items-center">
-          <svg class="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
-          </svg>
-          <p>Loading...</p>
+          <img src="/assets/loading.svg" alt="Description" />
         </div>
       )}
     </>
