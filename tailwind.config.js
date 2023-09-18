@@ -20,9 +20,21 @@ module.exports = {
             opacity: 0,
           },
         },
+        text: {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center',
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center',
+          },
+        },
       },
       animation: {
         'heart-float': 'float 0.8s forwards',
+        text: 'text 5s ease infinite',
+        'spin-slow': 'spin 2s linear infinite', 
       },
       fontFamily: {
         'retropix': ['retropix', 'mono']

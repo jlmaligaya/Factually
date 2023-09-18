@@ -1,139 +1,86 @@
-import { prisma } from '../db'
-import Link from "next/link";
-import { useRouter } from "next/router";
-import Layout from '../components/Layout'
+import { prisma } from '../db';
+import Layout from '../components/Layout';
 import { useSession } from 'next-auth/react';
 import { getSession } from 'next-auth/react';
-import stars from '../components/stars';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { signOut } from "next-auth/react"
 
-
-export default function Home({data, actv}) {
-  const {data: session, status} = useSession();
-  const router = useRouter();
-  const [showModal, setShowModal] = useState(false);
- 
-    function handleCardClick(id) {
-    setActiveCard(id);
-  }
-
-  function handleCardLeave() {
-    setActiveCard(null);
-  }
-
-
-  function handlePlayClick() {
-    setShowModal(true);
-  }
-
-  function handleModalClose() {
-    setShowModal(false);
-  }
+export default function Home({ data, actv }) {
+  const { data: session, status } = useSession();
+  const router = useRouter(); 
+  const [hoveredCircle, setHoveredCircle] = useState(null);
   
- 
-  if (status === "authenticated"){
-    const experience = session.user.exp
-    const level = session.user.level
-    
+
+  if (status === "authenticated") {
     return (
       <>
         <div>
-        <h1 className="mb-4 px-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-4xl">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r to-red-400 from-indigo-800">Factually</span>, {session.user.firstName}</h1>
-        <div className="lg:max-h-screen p-4 flex flex-col-reverse lg:flex-row justify-evenly gap-4">
-          <div className="grow max-w-6xl h-screen bg-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-10">
-            
-          {actv.map(item => (
-  <div key={item.aid} className="group relative cursor-pointer items-center justify-center overflow-scroll-auto transition-shadow hover:shadow-xl hover:shadow-black/30 bg-white shadow-xl h-max md:max-h-80 rounded-md overflow-hidden">
-    <div className="h-80 w-full">
-      
-      <img class="h-full w-full object-cover transition-transform duration-500 group-hover:rotate-3 group-hover:scale-125" src={item.img} alt="Card Image" />
-      
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70">
-      </div>
-      <div className="absolute inset-0 flex translate-y-[60%] flex-col items-center justify-center px-9 text-center transition-all duration-500 group-hover:translate-y-0">
-        <h1 className="font-bold text-white">{item.topic}</h1>
-        <p className="mb-3 text-sm italic text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">{item.desc}</p>
-      <Link href={`/activities/${item.aid}`}>
-        <button className="btn bg-red-500 hover:bg-red-600 text-white transform active:scale-75 transition-transform">Start</button>
-      </Link>
-      </div>
-    </div>
-    <div className="p-4">
-    <p className="text-sm">Best score: 10</p>
-    </div>
-  </div>
-))}
+        <div className="flex justify-between items-center">
+          {/* Settings icon */}
+          <a href="#" onClick={signOut}>
+            <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#5A5A5A" class="w-10 h-10 transform hover:animate-spin">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+          </a>
+          <div>
+          <h1 className="mb-4 px-4 font-heading text-white dark:text-white md:text-3xl lg:text-5xl text-with-stroke select-none">Welcome to <span className="select-none animate-text bg-gradient-to-r from-red-800 via-blue-500 to-white bg-clip-text text-transparent text-5xl font-heading">Factually</span>, {session.user.firstName}</h1>
+          </div>
+          {/* Logout icon */}
+          <a href="#" onClick={signOut}>
+          <div className="w-16 h-16 bg-red-500 rounded-3xl flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" stroke-width="2" stroke="white" class="w-10 h-10">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+              </svg>
+              </div>
+            </a>
+        </div>
+          <div>
+            <div className="container">
+              <div className="flex space-x-10 item">
+                {actv.map((item, index) => (
+                  <div className="circle select-none" key={item.id}
+                    onMouseEnter={() => setHoveredCircle(index)}
+                    onMouseLeave={() => setHoveredCircle(null)}
+                    onClick={() => router.push(`/activities/${item.aid}`)}
+                  >
+                    <div className={`circle-content h-40 w-40 m-5 rounded-full relative group transition delay-100 bg-white${hoveredCircle === index ? 'hovered' : ''}`}>
+                      <img className="absolute inset-0 object-cover w-full h-full" src={item.img} alt={`Activity ${index + 1}`} />
+                      <div className={`overlay absolute inset-0 flex items-center text-5xl font-heading justify-center text-with-stroke ${hoveredCircle === index ? 'hidden' : ''}`}>
+                        {index + 1}
+                      </div>
+                      <div className={`overlay play-button absolute inset-0 flex items-center justify-center ${hoveredCircle === index ? '' : 'hidden'}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+                      </svg>
+                      </div>
+                    </div>
+                    <div className="grid grid-flow-col gap-3 ml-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#FFD700" viewBox="0 0 24 24" class="w-8 h-8">
+                      <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#FFD700" viewBox="0 0 24 24" class="w-8 h-8">
+                      <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#FFD700" viewBox="0 0 24 24" class="w-8 h-8">
+                      <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    </svg>
 
-=        
-                          
-          </div>
-  
-          <div className="">
-            <div className="grid grid-row">
-            <div className="flex flex-col py-5 items-center">
-              <p className="text-2xl text-black font-extrabold mb-5">Current Level</p>
-              <div className="flex flex-row items-center divide-x-2 divide-red-500 mb-5">
-                <p className="text-lg text-black font-extrabold">Level {level}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="radial-progress bg-green-500 text-primary-content font-bold text-3xl border-4 border-green-500" style={{"--value":level, "--size": "12rem"}}>{experience}/100</div>
             </div>
           </div>
-  
-          <div className="bg-white rounded-lg border-slate-400 border-2 text-black text-sm">
-            <div className="flex flex-col p-5 divide-y border-gray-300">
-              <div className="flex items-center justify-between space-x-6 p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="flex flex-col space-y-2">
-                    <p>Mission 1</p>
-                    <p>Aliquam tincidunt mauris eu risus.</p>
-                  </div>
-                </div>
-                <div>
-                  <p>0/5</p>
-                </div>
-              </div>
-              <div className="flex items-center justify-between space-x-6 p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="flex flex-col space-y-2">
-                    <p>Mission 2</p>
-                    <p>Aliquam tincidunt mauris eu risus.</p>
-                  </div>
-                </div>
-                <div>
-                  <p>0/5</p>
-                </div>
-              </div>
-              <div className="flex items-center justify-between space-x-6 p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="flex flex-col space-y-2">
-                    <p>Mission 3</p>
-                    <p>Aliquam tincidunt mauris eu risus.</p>
-                  </div>
-                </div>
-                <div>
-                  <p>0/5</p>
-                </div>
-              </div>
-              <Link href="/achievements">
-              <div>
-                <button className="w-full bg-red-500 text-white rounded-md border p-2 transition hover:opacity-60">View all</button>
-              </div>
-              </Link>
-            </div>
-          </div>
-            </div>
-            
-         
-  
         </div>
-        </div>
-        
       </>
     );
-    
   }
-  
 }
+
 
 export async function getServerSideProps(context) {
   

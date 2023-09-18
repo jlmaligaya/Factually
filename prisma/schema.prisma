@@ -8,15 +8,15 @@ datasource db {
 }
 
 model User {
-  username  String @unique
+  username  String  @unique
   firstName String
   lastName  String
-  email     String @unique
+  email     String  @unique
   password  String
-  level     Int    @default(1)
-  uid       String @unique @default(dbgenerated("('UID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
-  exp       Int    @default(0)
-  id        Int    @id @default(autoincrement())
+  level     Int     @default(1)
+  uid       String  @unique @default(dbgenerated("('UID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
+  exp       Int     @default(0)
+  id        Int     @id @default(autoincrement())
   scores    Score[]
 }
 
@@ -24,23 +24,36 @@ model Activities {
   topic     String
   activity  String
   desc      String
-  aid       String     @unique @default(dbgenerated("('AID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
-  img       String     @default("https://edukasyon-production.s3.amazonaws.com/uploads/facility/image/5321/j4d6loBhPR2zRk4gtnAB75GWqmq2ZXkr.jpg")
+  aid       String         @unique @default(dbgenerated("('AID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
+  img       String         @default("https://edukasyon-production.s3.amazonaws.com/uploads/facility/image/5321/j4d6loBhPR2zRk4gtnAB75GWqmq2ZXkr.jpg")
   video     String
-  id        Int        @id @default(autoincrement())
+  id        Int            @id @default(autoincrement())
+  questions QuizQuestion[]
   scores    Score[]
 }
 
 model Score {
-  id        Int      @id @default(autoincrement())
-  activity  Activities @relation(fields: [activityId], references: [aid])
-  activityId String
-  user      User     @relation(fields: [userId], references: [uid])
-  userId    String
-  score     Int
-  retries   Int
-  timeLeft  Int
-  livesLeft Int
-  createdAt DateTime @default(now())
-  userId_activityId String @unique
+  id                Int        @id @default(autoincrement())
+  score             Int
+  retries           Int
+  timeLeft          Int
+  livesLeft         Int
+  createdAt         DateTime   @default(now())
+  activityId        String
+  userId            String
+  userId_activityId String     @unique
+  activity          Activities @relation(fields: [activityId], references: [aid])
+  user              User       @relation(fields: [userId], references: [uid])
+}
+
+model QuizQuestion {
+  id             Int        @id @default(autoincrement())
+  quiz_question  String
+  option_one     String
+  option_two     String
+  option_three   String
+  option_four    String
+  correct_option String
+  activityId     String
+  activity       Activities @relation(fields: [activityId], references: [aid])
 }
