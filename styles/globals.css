@@ -21,7 +21,7 @@ body {
   width: 75px;
   height: 75px;
   padding: 60px; /* Add padding to each circle */
-  margin-left: 130px; /* Add margin to create a horizontal gap */
+  margin-left: 60px; /* Add margin to create a horizontal gap */
 }
 
 .circle:nth-child(odd) {
@@ -34,6 +34,7 @@ body {
   object-fit: cover;
   border: 5px solid white;
   border-radius: 50%;
+  filter: brightness(85%);
   transition: filter 0.3s ease-in-out;
   
 }
