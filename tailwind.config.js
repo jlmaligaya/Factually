@@ -37,7 +37,9 @@ module.exports = {
         'spin-slow': 'spin 2s linear infinite', 
       },
       fontFamily: {
-        'retropix': ['retropix', 'mono']
+        'retropix': ['retropix', 'mono'],
+        'boom': ['boomgoesthedynamite-bold'],
+        'ogoby': ['ogoby-bold']
       },
     },
   },

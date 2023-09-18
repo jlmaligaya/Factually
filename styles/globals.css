@@ -20,6 +20,14 @@ body {
   font-family: retropix;
   src: url('/font/retropix.ttf');
 }
+@font-face {
+  font-family: boomgoesthedynamite-bold;
+  src: url('/font/boomgoesthedynamite-bold.ttf');
+}
+@font-face {
+  font-family: ogoby-bold;
+  src: url('/font/ogoby-bold.ttf');
+}
 
 /* Menu styling */
 .circle {
