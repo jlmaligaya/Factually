@@ -24,6 +24,9 @@ module.exports = {
       animation: {
         'heart-float': 'float 0.8s forwards',
       },
+      fontFamily: {
+        'retropix': ['retropix', 'mono']
+      },
     },
   },
   plugins: [require("daisyui"), require('tailwind-scrollbar')({ nocompatible: true }),  require('@tailwindcss/aspect-ratio'), require('tw-elements/dist/plugin'), require('flowbite/plugin')],
