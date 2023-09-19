@@ -42,15 +42,15 @@ const SignIn = (props) => {
       )}
 
       
-      <section className="bg-[url('/background.jpg')] bg-cover min-h-screen flex items-center justify-center">
+      <section className="bg-[url('/background.png')] bg-cover min-h-screen flex items-center justify-center">
       
           <div className="flex rounded-xl shadow-lg font-retropix justify-center">                 
 
             {/* left side */}
               <div className="md:w-2/4 mt-16  bg-[#CE4044] rounded-tl-2xl rounded-bl-2xl py-10 px-12">
                 <center>
-                {<img className="rounded-xl w-20" src="/dani.png" alt="" />}
-                  <h2 className="font-bold text-3xl text-white mt-3">SIGN IN</h2>
+                <img className="rounded-xl w-20 mt-8" src="/logo.png" alt="" />
+                  <h2 className="font-bold text-3xl text-white mt-5">SIGN IN</h2>
                   <p className="mt-3 text-white text-xl"> Connect and continue your progress. </p>
                                 
                   <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4 align-center w-72">
@@ -81,8 +81,9 @@ const SignIn = (props) => {
           {/* right side */}
               <div className="md:block hidden w-2/4 mt-16 bg-white rounded-tr-2xl rounded-br-2xl py-10 px-12">
                 <center>
-                  <h2 className="text-3xl font-bold text-[#CE4044]"> WELCOME BACK TO FACTUALLY! </h2>
+                  <h2 className="text-3xl font-bold text-[#CE4044]"> WELCOME BACK TO FACTUALLY. </h2>
                     <div className="border-2 w-20 border-[#CE4044] inline-block"> </div>
+                    <p className="text-[#CE4044] text-xl mt-2">  Never been here before? We'd love for you to join us below! </p>
                       <img className="w-[300px] hover:animate-bounce" src="/robbie/r_welcome.png" alt="" />
                       <button className="border-2 text-[#CE4044] border-[#CE4044] rounded-full w-72 px-12 py-2 inline-block font-semibold hover:bg-[#CE4044] hover:text-white text-lg" 
                       onClick={() => router.push('/register')}>SIGN UP</button>
