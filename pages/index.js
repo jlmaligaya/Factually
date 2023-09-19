@@ -16,7 +16,7 @@ export default function Home({ data, actv }) {
     return (
       <>
         <div>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center pt-20">
           {/* Settings icon */}
           <a href="#" onClick={signOut}>
             <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center">
@@ -27,7 +27,7 @@ export default function Home({ data, actv }) {
             </div>
           </a>
           <div className='flex flex-row select-none'>
-            <img src="/assets/r_hi.svg" className='h-50 w-20 animate-bounce' alt="Description" /><h1 className="mb-4 px-4 font-heading text-white dark:text-white md:text-3xl lg:text-5xl text-with-stroke select-none">Welcome to <span className="select-none animate-text bg-gradient-to-r from-red-800 via-blue-500 to-white bg-clip-text text-transparent text-5xl font-heading">Factually</span>, {session.user.firstName}</h1>
+            <img src="/assets/r_hi.svg" className='h-50 w-20 animate-bounce' alt="Description" /><h1 className="mb-4 px-4 font-retropix text-white dark:text-white md:text-3xl lg:text-5xl select-none">Welcome to <span className="select-none animate-text bg-gradient-to-r from-red-800 via-blue-500 to-white bg-clip-text text-transparent text-5xl font-heading">Factually</span>, {session.user.firstName}</h1>
           </div>
           {/* Logout icon */}
           <a href="#" onClick={signOut}>
@@ -47,9 +47,9 @@ export default function Home({ data, actv }) {
                     onMouseLeave={() => setHoveredCircle(null)}
                     onClick={() => router.push(`/activities/${item.aid}`)}
                   >
-                    <div className={`circle-content h-40 w-40 m-5 rounded-full relative group transition delay-100 bg-white${hoveredCircle === index ? 'hovered' : ''}`}>
+                    <div className={`circle-content h-40 w-40 rounded-full relative group transition delay-100 bg-white${hoveredCircle === index ? 'hovered' : ''}`}>
                       <img className="absolute inset-0 object-cover w-full h-full" src={item.img} alt={`Activity ${index + 1}`} />
-                      <div className={`overlay absolute inset-0 flex items-center text-5xl font-heading justify-center text-with-stroke ${hoveredCircle === index ? 'hidden' : ''}`}>
+                      <div className={`overlay absolute inset-0 flex items-center text-5xl font-retropix justify-center ${hoveredCircle === index ? 'hidden' : ''}`}>
                         {index + 1}
                       </div>
                       <div className={`overlay play-button absolute inset-0 flex items-center justify-center ${hoveredCircle === index ? '' : 'hidden'}`}>
