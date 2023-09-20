@@ -9,29 +9,40 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'POST') {
-      const updatedScore = await prisma.score.upsert({
+      const existingScore = await prisma.score.findUnique({
         where: {
-          userId_activityId: `${uid}_${aid}`,
-        },
-        update: {
-          score,
-          retries,
-          timeLeft,
-          livesLeft,
-        },
-        create: {
-          userId: uid,
-          activityId: aid,
-          score,
-          retries,
-          timeLeft,
-          livesLeft,
           userId_activityId: `${uid}_${aid}`,
         },
       });
 
-      // Return response
-      res.status(200).json(updatedScore);
+      if (existingScore && score < existingScore.score) {
+        // If the new score is lower than the existing score, do not update it.
+        res.status(200).json(existingScore);
+      } else {
+        const updatedScore = await prisma.score.upsert({
+          where: {
+            userId_activityId: `${uid}_${aid}`,
+          },
+          update: {
+            score,
+            retries,
+            timeLeft,
+            livesLeft,
+          },
+          create: {
+            userId: uid,
+            activityId: aid,
+            score,
+            retries,
+            timeLeft,
+            livesLeft,
+            userId_activityId: `${uid}_${aid}`,
+          },
+        });
+
+        // Return response
+        res.status(200).json(updatedScore);
+      }
     } else if (req.method === 'GET') {
       // Access query parameter from req object directly
       const activityId = req.query.activityId;

@@ -5,72 +5,57 @@ import Introduction from '../../../components/introduction'
 import Activity from '../../../components/activity'
 import Summary from '../../../components/summary'
 
-
-
 export default function Index() {
   const [currentStep, setCurrentStep] = useState(0)
 
   return (
+    <div className="bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat h-screen w-screen flex flex-col items-center justify-center bg-gray-200" style={{ backgroundSize: '100% 100%' }}>
 
-    <div className="flex w-full h-screen gap-4">
-      <div className='w-2/3'>{currentStep === 0 ? <Introduction /> : currentStep === 1 ? <Activity /> : <Summary />}</div>
-      <div className='w-1/4 h-full bg-[#1C3253] shadow-sm grid place-items-center grid-flow-row '>
-      <h2 class="text-4xl font-extrabold dark:text-white">Topic</h2>
-        <ul class="steps steps-vertical ">
-          <li class={`step ${
-                currentStep >= 0
-                ? "step-error"
-                : "step-neutral"
-              }`}>Introduction</li>
-          <li class={`step ${
-                currentStep >= 1
-                ? "step-error"
-                : "step-neutral"
-              }`}>Activity</li>
-          <li class={`step ${
-                currentStep == 2
-                ? "step-error"
-                : "step-neutral"
-              }`}>Summary</li>
-        </ul>
-        <div className="mt-10 p-5">
-          {currentStep > 0 && (
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-5 transform active:scale-x-75 transition-transform"
-              onClick={() => setCurrentStep(currentStep - 1)}
-            >
-              Back
-            </button>
-          )}
-          {currentStep < 2 && (
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transform active:scale-x-75 transition-transform"
-              onClick={() => setCurrentStep(currentStep + 1)}
-            >
-              Next
-            </button>
-          )}
-          {currentStep == 2 && (
-            <Link href="/">
-
-          
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transform active:scale-x-75 transition-transform"
-            >
-              Finish
-            </button>
-            </Link>
-          )}
+      <div className="bg-[url('/assets/activity/l_main.svg')] bg-cover bg-center bg-no-repeat h-5/6 w-5/6 p-4 rounded-lg shadow-lg flex items-center justify-center">
+        <div className="flex flex-col lg:flex-row justify-center h-3/4 w-3/4">
+          <div className="w-2/3 h-full  flex flex-col">
+            <div className="bg-[url('/assets/activity/l_horizontal.png')] bg-contain bg-no-repeat" style={{ backgroundSize: '100% 100%' }}>
+            {/* Video player */}
+            <iframe
+              className='p-10'
+              width="100%"
+              height="435"
+              src="https://www.youtube.com/embed/y2ni8Emo9z0?si=H-GcmNgdRtX8BOfi"
+              title="Video Player"
+              frameBorder="0"
+              allowFullScreen
+            ></iframe>
+          </div>
+          <div className="w-full h-full bg-[url('/assets/activity/l_title.png')] bg-contain bg-no-repeat m-4 flex justify-center items-center" style={{ backgroundSize: '100% 100%' }}>
+            <h1 className='text-3xl text-white font-semibold text-center font-boom'>Monster Hunter Nice</h1>
+          </div>
+          </div>
+          {/* Right side (description) */}
+          <div className="w-1/3 ml-10">
+            {/* Description */}
+            <div className="bg-[url('/assets/activity/l_vertical.png')] bg-no-repeat bg-cover h-full p-4 rounded-lg text-black font-retropix" style={{ backgroundSize: '100% 100%' }}>
+              <div className='p-10'>
+                <h3 className="text-3xl text-white font-semibold text-center">Description</h3>
+                <p className='text-white text-lg mt-4'>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam convallis velit ac neque tincidunt, eget tristique odio
+                  auctor.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      
-    </div>
-  )}
 
-  Index.getLayout = function getLayout(page) {
-    return (
-      <Layout>
-        {page}
-      </Layout>
-    )
-  }
+
+    </div>
+  )
+}
+
+Index.getLayout = function getLayout(page) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
+}

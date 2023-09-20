@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-[url('/bground_menu.png')] bg-blend-darken
+  @apply bg-[url('/bground_menu.png')] bg-blend-darken overflow-hidden
 }
 
 
@@ -28,6 +28,7 @@ body {
   font-family: ogoby-bold;
   src: url('/font/ogoby-bold.ttf');
 }
+
 
 /* Menu styling */
 .circle {
@@ -68,4 +69,31 @@ body {
   -webkit-text-stroke: 2px black; /* WebKit-based browsers like Chrome and Safari */
   text-stroke: 5px black; /* Standard syntax */
   color: white; /* Fill color of the text */
+}
+
+.fade-out {
+  animation: fadeOut 10s ease-in-out;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* In your CSS file */
+.button-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Style for the loading GIF image */
+.loading-image {
+  width: 32px;  /* Adjust the width as needed */
+  height: 32px; /* Adjust the height as needed */
 }
