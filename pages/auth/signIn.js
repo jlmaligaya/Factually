@@ -59,9 +59,7 @@ const SignIn = (props) => {
             d="M6 18L18 6M6 6l12 12"
           />
         </svg>
-        <p className="text-black font-bold">
-          {error || "Account does not exist."}
-        </p>
+        <p className="font-bold text-3xl text-white mt-3">{error || "Account does not exist."}</p>
       </div>
       <button
         className="bg-red-500 text-white py-2 px-4 rounded-full w-full"
@@ -138,7 +136,7 @@ const SignIn = (props) => {
                 <center>
                   <h2 className="text-3xl font-bold text-[#CE4044]"> WELCOME BACK TO FACTUALLY. </h2>
                     <div className="border-2 w-20 border-[#CE4044] inline-block"> </div>
-                    <p className="text-[#CE4044] text-xl mt-2">  Never been here before? We'd love for you to join us below! </p>
+                    <p className="text-[#CE4044] text-xl mt-2">  Never been here before? We&apos;d love for you to join us below! </p>
                       <img className="w-[300px] hover:animate-bounce" src="/robbie/r_welcome.png" alt="" />
                       <button className="border-2 text-[#CE4044] border-[#CE4044] rounded-full w-72 px-12 py-2 inline-block font-semibold hover:bg-[#CE4044] hover:text-white text-lg" 
                       onClick={() => router.push('/register')}>SIGN UP</button>
