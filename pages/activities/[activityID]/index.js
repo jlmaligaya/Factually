@@ -1,7 +1,6 @@
 import Layout from '../../../components/Layout';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 export default function Index() {
@@ -12,9 +11,6 @@ export default function Index() {
   const [description, setDesc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const userID = router.query.userID;
-
-  console.log('uid: ', userID)
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -83,7 +79,7 @@ export default function Index() {
         <Link
       href={{
         pathname: '/activities/[activityID]/activity',
-        query: { userID: userID },
+        query: { activityID },
       }}
       as={`/activities/${activityID}/activity`}
     >

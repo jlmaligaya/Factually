@@ -57,7 +57,6 @@ export default function Home({ data, actv, userScore }) {
 
     router.push({
       pathname: `/activities/${activityId}`,
-      query: { userID: session.user.uid }, // Pass the userID as a query parameter
     }); // Navigate to the new page
   };
 

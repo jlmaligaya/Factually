@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from 'next/router'
+import { useSession } from "next-auth/react";
+
 
 
 const Index = () => {
@@ -17,10 +19,12 @@ const Index = () => {
   const [choice, setChoice] = useState(null); // Declare choice state variable
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-  const userID = router.query.userID;
+  const { data: session } = useSession();
+  const userID = session ? session.user.uid : null;
   const activityID = router.query.activityID;
 
   console.log("UID: ", userID)
+  console.log("AID: ", activityID)
 
   // Fetches the questions from API
   useEffect(() => {
@@ -63,8 +67,8 @@ const Index = () => {
         timeLeft,
         livesLeft,
       });
+      console.log(response.data)
       return response.data;
-      console.log("Post Score Response:", response.data);
     } catch (error) {
       console.error(error);
     }
