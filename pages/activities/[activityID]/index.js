@@ -12,8 +12,7 @@ export default function Index() {
   const [description, setDesc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const {data: session, status} = useSession();
-  const userID = session.user.uid;
+  const userID = router.query.userID;
 
   console.log('uid: ', userID)
 

@@ -55,7 +55,10 @@ export default function Home({ data, actv, userScore }) {
     // Wait for a short duration for the fade-out effect
     await new Promise((resolve) => setTimeout(resolve, 500)); // Adjust the duration as needed
 
-    router.push(`/activities/${activityId}`); // Navigate to the new page
+    router.push({
+      pathname: `/activities/${activityId}`,
+      query: { userID: session.user.uid }, // Pass the userID as a query parameter
+    }); // Navigate to the new page
   };
 
   useEffect(() => {
