@@ -59,9 +59,7 @@ const SignIn = (props) => {
             d="M6 18L18 6M6 6l12 12"
           />
         </svg>
-        <p className="text-black font-bold">
-          {error || "Account does not exist."}
-        </p>
+        <p className="font-bold text-3xl text-white mt-3">{error || "Account does not exist."}</p>
       </div>
       <button
         className="bg-red-500 text-white py-2 px-4 rounded-full w-full"
