@@ -35,34 +35,50 @@ const playSoundEffect = (audioRef) => {
   }
 };
 
+  // Function to set the volume of an audio reference
+  const setVolume = (audioRef, volume) => {
+    // Cap max at 100 in case of glitches
+    let varx = volume > 100 ? 100 : volume;
 
-// Function to update BGM volume
-const onBgmVolumeChange = (volume) => {
-  if (isNaN(volume)) {
-    volume= 0.5;
- }
-  if (backgroundMusicRef.current) {
-    backgroundMusicRef.current.volume = volume;
-    setBgmVolume(volume); // Update state
-    localStorage.setItem('bgmVolume', volume.toString()); // Save the BGM volume to local storage
-  }
-};
+    let audioVolume = varx / 100;
 
-// Function to update SFX volume
-const onSfxVolumeChange = (volume) => {
-  if (isNaN(volume)) {
-    volume= 0.5;
- }
-  if (clickAudioRef.current) {
-    clickAudioRef.current.volume = volume;
-  }
-  if (hoverAudioRef.current) {
-    hoverAudioRef.current.volume = volume;
-  }
-  // Update the SFX volume state
-  setSfxVolume(volume);
-  localStorage.setItem('sfxVolume', volume.toString()); // Save the SFX volume to local storage
-};
+    // Reset min to 0 in case of glitches
+    if (isNaN(audioVolume)) {
+      audioVolume = 0.1;
+    }
+
+    // Convert it to a string first, and then run parseFloat
+    audioRef.current.volume = parseFloat(audioVolume.toString());
+  };
+
+  // Function to update BGM volume
+  const onBgmVolumeChange = (volume) => {
+    if (isNaN(volume)) {
+      volume = 0.5;
+    }
+    if (backgroundMusicRef.current) {
+      setVolume(backgroundMusicRef, volume);
+      setBgmVolume(volume); // Update state
+      localStorage.setItem('bgmVolume', volume.toString()); // Save the BGM volume to local storage
+    }
+  };
+
+  // Function to update SFX volume
+  const onSfxVolumeChange = (volume) => {
+    if (isNaN(volume)) {
+      volume = 0.5;
+    }
+    if (clickAudioRef.current) {
+      setVolume(clickAudioRef, volume);
+    }
+    if (hoverAudioRef.current) {
+      setVolume(hoverAudioRef, volume);
+    }
+    // Update the SFX volume state
+    setSfxVolume(volume);
+    localStorage.setItem('sfxVolume', volume.toString()); // Save the SFX volume to local storage
+  };
+
 
 
 
