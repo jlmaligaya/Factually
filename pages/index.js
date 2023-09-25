@@ -16,8 +16,8 @@ export default function Home({ data, actv, userScore }) {
   const clickAudioRef = useRef(null);
   const hoverAudioRef = useRef(null);
   const backgroundMusicRef = useRef(null);
-  const [bgmVolume, setBgmVolume] = useState(0.2); // Initial BGM volume
-  const [sfxVolume, setSfxVolume] = useState(0); // Initial SFX volume
+  const [bgmVolume, setBgmVolume] = useState(1); // Initial BGM volume
+  const [sfxVolume, setSfxVolume] = useState(1); // Initial SFX volume
  
 
 
