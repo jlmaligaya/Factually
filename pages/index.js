@@ -37,7 +37,7 @@ const playSoundEffect = (audioRef) => {
 
 
 // Function to update BGM volume
-const onBgmVolumeChange = (volume) => {
+const onBgmVolumeChange = (volume = 1) => {
   if (backgroundMusicRef.current) {
     backgroundMusicRef.current.volume = volume;
     setBgmVolume(volume); // Update state
@@ -46,7 +46,7 @@ const onBgmVolumeChange = (volume) => {
 };
 
 // Function to update SFX volume
-const onSfxVolumeChange = (volume) => {
+const onSfxVolumeChange = (volume = 1) => {
   if (clickAudioRef.current) {
     clickAudioRef.current.volume = volume;
   }
@@ -54,7 +54,7 @@ const onSfxVolumeChange = (volume) => {
     hoverAudioRef.current.volume = volume;
   }
   // Update the SFX volume state
-  setSfxVolume(volume);
+  setSfxVolume(volume = 1);
   localStorage.setItem('sfxVolume', volume.toString()); // Save the SFX volume to local storage
 };
 
