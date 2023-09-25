@@ -11,10 +11,10 @@ export default function GameSettingsModal({
 }) {
   // Initialize the local state values once when the component mounts
   const [localBgmVolume, setLocalBgmVolume] = useState(() =>
-    parseFloat(localStorage.getItem('bgmVolume')) || 0.5
+    parseFloat(localStorage.getItem('bgmVolume')) || 1
   );
   const [localSfxVolume, setLocalSfxVolume] = useState(() =>
-    parseFloat(localStorage.getItem('sfxVolume')) || 0.5
+    parseFloat(localStorage.getItem('sfxVolume')) || 1
   );
 
   useEffect(() => {
