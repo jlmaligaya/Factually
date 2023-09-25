@@ -37,21 +37,27 @@ const playSoundEffect = (audioRef) => {
 
 
 // Function to update BGM volume
-const onBgmVolumeChange = (volume) => {
+const onBgmVolumeChange = (e) => {
+  const volume = parseFloat(e.target.value);
   if (backgroundMusicRef.current) {
     backgroundMusicRef.current.volume = volume;
     setBgmVolume(volume); // Update state
   }
 };
 
+
 // Function to update SFX volume
-const onSfxVolumeChange = (volume) => {
+const onSfxVolumeChange = (e) => {
+  const volume = parseFloat(e.target.value);
+
   if (clickAudioRef.current) {
     clickAudioRef.current.volume = volume;
   }
+
   if (hoverAudioRef.current) {
     hoverAudioRef.current.volume = volume;
   }
+
   // Update the SFX volume state
   setSfxVolume(volume);
 };
