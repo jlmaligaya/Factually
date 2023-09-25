@@ -2,6 +2,7 @@ import Layout from '../../../components/Layout';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Cutscene from '../../../components/cutscene';
 
 export default function Index() {
   const router = useRouter();
@@ -10,7 +11,7 @@ export default function Index() {
   const [topicName, setTopicName] = useState(null);
   const [description, setDesc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [showCutscene, setShowCutscene] = useState(true);
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -42,6 +43,10 @@ export default function Index() {
 
   return (
     <div className="bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat h-screen w-screen flex flex-col items-center justify-center bg-gray-200" style={{ backgroundSize: '100% 100%' }}>
+      {showCutscene && (
+        <Cutscene onClose={() => setShowCutscene(false)} />
+      )}
+        <div className="bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat h-screen w-screen flex flex-col items-center justify-center bg-gray-200" style={{ backgroundSize: '100% 100%' }}>
       <div className="bg-[url('/assets/activity/l_main.svg')] static bg-cover bg-center bg-no-repeat h-5/6 w-5/6 p-4 rounded-lg shadow-lg flex items-center justify-center">
         <div className="flex flex-col lg:flex-row justify-center h-3/4 w-3/4">
           <div className="w-2/3 h-full  flex flex-col">
@@ -53,7 +58,6 @@ export default function Index() {
                 height="435"
                 src={`${videoURL}?rel=0`}
                 title="Video Player"
-                frameBorder="0"
                 allowFullScreen
               ></iframe>
             </div>
@@ -90,8 +94,8 @@ export default function Index() {
         </div>
       </div>
     </div>
+    </div>
   );
-  
   
 }
 

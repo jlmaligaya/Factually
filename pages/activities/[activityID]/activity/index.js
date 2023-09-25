@@ -17,7 +17,6 @@ const Index = () => {
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [quizEnded, setQuizEnded] = useState(false);
   const [choice, setChoice] = useState(null); // Declare choice state variable
-  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
   const userID = session ? session.user.uid : null;
@@ -74,6 +73,8 @@ const Index = () => {
     }
   };
 
+  
+
   const handleChoice = (choice) => {
     if (choice === quizQuestions[questionNumber]?.correct_option && !isQuestionAnswered) {
       setIsQuestionAnswered(true);
@@ -99,14 +100,12 @@ const Index = () => {
 
   const handleEndQuiz = () => {
     if (lives === 0){
-      setShowModal(true);
       setLives(5);
       setTimer(60);
       setQuizEnded(true);
       postScore(userID, activityID, totalScore, retries, 60 - timer, 5 - lives);
     } 
     else if (timer === 0) {
-      setShowModal(true);
       setLives(5);
       setTimer(60);
       setQuizEnded(true);
@@ -136,26 +135,6 @@ const Index = () => {
 
   return (
     <>
-      {showModal && (
-        // Modal for Game Over
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md">
-            <div className="bg-red-500 rounded-t-lg px-4 py-2 flex items-center justify-center">
-              <svg className="h-8 w-8 text-white mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <h3 className="text-white font-bold">Game Over!</h3>
-            </div>
-            <div className="p-4">
-              <div className="text-center">
-                <p className="text-gray-700 mb-2">Better luck next time!</p>
-                <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded" onClick={() => setShowModal(false)}>OK</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {quizQuestions.length > 0 ? (
         // Render the activity when quizQuestions has data
         <div className="h-screen w-full flex justify-center items-center">
