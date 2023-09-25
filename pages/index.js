@@ -53,6 +53,7 @@ const playSoundEffect = (audioRef) => {
 
   // Function to update BGM volume
   const onBgmVolumeChange = (volume) => {
+    console.log('BGM Volume Change:', volume);
     if (isNaN(volume)) {
       volume = 0.5;
     }
@@ -65,6 +66,7 @@ const playSoundEffect = (audioRef) => {
 
   // Function to update SFX volume
   const onSfxVolumeChange = (volume) => {
+    console.log('SFX Volume Change:', volume);
     if (isNaN(volume)) {
       volume = 0.5;
     }
@@ -143,12 +145,13 @@ const playSoundEffect = (audioRef) => {
     }
   
     if (backgroundMusicRef.current) {
-      backgroundMusicRef.current.volume = savedBgmVolume;
-  
-      if (shouldPlayMusic) {
-        backgroundMusicRef.current.play();
+      const savedBgmVolume = parseFloat(localStorage.getItem('bgmVolume'));
+      if (!isNaN(savedBgmVolume)) {
+        backgroundMusicRef.current.volume = savedBgmVolume;
+        setBgmVolume(savedBgmVolume);
       }
     }
+    
   }, []);
   
 
