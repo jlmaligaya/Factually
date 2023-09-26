@@ -3,20 +3,24 @@ import Image from 'next/image';
 
 const cutsceneSlides = [
   {
-    image: '/chapters/1/cutscene/c1_slide_1.png',
-    text: "In Robbie's lab, the soft hum of machinery fills the air. The room is bathed in a gentle, calming light as Robbie, the dedicated robot, rests in standby mode.",
+    image: '/chapters/1/cutscene/AID000001_intro_1.png',
+    text: "You find yourself standing at the entrance of Robbie's lab, a place shrouded in mystery. It's a culmination of your relentless pursuit of truth amidst a world filled with misinformation."
   },
   {
-    image: '/chapters/1/cutscene/c1_slide_2.png',
-    text: "However, as you step closer, you notice something unusual. Robbie remains dormant, deactivated, and immobile. His expressive digital eyes are dim, lacking their usual vitality.",
+    image: '/chapters/1/cutscene/AID000001_intro_2.png',
+    text:  "As you venture deeper into the lab, your eyes catch something extraordinary. Before you, a magnificent automaton stands, its intricate design hinting at a magical origin.",
   },
   {
-    image: '/chapters/1/cutscene/c1_slide_3.png',
-    text: "Upon closer inspection, it becomes evident that Robbie is missing something crucial – three vital microchips that once powered his functions.",
+    image: '/chapters/1/cutscene/AID000001_intro_3.png',
+    text: "Approaching cautiously, you realize the automaton isn't humming with life. Instead, it rests in an eerie slumber, like a guardian frozen in time, awaiting a hero to rekindle its purpose.",
   },
   {
-    image: '/chapters/1/cutscene/c1_slide_4.png',
-    text: "The lab erupts into urgency, with blaring alarms and flashing lights. The situation has taken a serious turn.",
+    image: '/chapters/1/cutscene/AID000001_intro_4.png',
+    text: "Examining the robot closely, you notice something peculiar – it has three empty slots, like a puzzle missing vital pieces.",
+  },
+  {
+    image: '/chapters/1/cutscene/AID000001_intro_5.png',
+    text:  "As you continue to explore, you uncover the path to acquiring the initial chip. To claim it, a test of knowledge has been given upon you. Are you up for this challenge?",
   },
 ];
 
@@ -110,7 +114,7 @@ const Cutscene = () => {
                     <div className="absolute bottom-0 bg-black border-white border-4 w-full h-2/6  bg-opacity-50 text-white py-4 cursor-pointer">
                       <div className="flex justify-center space-x-4">
                         <div className={`w-2/3 ${index === currentSlide ? '' : 'hidden'}`}>
-                          <p className="font-retropix text-4xl text-left font-semibold p-10">
+                          <p className="font-retropix text-4xl text-left font-semibold p-10 leading-relaxed">
                             {displayedText}
                           </p>
                         </div>

@@ -157,12 +157,14 @@ const onSfxVolumeChange = (volume) => {
               <GameSettingsModal
                 isOpen={showSettingsModal}
                 onClose={toggleSettingsModal}
-                bgmVolume={bgmVolume} // Pass BGM volume state
-                sfxVolume={sfxVolume} // Pass SFX volume state
-                onBgmVolumeChange={onBgmVolumeChange} // Pass the function as a prop
-                onSfxVolumeChange={onSfxVolumeChange} // Pass the function as a prop
+                bgmVolume={bgmVolume}
+                sfxVolume={sfxVolume}
+                onBgmVolumeChange={onBgmVolumeChange}
+                onSfxVolumeChange={onSfxVolumeChange}
+                userFirstName={session.user.username} // Pass the user's first name as a prop
               />
             )}
+
             <div className="flex flex-row select-none">
               <img src="/assets/r_hi.svg" className="h-20 w-20 animate-bounce" alt="Description" />
               <h1 className="mb-4 px-4 font-boom text-white dark:text-white md:text-5xl text-with-stroke lg:text-4xl select-none">Welcome to <span className="select-none animate-text bg-gradient-to-r from-rose-500 via-slate-100 to-blue-500 bg-clip-text text-transparent text-4xl font-boom text-to">Factually</span>, {session.user.firstName}</h1>
