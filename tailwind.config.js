@@ -47,5 +47,6 @@ module.exports = {
 
   daisyui: {
     base:false,
+    logs: false, 
   },
 };
