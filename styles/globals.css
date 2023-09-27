@@ -149,3 +149,38 @@ body {
   margin: 0 5px; /* Add horizontal margin to create space between buttons */
 }
 
+/* Define keyframes for the fade-in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Apply the fade-in animation to elements with the "fadeIn" class */
+.fadeIn {
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+
+/* Add this CSS to your component's CSS or a global CSS file */
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-30px); /* Adjust the floating height as needed */
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Apply the animation to the robot image */
+.robot-image {
+  animation: float 1s ease-in-out infinite; /* Adjust the duration and timing function as needed */
+}
+
+

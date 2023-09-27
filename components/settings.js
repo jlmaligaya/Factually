@@ -42,7 +42,7 @@ export default function GameSettingsModal({
 
   return (
     <div className={`modal ${isOpen ? 'modal-open' : 'modal-closed'} font-boom text-black`}>
-      <div className="bg-gray-500 border-double border-4 bg-contain bg-no-repeat h-4/12 p-4 flex flex-col justify-center items-center rounded-lg">
+      <div className="bg-white border-red-500 border-4 bg-contain bg-no-repeat h-4/12 p-4 flex flex-col justify-center items-center text-black rounded-lg">
         {/* Close button as an "x" inside the game container */}
         <div className="w-full flex justify-between items-center">
           <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={handleClose}>
@@ -54,12 +54,12 @@ export default function GameSettingsModal({
             <div className="mx-4">
               {placeholderIcon}
             </div>
-            <div className="text-white text-2xl font-retropix x-5">
+            <div className=" text-2xl font-retropix x-5">
               {userFirstName.toUpperCase()}
             </div>
           </div>
         <div className="flex items-center mt-2 p-4">
-          <label className="text-white mr-2">BGM Volume</label>
+          <label className=" mr-2">BGM Volume</label>
           <input
             type="range"
             min="0"
@@ -74,7 +74,7 @@ export default function GameSettingsModal({
           />
         </div>
         <div className="flex items-center mt-2">
-          <label className="text-white mr-2">SFX Volume</label>
+          <label className=" mr-2">SFX Volume</label>
           <input
             type="range"
             min="0"

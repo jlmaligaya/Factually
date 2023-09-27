@@ -12,6 +12,7 @@ export default function Index() {
   const [description, setDesc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showCutscene, setShowCutscene] = useState(true);
+ 
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -46,7 +47,17 @@ export default function Index() {
       {showCutscene && (
         <Cutscene onClose={() => setShowCutscene(false)} />
       )}
-        <div className="bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat h-screen w-screen flex flex-col items-center justify-center bg-gray-200" style={{ backgroundSize: '100% 100%' }}>
+      <div className="bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat h-screen w-screen flex flex-col items-center justify-center bg-gray-200" style={{ backgroundSize: '100% 100%' }}>
+      <div className={`flex justify-between w-full`}>
+            {/* Back Button */}
+              <div className="w-15 h-15 flex items-center justify-center ml-20">
+                <button className='bg-red-600 border-4 border-red-800 p-4 mt-10 rounded-full absolute top-0' onClick={() => router.push('/')}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="#FEE2E2" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+                  </svg>
+                </button>
+              </div>
+          </div>
       <div className="bg-[url('/assets/activity/l_main.svg')] static bg-cover bg-center bg-no-repeat h-5/6 w-5/6 p-4 rounded-lg shadow-lg flex items-center justify-center">
         <div className="flex flex-col lg:flex-row justify-center h-3/4 w-3/4">
           <div className="w-2/3 h-full  flex flex-col">

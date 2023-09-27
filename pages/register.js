@@ -108,7 +108,7 @@ export default function Register() {
             <h2 className="text-3xl font-bold mb-2 text-[#CE4044]"> WELCOME TO FACTUALLY. </h2>
             <div className="border-2 w-20 border-[#CE4044] inline-block"> </div>
             <p className="text-[#CE4044] text-xl mt-2">  Already registered? Continue what you started instead! </p>
-            <img className="hover:animate-bounce w-[350px]" src="/robbie/r_list.png" alt="" />
+            <img className="robot-image w-[350px]" src="/robbie/r_list.png" alt="" />
             <button className="border-2 text-[#CE4044] border-[#CE4044] rounded-full w-72 px-12 py-2 inline-block font-semibold hover:bg-[#CE4044] hover:text-white text-lg" 
               onClick={() => router.push('/auth/signIn')}>SIGN IN</button>
           </center>

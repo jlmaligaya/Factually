@@ -1,25 +1,30 @@
-import { prisma } from "../../db"
-import { useRouter } from "next/router";
+import { prisma } from "../../db";
 
 export default async function handler(req, res) {
   try {
-    
-    const activityID = req.query.activityID
-    const scores = await prisma.score.findMany({
-      where: { activityId: activityID},
+    const activityID = req.query.activityID;
+    const scoresWithUsername = await prisma.score.findMany({
+      where: { activityId: activityID },
       orderBy: { score: 'desc' },
       take: 10,
+      include: {
+        user: {
+          select: {
+            username: true, // Include the username field
+          },
+        },
+      },
     });
 
-    if (!scores) {
-      res.status(404).json({ error: 'Video not found' })
-      return
+    if (!scoresWithUsername) {
+      res.status(404).json({ error: 'Video not found' });
+      return;
     }
 
-    res.status(200).json(scores)
+    res.status(200).json(scoresWithUsername);
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: 'Internal server error' });
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }
