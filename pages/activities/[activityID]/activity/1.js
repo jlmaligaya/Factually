@@ -3,6 +3,7 @@ import axios from "axios";
 import { useRouter } from 'next/router'
 import { useSession } from "next-auth/react";
 import Image from 'next/image';
+import LoadingScreen from "../../../../components/loading";
 
 const Index = () => {
   const [isQuestionAnswered, setIsQuestionAnswered] = useState(false);
@@ -34,11 +35,14 @@ const Index = () => {
         setQuestionLength(data.length);
         setQuizStarted(true);
         setLoadingDone(true); 
+        console.log("Data: ", data)
+        
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
+    
   }, [activityID]);
 
   // Timer Effect
@@ -138,7 +142,7 @@ const Index = () => {
 
   return (
     <>
-      {quizQuestions?.length > 0 ? (
+      {quizQuestions?.length > 0 && loadingDone ? (
         <div className="h-screen w-full flex justify-center items-center">
           {!quizEnded ? (
             <div className="h-screen w-full flex justify-center items-center">
@@ -287,15 +291,7 @@ const Index = () => {
           )}
         </div>
       ) : (
-        <div className={`h-screen w-full flex flex-col justify-center items-center p-10 text-3xl bg-slate-900 font-retropix ${loadingDone ? 'fade-out' : ''}`}>
-          <Image src={'/assets/r_loading.png'}
-          height={300}
-          className='robot-image'
-          width={300}
-          alt="Loading"
-          ></Image>
-          <p className='py-5 text-center'>Loading...</p>
-        </div>
+        <LoadingScreen />
       )}
     </>
   );

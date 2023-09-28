@@ -161,7 +161,7 @@ const CaptchaGame = () => {
               }`}
               onClick={() => handleImageClick(image.url)}
             >
-              <img src={image.url} alt={`Captcha ${image.id}`} className="w-full h-auto" />
+              <img src={image.url} alt={`Captcha ${image.id}`} className="w-full h-auto pointer-events-none" />
             </div>
           ))}
         </div>

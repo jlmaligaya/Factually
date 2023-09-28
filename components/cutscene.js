@@ -115,7 +115,7 @@ const Cutscene = () => {
                     <div className="absolute bottom-0 bg-black border-white border-4 w-full h-2/6  bg-opacity-50 text-white py-4 cursor-pointer">
                       <div className="flex justify-center space-x-4">
                         <div className={`w-2/3 ${index === currentSlide ? '' : 'hidden'}`}>
-                          <p className="font-retropix text-4xl text-left font-semibold p-10 leading-relaxed">
+                          <p className="font-retropix text-4xl text-left font-semibold p-10 select-none leading-relaxed">
                             {displayedText}
                           </p>
                         </div>
