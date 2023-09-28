@@ -42,7 +42,7 @@ export default function GameSettingsModal({
 
   return (
     <div className={`modal ${isOpen ? 'modal-open' : 'modal-closed'} font-boom text-black`}>
-      <div className="bg-white border-red-500 border-4 bg-contain bg-no-repeat h-4/12 p-4 flex flex-col justify-center items-center text-black rounded-lg">
+      <div className="bg-white border-red-500 border-4 bg-contain bg-no-repeat w-4xl h-4/12 p-4 flex flex-col justify-center items-center text-black rounded-lg">
         {/* Close button as an "x" inside the game container */}
         <div className="w-full flex justify-between items-center">
           <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={handleClose}>

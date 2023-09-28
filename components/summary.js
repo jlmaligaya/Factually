@@ -84,7 +84,7 @@ const Leaderboard = () => {
             <Image src='/assets/r_dead.svg'
             height={300}
             width={300}></Image>
-            <p className='py-5 text-center'>Not enough scores. Check again later.</p>
+            <p className='py-5 text-center'>Not enough players. Check again later.</p>
           </div>
           
         ) : (

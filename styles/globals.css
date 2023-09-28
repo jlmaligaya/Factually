@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-[url('/bground_menu.png')] bg-blend-darken overflow-hidden
+  @apply bg-black overflow-hidden
 }
 
 
@@ -72,8 +72,29 @@ body {
 }
 
 .fade-out {
-  animation: fadeOut 10s ease-in-out;
+  animation: fadeOut 2s ease-in-out;
 }
+
+.transparent-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0); /* Initially transparent */
+  transition: background-color 1s ease-in-out; /* Transition for background color */
+  pointer-events: none; /* Allow clicks to pass through initially */
+  z-index: -1; /* Set a lower z-index */
+}
+
+.fade-out-overlay {
+  background-color: rgba(0, 0, 0); /* Semi-transparent black */
+  pointer-events: auto; /* Enable clicks on the overlay */
+  z-index: 1; /* Set a higher z-index */
+}
+
+
+
 
 @keyframes fadeOut {
   0% {
@@ -180,7 +201,7 @@ body {
 
 /* Apply the animation to the robot image */
 .robot-image {
-  animation: float 1s ease-in-out infinite; /* Adjust the duration and timing function as needed */
+  animation: float 1.5s ease-in-out infinite; /* Adjust the duration and timing function as needed */
 }
 
 

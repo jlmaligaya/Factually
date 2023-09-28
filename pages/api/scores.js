@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 // Define API route to create or update a score
 export default async function handler(req, res) {
-  const { uid, aid, score, retries, timeLeft, livesLeft } = req.body;
+  const { uid, aid, score, timeFinished} = req.body;
 
   try {
     if (req.method === 'POST') {
@@ -25,17 +25,13 @@ export default async function handler(req, res) {
           },
           update: {
             score,
-            retries,
-            timeLeft,
-            livesLeft,
+            timeFinished,
           },
           create: {
             userId: uid,
             activityId: aid,
             score,
-            retries,
-            timeLeft,
-            livesLeft,
+            timeFinished,
             userId_activityId: `${uid}_${aid}`,
           },
         });

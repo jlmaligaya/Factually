@@ -54,15 +54,13 @@ const Index = () => {
     return () => clearInterval(interval);
   }, [quizEnded]);
 
-  const postScore = async (uid, aid, score, retries, timeLeft, livesLeft) => {
+  const postScore = async (uid, aid, score, timeFinished) => {
     try {
       const response = await axios.post("/api/scores", {
         uid,
         aid,
         score,
-        retries,
-        timeLeft,
-        livesLeft,
+        timeFinished,
       });
       console.log(response.data)
       return response.data;
@@ -95,7 +93,7 @@ const Index = () => {
 
   const handleEndQuiz = () => {
     if (quizStarted && (lives === 0 || timer === 0 || quizEnded)) {
-      postScore(userID, activityID, totalScore, retries, 60 - timer, 5 - lives);
+      postScore(userID, activityID, totalScore, 60 - timer);
       setLives(5);
       setTimer(60);
       setQuizEnded(true);
@@ -267,24 +265,24 @@ const Index = () => {
                   ))}
                 </div>
               </div>
-              <div className="flex w-full gap 4 justify-center  pt-4 gap-4">
-                <button
-                  className="bg-red-500 hover:bg-red-600 w-1/6 max-w-1/6 flex justify-center items-center text-white font-boom rounded-md"
-                  onClick={handleRestartQuiz}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                  </svg>
-                </button>
-                <button
-                  className="bg-red-500 hover:bg-red-600 flex justify-center items-center w-1/6 max-w-1/6 text-white font-boom py-3 px-8 rounded-md"
-                  onClick={() => router.push('/')}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z" />
-                  </svg>
-                </button>
-              </div>
+              <div className="flex w-full justify-center gap-4 pt-4">
+          <button
+            className="bg-red-500 hover:bg-red-600 flex justify-center items-center text-white font-boom rounded-md p-3"
+            onClick={handleRestartQuiz}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" class="w-8 h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+          </button>
+          <button
+            className="bg-red-500 hover:bg-red-600 flex justify-center items-center text-white font-boom rounded-md p-3"
+            onClick={() => router.push('/')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" class="w-8 h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z" />
+            </svg>
+          </button>
+        </div>
             </div>
           )}
         </div>
@@ -293,7 +291,8 @@ const Index = () => {
           <Image src={'/assets/r_loading.png'}
           height={300}
           className='robot-image'
-          width={300}></Image>
+          width={300}
+          ></Image>
           <p className='py-5 text-center'>Loading...</p>
         </div>
       )}

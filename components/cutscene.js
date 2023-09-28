@@ -107,7 +107,8 @@ const Cutscene = () => {
                   <Image
                     src={slide.image}
                     alt={`Slide ${index + 1}`}
-                    layout="fill"
+                    fill
+                    className='pointer-events-none select-none'
                     draggable="false"
                   />
                   <div className='flex justify-center'>

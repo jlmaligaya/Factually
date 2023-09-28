@@ -12,6 +12,7 @@ export default function Index() {
   const [description, setDesc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showCutscene, setShowCutscene] = useState(true);
+  const [gameType, setGameType] = useState(0);
  
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function Index() {
         setVideoURL(activity.video);
         setTopicName(activity.topic);
         setDesc(activity.desc);
+        setGameType(activity.type);
         setIsLoading(false);
       } catch (error) {
         console.error(error);
@@ -94,9 +96,9 @@ export default function Index() {
         <Link
       href={{
         pathname: '/activities/[activityID]/activity',
-        query: { activityID },
+        query: { activityID }, 
       }}
-      as={`/activities/${activityID}/activity`}
+      as={`/activities/${activityID}/activity/${gameType}`}
     >
       <div className="bg-white text-red-500 font-boom border-4 rounded-tr-full rounded-bl-full border-red-500 opacity-100 py-5 px-20" style={{ marginTop: '-20px' }}>
         Start

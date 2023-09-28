@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import GameSettingsModal from '../components/settings';
 import Leaderboard from '../components/summary';
+import Image from 'next/image';
 
 export default function Home({ data, actv, userScore }) {
   const { data: session, status } = useSession();
@@ -94,7 +95,7 @@ const onSfxVolumeChange = (volume) => {
     setIsFading(true);
 
     // Wait for a short duration for the fade-out effect
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Adjust the duration as needed
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Adjust the duration as needed
 
     router.push({
       pathname: `/activities/${activityId}`,
@@ -149,7 +150,9 @@ const onSfxVolumeChange = (volume) => {
         <audio ref={clickAudioRef} src="/sounds/click.wav"></audio>
         <audio ref={hoverAudioRef} src="/sounds/hover.wav" preload="auto" ></audio>
         <audio ref={backgroundMusicRef} src="/sounds/bg_music.ogg" autoPlay loop></audio>
-        <div>
+        
+        <div className="bg-[url('/bground_menu.png')] bg-blend-darken">
+        <div className={`transparent-overlay ${isFading ? 'fade-out-overlay' : ''}`} />
         {showSettingsModal && (
               <GameSettingsModal
                 isOpen={showSettingsModal}
@@ -313,13 +316,7 @@ export async function getServerSideProps(context) {
     select: {
       score: true,
       activityId: true,
-      createdAt: true,
     },
-  });
-
-  // Convert createdAt to strings
-  userScore.forEach((score) => {
-    score.createdAt = score.createdAt.toISOString();
   });
 
   return {
