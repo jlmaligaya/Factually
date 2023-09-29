@@ -74,7 +74,7 @@ const Leaderboard = () => {
           <div className='flex flex-col justify-center items-center p-10 text-xl'>
             <Image src={'/assets/r_loading.png'}
             height={300}
-            className='robot-image'
+            className='robot-image pointer-events-none'
             width={300}></Image>
             <p className='py-5 text-center'>Loading...</p>
           </div>
@@ -82,6 +82,7 @@ const Leaderboard = () => {
         ) : leaderboardData.length < 10 ? (
           <div className='flex flex-col justify-center items-center p-10 text-xl'>
             <Image src='/assets/r_dead.svg'
+            className='pointer-events-none'
             height={300}
             width={300}></Image>
             <p className='py-5 text-center'>Not enough players. Check again later.</p>
