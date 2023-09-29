@@ -71,7 +71,7 @@ const onSfxVolumeChange = (volume) => {
   // Function to calculate the number of stars based on the user's score (total out of 5)
   const calculateStars = (score) => {
     const maxStars = 3; // Maximum number of stars
-    const maxScore = 5; // Maximum possible score
+    const maxScore = 100; // Maximum possible score
 
     // Calculate the number of stars as a percentage of the maximum
     const stars = (score / maxScore) * maxStars;

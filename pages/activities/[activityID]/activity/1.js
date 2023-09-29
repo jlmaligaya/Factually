@@ -12,7 +12,6 @@ const Index = () => {
   const [totalScore, setTotalScore] = useState(0);
   const [lives, setLives] = useState(5);
   const [timer, setTimer] = useState(60);
-  const [retries, setRetries] = useState(0);
   const [lostLives, setLostLives] = useState([]);
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [quizStarted, setQuizStarted] = useState(false);
@@ -23,7 +22,7 @@ const Index = () => {
   const userID = session ? session.user.uid : null;
   const activityID = router.query.activityID;
   const [loadingDone, setLoadingDone] = useState(false);
-
+  const calculatedScore = Math.round((100 / questionLength) * totalScore);
 
   // Fetches the questions from API only once
   useEffect(() => {
@@ -95,19 +94,18 @@ const Index = () => {
     return array;
   };
 
+
+
   const handleEndQuiz = () => {
     if (quizStarted && (lives === 0 || timer === 0 || quizEnded)) {
-      postScore(userID, activityID, totalScore, 60 - timer);
+      postScore(userID, activityID, calculatedScore, 60 - timer);
       setLives(5);
       setTimer(60);
       setQuizEnded(true);
       // Only post the score when the quiz ends
       
     }
-  };
-  
-  
-  
+  }; 
 
   const handleRestartQuiz = () => {
     setLives(5);
@@ -116,7 +114,6 @@ const Index = () => {
     setQuizEnded(false);
     setIsQuestionAnswered(false);
     setTotalScore(0);
-    setRetries(retries + 1);
     setQuizQuestions(shuffleArray(quizQuestions));
     setChoice(null);
     setLostLives([]);
@@ -249,25 +246,37 @@ const Index = () => {
               <div className="flex flex-col items-center gap-4">
                 <div className="w-full flex flex-col justify-center items-center border-b-2 border-red-500 pb-4">
                   <h2 className="text-4xl font-ogoby text-with-stroke mb-4">Your score</h2>
-                  <h2 className="text-6xl font-ogoby text-with-stroke mb-4">{totalScore}</h2>
+                  <h2 className="text-6xl font-ogoby text-with-stroke mb-4">{calculatedScore}</h2>
                 </div>
 
-                {/* Stars */}
-                <div className="flex items-center">
-                  {[1, 2, 3].map((star, index) => (
-                    <div
-                      key={star}
-                      className={`w-16 h-16 ${
-                        totalScore >= (questionLength / 3) * index + 1 ? 'fadeIn' : 'hidden'
-                      } transition-opacity duration-1000`}
+              {/* Stars */}
+              <div className="flex items-center">
+                {Array.from({ length: 3 }, (_, index) => (
+                  <div
+                    key={index}
+                    className={`w-16 h-16 ${
+                      calculatedScore >= ((index + 1) / 3) * 100 ? 'fadeIn' : 'hidden'
+                    } transition-opacity duration-1000`}
+                  >
+                    {/* Insert your star SVG or image here */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="yellow"
+                      viewBox="0 0 24 24"
+                      stroke-width="1"
+                      stroke="black"
+                      className="w-100 h-100"
                     >
-                      {/* Insert your star SVG or image here */}
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" strokeWidth="1" stroke="black" className="w-100 h-100">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-                      </svg>
-                    </div>
-                  ))}
-                </div>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.040.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+                      />
+                    </svg>
+                  </div>
+                ))}
+              </div>
+
               </div>
               <div className="flex w-full justify-center gap-4 pt-4">
           <button
