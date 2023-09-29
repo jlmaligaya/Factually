@@ -81,7 +81,8 @@ const Leaderboard = () => {
           
         ) : leaderboardData.length < 10 ? (
           <div className='flex flex-col justify-center items-center p-10 text-xl'>
-            <Image src='/assets/r_dead.svg pointer-events-none'
+            <Image src='/assets/r_dead.svg'
+            className='pointer-events-none'
             height={300}
             width={300}></Image>
             <p className='py-5 text-center'>Not enough players. Check again later.</p>
