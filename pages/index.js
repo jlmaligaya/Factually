@@ -173,9 +173,9 @@ const onSfxVolumeChange = (volume) => {
                 </svg>
               </div>
             </a>
-            <div className="flex flex-row select-none">
-              <img src="/assets/r_hi.svg" className="h-20 w-20 robot-image" alt="Description" />
-              <h1 className="mb-4 px-4 font-boom text-white dark:text-white text-with-stroke lg:text-4xl select-none">Welcome to <span className="select-none animate-text bg-gradient-to-r from-rose-500 via-slate-100 to-blue-500 bg-clip-text text-transparent text-4xl font-boom text-to">Factually</span>, {session.user.firstName}</h1>
+            <div className="flex flex-row select-none text-4xl">
+              <Image src="/assets/r_hi.svg" height={120} width={120} className="robot-image" draggable="false" alt="Description" />
+              <h1 className="mt-5 font-boom text-white dark:text-white text-with-stroke select-none">Welcome to <span className="select-none animate-text bg-gradient-to-r from-rose-500 via-slate-100 to-blue-500 bg-clip-text text-transparent font-boom text-to">Factually</span>, {session.user.firstName}</h1>
             </div>
             {/* Settings icon */}
             <a onClick={toggleSettingsModal}>
@@ -250,7 +250,7 @@ const onSfxVolumeChange = (volume) => {
                         )}
                         {!isLocked && (
                           <>
-                            <img className="absolute inset-0 object-cover w-full h-full" src={item.img} alt={`Activity ${index + 1}`} />
+                            <Image className="absolute inset-0 object-cover w-full h-full" height={100} width={100} src={item.img} alt={`Activity ${index + 1}`} />
                             <div className={`overlay absolute inset-0 flex items-center text-5xl font-ogoby text-with-stroke justify-center ${hoveredCircle === index ? 'hidden' : ''}`}>
                               {index + 1}
                             </div>
