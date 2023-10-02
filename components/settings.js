@@ -59,7 +59,7 @@ export default function GameSettingsModal({
               {userFirstName.toUpperCase()}
             </div>
           </div>
-          <h1 className='mt-4 bg-red-500 p-2 text-white'>Settings</h1>
+          <h1 className='mt-4 bg-red-500 p-2 border-red-400 border-4 text-white'>Settings</h1>
         <div className="flex items-center mt-2 p-4">
           <label className=" mr-2">BGM Volume</label>
           <input

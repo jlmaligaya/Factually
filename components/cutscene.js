@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 
 const cutsceneSlides = [
   {
     image: '/chapters/1/cutscene/AID000001_intro_1.png',
-    text: "You find yourself standing at the entrance of Robbie's lab, a place shrouded in mystery. It's a culmination of your relentless pursuit of truth amidst a world filled with misinformation."
+    text: "You find yourself standing at the entrance of a laboratory, a place shrouded in mystery. It's a culmination of your relentless pursuit of truth amidst a world filled with misinformation."
   },
   {
     image: '/chapters/1/cutscene/AID000001_intro_2.png',
@@ -31,10 +31,35 @@ const Cutscene = () => {
   const [isTextFullyTyped, setIsTextFullyTyped] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [textIndex, setTextIndex] = useState(0);
+  const [initialVolume, setInitialVolume] = useState(0.5);
+  const backgroundMusicRef = useRef(null);
+
+  useEffect(() => {
+    // Set the volume value in localStorage when it changes
+    const savedBgmVolume = parseFloat(localStorage.getItem('bgmVolume'));
+    if (!isNaN(savedBgmVolume)){
+      setInitialVolume(savedBgmVolume);
+    }
+  }, [initialVolume]);
+ 
+  useEffect(() => {
+    // Load and play background music when the component mounts
+    backgroundMusicRef.current = new Audio('/sounds/AID000001_intro_bgm.ogg');
+    backgroundMusicRef.current.volume = initialVolume; // Set the initial volume as needed
+    backgroundMusicRef.current.loop = true;
+    backgroundMusicRef.current.play();
+
+    // Cleanup when the component unmounts
+    return () => {
+      backgroundMusicRef.current.pause();
+      backgroundMusicRef.current = null;
+    };
+  }, [initialVolume]);
 
   useEffect(() => {
     // Automatically close the cutscene when it's not visible anymore
     if (!isCutsceneVisible) {
+      backgroundMusicRef.current.pause();
       return;
     }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
 import axios from "axios";
@@ -23,6 +23,73 @@ const CaptchaGame = () => {
   const [increment, setIncrement] = useState(1);
   const [loadingDone, setLoadingDone] = useState(false);
   const calculatedScore = Math.round((100 / gameDataLength) * totalScore);
+  const backgroundMusicRef = useRef(null);
+  const gameOverRef = useRef(null)
+  const gameOver2Ref = useRef(null)
+  const correctSoundRef = useRef(null);
+  const wrongSoundRef = useRef(null);
+  const [initialVolume, setInitialVolume] = useState(0.5);
+  const [countdown, setCountdown] = useState(5); // Initial countdown duration in seconds
+  const [showCountdown, setShowCountdown] = useState(true);
+  const [flashBackground, setFlashBackground] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdown((prevCountdown) => prevCountdown - 1);
+    }, 1000);
+
+    if (countdown < 0) {
+      setShowCountdown(false); // Hide the countdown when it reaches zero
+    }
+
+    return () => clearInterval(interval);
+  }, [countdown]);
+
+  useEffect(() => {
+    // Set the volume value in localStorage when it changes
+    const savedBgmVolume = parseFloat(localStorage.getItem('bgmVolume'));
+    if (!isNaN(savedBgmVolume)){
+      setInitialVolume(savedBgmVolume);
+    }
+  }, [initialVolume]);
+ 
+  useEffect(() => {
+    // Load and play background music when the component mounts
+    backgroundMusicRef.current = new Audio('/sounds/actC1_bgm.ogg');
+    backgroundMusicRef.current.volume = initialVolume; // Set the initial volume as needed
+    backgroundMusicRef.current.loop = true;
+    backgroundMusicRef.current.play();
+
+    gameOverRef.current = new Audio('/sounds/gameOver_bgm.ogg');
+    gameOverRef.current.volume = initialVolume; // Set the initial volume as needed
+    gameOverRef.current.loop = false;
+
+    gameOver2Ref.current = new Audio('/sounds/gameOver2_bgm.ogg');
+    gameOver2Ref.current.volume = initialVolume; // Set the initial volume as needed
+    gameOver2Ref.current.loop = false;
+
+    correctSoundRef.current = new Audio('/sounds/correct_sfx.wav');
+    correctSoundRef.current.volume = initialVolume; // Set the initial volume as needed
+    correctSoundRef.current.loop = false;
+
+    wrongSoundRef.current = new Audio('/sounds/wrong_sfx.wav');
+    wrongSoundRef.current.volume = initialVolume; // Set the initial volume as needed
+    wrongSoundRef.current.loop = false;
+
+    
+
+    // Cleanup when the component unmounts
+    return () => {
+      backgroundMusicRef.current.pause();
+      backgroundMusicRef.current = null;
+
+      gameOverRef.current.pause();
+      gameOverRef.current = null;
+
+      gameOver2Ref.current.pause();
+      gameOver2Ref.current = null;
+    };
+  }, [initialVolume]);
 
 
   // Your existing useEffect for fetchGameData
@@ -58,13 +125,17 @@ const CaptchaGame = () => {
       setTimeout(() => {
         switchGameState();
         setVerificationState('idle');
-      }, 2000);
+      }, 1000);
     } else if (verificationState === 'incorrect') {
       // If verification is incorrect, reset the state after a delay (e.g., 2 seconds)
+      setFlashBackground(true)
+      setTimeout(() => {
+        setFlashBackground(false);
+      }, 500); // Adjust the duration to match the animation duration in CSS
       const timeoutId = setTimeout(() => {
         setSelectedImages([]);
         setVerificationState('idle');
-      }, 2000);
+      }, 1000);
       return () => clearTimeout(timeoutId);
     }
   }, [verificationState, currentGameStateIndex]);
@@ -115,6 +186,8 @@ const CaptchaGame = () => {
       console.log("Add points: ", increment)
       setIncrement(1)
       setIncorrectAttempts(0);
+      correctSoundRef.current.play();
+      correctSoundRef.current.currentTime = 0;
 
     } else {
       if (incorrectAttempts == 2) {
@@ -123,11 +196,15 @@ const CaptchaGame = () => {
         switchGameState();
         setIncorrectAttempts(0); // Reset incorrect attempts
         setIncrement(1)
+        wrongSoundRef.current.play();
+        wrongSoundRef.current.currentTime = 0;
       } else {
         setIncorrectAttempts(incorrectAttempts + 1);
         setIncrement(increment - 0.3333333333)
         console.log("Add points: ", increment)
         setVerificationState('incorrect');
+        wrongSoundRef.current.play();
+        wrongSoundRef.current.currentTime = 0;
       }
       setLives(lives - 1);
     }
@@ -153,19 +230,35 @@ const CaptchaGame = () => {
 
   // Timer Effect
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer(timer => timer - 1);
-    }, 1000);
+    if (!showCountdown) {
+      // Start the timer when showCountdown becomes false (after "GO!" is displayed)
+      const timerInterval = setInterval(() => {
+        if (timer === 0) {
+          // Handle timer reaching zero
+          clearInterval(timerInterval);
+        } else {
+          setTimer((prevTimer) => prevTimer - 1);
+        }
+      }, 1000);
 
-    if (gameCompleted) {
-      clearInterval(interval);
+      // Clear the timer interval when the quiz ends
+      if (gameCompleted) {
+        clearInterval(timerInterval);
+      }
+
+      return () => clearInterval(timerInterval);
     }
-
-    return () => clearInterval(interval);
-  }, [gameCompleted]);
+  }, [showCountdown, timer, gameCompleted]);
 
   const handleEndGame = () => {
     if (lives === 0 || timer === 0 || gameCompleted) {
+        backgroundMusicRef.current.pause();
+        if (calculatedScore > 34){
+          gameOverRef.current.play();
+        }
+        else{
+          gameOver2Ref.current.play();
+        }
       setGameCompleted(true)
       postScore(userID, activityID, calculatedScore, 60 - timer);
     }
@@ -189,6 +282,14 @@ const CaptchaGame = () => {
   
 
   const resetGame = () => {
+    gameOverRef.current.pause();
+    gameOver2Ref.current.pause();
+    backgroundMusicRef.current.play();
+    gameOverRef.current.currentTime = 0;
+    gameOver2Ref.current.currentTime = 0;
+    backgroundMusicRef.current.currentTime = 0;
+    setCountdown(5)
+    setShowCountdown(true)
     setGameCompleted(false);
     setLives(5);
     setTimer(60);
@@ -199,10 +300,10 @@ const CaptchaGame = () => {
   };
 
   const gameContent = (
-    <div className={`h-screen w-full flex flex-col gap-4 justify-center items-center ${verificationState === 'correct' ? 'bg-green-100' : 'bg-[url("/chapters/1/actC1_bg.jpg")]'}`}>
-      <div className="flex gap-10 items-center mt-10 w-full">
+    <div className={`h-screen w-full flex flex-col gap-4 justify-center items-center ${verificationState === 'correct' ? 'bg-green-100' : 'bg-[url("/chapters/1/actC1_bg.jpg")]'}`} style={{ backgroundSize: '100% 100%' }}>
+      <div className="flex gap-10 items-center  px-10 w-full">
         {[...Array(lives)].map((_, i) => (
-          <div key={i} className="h-6 w-6 mr-2 relative">
+          <div key={i} className="h-6 w-6 relative">
             {i < lives ? (
               <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
@@ -283,62 +384,75 @@ const CaptchaGame = () => {
 
   const completionPage = (
     <div className="w-1/2 h-1/2 border-8 rounded-xl bg-white flex flex-col justify-center items-center font-medium gap-8 p-8 shadow-lg">
-      <div className="w-full text-center">
-        <h1 className="text-4xl font-boom text-red-700 mb-2 text-with-stroke">Quiz Summary</h1>
-        <hr className="border-red-500 w-16 mx-auto mb-4" />
+    <div className="w-full text-center">
+      <h1 className="text-4xl font-boom text-red-700 mb-2 text-with-stroke">Quiz Summary</h1>
+      <hr className="border-red-500 w-16 mx-auto" />
+    </div>
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-full flex flex-col justify-center items-center border-b-2 border-red-500 pb-4">
+        <h2 className="text-4xl font-ogoby text-with-stroke mb-4">Your score</h2>
+        <h2 className="text-6xl font-ogoby text-with-stroke mb-4">{calculatedScore}</h2>
+      {/* Conditionally render the caption */}
+      {calculatedScore == 100 && (
+        <div className="text-3xl font-retropix text-black">Excellent job! Keep it up!</div>
+      )}
+      {calculatedScore >= 67 && calculatedScore < 80 && (
+        <div className="text-3xl font-retropix text-black">Great job! Can you go higher?</div>
+      )}
+      {calculatedScore >= 34 && calculatedScore < 60 && (
+        <div className="text-3xl font-retropix text-black">Nice! You can do better!</div>
+      )}
+      {calculatedScore < 34 && (
+        <div className="text-3xl font-retropix text-black">Keep trying! You can do it!</div>
+      )}
       </div>
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-full flex flex-col justify-center items-center border-b-2 border-red-500 pb-4">
-          <h2 className="text-4xl font-ogoby text-with-stroke mb-4">Your score</h2>
-          <h2 className="text-6xl font-ogoby text-with-stroke mb-4">{calculatedScore}</h2>
-        </div>
 
-        {/* Stars */}
-        <div className="flex items-center">
-          {Array.from({ length: 3 }, (_, index) => (
-            <div
-              key={index}
-              className={`w-16 h-16 ${
-                calculatedScore >= ((index + 1) / 3) * 100 ? 'fadeIn' : 'hidden'
-              } transition-opacity duration-1000`}
-            >
-              {/* Insert your star SVG or image here */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="yellow"
-                viewBox="0 0 24 24"
-                stroke-width="1"
-                stroke="black"
-                className="w-100 h-100"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.040.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                />
-              </svg>
-            </div>
-          ))}
+    {/* Stars */}
+    <div className="flex items-center">
+      {Array.from({ length: 3 }, (_, index) => (
+        <div
+          key={index}
+          className={`w-16 h-16 ${
+            calculatedScore >= ((index + 1) / 3) * 100 ? 'fadeIn' : 'hidden'
+          } transition-opacity duration-1000`}
+        >
+          {/* Insert your star SVG or image here */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="yellow"
+            viewBox="0 0 24 24"
+            strokeWidth="1"
+            stroke="black"
+            className="w-100 h-100"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.040.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+            />
+          </svg>
         </div>
+      ))}
+    </div>
 
-        <div className="flex w-full justify-center gap-4 pt-4">
-          <button
-            className="bg-red-500 hover:bg-red-600 flex justify-center items-center text-white font-boom rounded-md p-3"
-            onClick={resetGame}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" class="w-8 h-8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-            </svg>
-          </button>
-          <button
-            className="bg-red-500 hover:bg-red-600 flex justify-center items-center text-white font-boom rounded-md p-3"
-            onClick={() => router.push('/')}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" class="w-8 h-8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z" />
-            </svg>
-          </button>
-        </div>
+    </div>
+    <div className="flex w-full justify-center gap-4">
+      <button
+        className="bg-red-500 hover:bg-red-600 flex justify-center items-center text-white font-boom rounded-md p-3"
+        onClick={resetGame}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+      </button>
+      <button
+        className="bg-red-500 hover:bg-red-600 flex justify-center items-center text-white font-boom rounded-md p-3"
+        onClick={() => router.push('/')}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z" />
+        </svg>
+      </button>
       </div>
     </div>
   );
@@ -356,6 +470,12 @@ const CaptchaGame = () => {
       ) : (
         gameContent
       )}
+      {flashBackground && (
+          <div
+            className="h-full w-full absolute top-0 left-0 bg-red-500 bg-opacity-50" /* Adjust the background color */
+            style={{ animation: 'flash 0.5s ease 1' }} /* Adjust the animation duration */
+          ></div>
+        )}
     </div>
   );
 };

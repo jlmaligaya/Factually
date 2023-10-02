@@ -13,30 +13,6 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState(true);
   const [showCutscene, setShowCutscene] = useState(true);
   const [gameType, setGameType] = useState(0);
-  const [initialVolume, setInitialVolume] = useState(0.5);
-  const backgroundMusicRef = useRef(null);
-
-  useEffect(() => {
-    // Set the volume value in localStorage when it changes
-    const savedBgmVolume = parseFloat(localStorage.getItem('bgmVolume'));
-    if (!isNaN(savedBgmVolume)){
-      setInitialVolume(savedBgmVolume);
-    }
-  }, [initialVolume]);
- 
-  useEffect(() => {
-    // Load and play background music when the component mounts
-    backgroundMusicRef.current = new Audio('/sounds/AID000001_intro_bgm.ogg');
-    backgroundMusicRef.current.volume = initialVolume; // Set the initial volume as needed
-    backgroundMusicRef.current.loop = true;
-    backgroundMusicRef.current.play();
-
-    // Cleanup when the component unmounts
-    return () => {
-      backgroundMusicRef.current.pause();
-      backgroundMusicRef.current = null;
-    };
-  }, [initialVolume]);
 
 
   
@@ -72,7 +48,7 @@ export default function Index() {
   return (
     <div className="bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat h-screen w-screen flex flex-col items-center justify-center bg-gray-200" style={{ backgroundSize: '100% 100%' }}>
       {showCutscene && (
-        <Cutscene initialVolume={initialVolume} onClose={() => setShowCutscene(false)} />
+        <Cutscene onClose={() => setShowCutscene(false)} />
       )}
       <div className="bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat h-screen w-screen flex flex-col items-center justify-center bg-gray-200" style={{ backgroundSize: '100% 100%' }}>
       <div className={`flex justify-between w-full`}>

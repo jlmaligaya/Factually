@@ -23,7 +23,27 @@ const Index = () => {
   const [loadingDone, setLoadingDone] = useState(false);
   const calculatedScore = Math.round((100 / questionLength) * totalScore);
   const backgroundMusicRef = useRef(null);
+  const gameOverRef = useRef(null)
+  const gameOver2Ref = useRef(null)
+  const correctSoundRef = useRef(null);
+  const wrongSoundRef = useRef(null);
   const [initialVolume, setInitialVolume] = useState(0.5);
+  const [countdown, setCountdown] = useState(5); // Initial countdown duration in seconds
+  const [showCountdown, setShowCountdown] = useState(true);
+  const [flashBackground, setFlashBackground] = useState(false);
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdown((prevCountdown) => prevCountdown - 1);
+    }, 1000);
+
+    if (countdown < 0) {
+      setShowCountdown(false); // Hide the countdown when it reaches zero
+    }
+
+    return () => clearInterval(interval);
+  }, [countdown]);
 
   useEffect(() => {
     // Set the volume value in localStorage when it changes
@@ -40,10 +60,34 @@ const Index = () => {
     backgroundMusicRef.current.loop = true;
     backgroundMusicRef.current.play();
 
+    gameOverRef.current = new Audio('/sounds/gameOver_bgm.ogg');
+    gameOverRef.current.volume = initialVolume; // Set the initial volume as needed
+    gameOverRef.current.loop = false;
+
+    gameOver2Ref.current = new Audio('/sounds/gameOver2_bgm.ogg');
+    gameOver2Ref.current.volume = initialVolume; // Set the initial volume as needed
+    gameOver2Ref.current.loop = false;
+
+    correctSoundRef.current = new Audio('/sounds/correct_sfx.wav');
+    correctSoundRef.current.volume = initialVolume; // Set the initial volume as needed
+    correctSoundRef.current.loop = false;
+
+    wrongSoundRef.current = new Audio('/sounds/wrong_sfx.wav');
+    wrongSoundRef.current.volume = initialVolume; // Set the initial volume as needed
+    wrongSoundRef.current.loop = false;
+
+    
+
     // Cleanup when the component unmounts
     return () => {
       backgroundMusicRef.current.pause();
       backgroundMusicRef.current = null;
+
+      gameOverRef.current.pause();
+      gameOverRef.current = null;
+
+      gameOver2Ref.current.pause();
+      gameOver2Ref.current = null;
     };
   }, [initialVolume]);
 
@@ -69,16 +113,25 @@ const Index = () => {
 
   // Timer Effect
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer(timer => timer - 1);
-    }, 1000);
+    if (!showCountdown) {
+      // Start the timer when showCountdown becomes false (after "GO!" is displayed)
+      const timerInterval = setInterval(() => {
+        if (timer === 0) {
+          // Handle timer reaching zero
+          clearInterval(timerInterval);
+        } else {
+          setTimer((prevTimer) => prevTimer - 1);
+        }
+      }, 1000);
 
-    if (quizEnded) {
-      clearInterval(interval);
+      // Clear the timer interval when the quiz ends
+      if (quizEnded) {
+        clearInterval(timerInterval);
+      }
+
+      return () => clearInterval(timerInterval);
     }
-
-    return () => clearInterval(interval);
-  }, [quizEnded]);
+  }, [showCountdown, timer, quizEnded]);
 
   const postScore = async (uid, aid, score, timeFinished) => {
     try {
@@ -99,15 +152,26 @@ const Index = () => {
     if (choice === quizQuestions[questionNumber]?.correct_option && !isQuestionAnswered) {
       setIsQuestionAnswered(true);
       setTotalScore(totalScore + 1);
+      correctSoundRef.current.play();
+      correctSoundRef.current.currentTime = 0;
     } else if (choice !== quizQuestions[questionNumber]?.correct_option && !isQuestionAnswered) {
       setIsQuestionAnswered(true);
       setLostLives([...lostLives, lives - 1]);
       setLives(lives - 1);
+      wrongSoundRef.current.play();
+      wrongSoundRef.current.currentTime = 0;
+      
+      // Trigger the flash animation
+      setFlashBackground(true);
+      setTimeout(() => {
+        setFlashBackground(false);
+      }, 500); // Adjust the duration to match the animation duration in CSS
     } else {
       alert("You have already answered this question");
     }
     setChoice(choice);
   };
+  
 
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -121,6 +185,13 @@ const Index = () => {
 
   const handleEndQuiz = () => {
     if (quizStarted && (lives === 0 || timer === 0 || quizEnded)) {
+      backgroundMusicRef.current.pause();
+      if (calculatedScore > 34){
+        gameOverRef.current.play();
+      }
+      else{
+        gameOver2Ref.current.play();
+      }
       postScore(userID, activityID, calculatedScore, 60 - timer);
       setLives(5);
       setTimer(60);
@@ -131,6 +202,14 @@ const Index = () => {
   }; 
 
   const handleRestartQuiz = () => {
+    gameOverRef.current.pause();
+    gameOver2Ref.current.pause();
+    backgroundMusicRef.current.play();
+    gameOverRef.current.currentTime = 0;
+    gameOver2Ref.current.currentTime = 0;
+    backgroundMusicRef.current.currentTime = 0;
+    setCountdown(5)
+    setShowCountdown(true)
     setLives(5);
     setTimer(60);
     setQuestionNumber(0);
@@ -162,7 +241,16 @@ const Index = () => {
 
   return (
     <>
-      {quizQuestions?.length > 0 && loadingDone ? (
+
+      {showCountdown ? ( // Render the countdown overlay if showCountdown is true
+        <div className="h-screen w-full flex justify-center items-center font-ogoby text-9xl">
+           {countdown === 0 ? (
+            <h1>GO!</h1>
+          ) : (
+            <h1>{countdown}</h1>
+          )}
+        </div>
+      ) :quizQuestions?.length > 0 && loadingDone ? (
         <div className="h-screen w-full flex justify-center items-center">
           {!quizEnded ? (
             <div className="h-screen w-full flex justify-center items-center">
@@ -258,18 +346,37 @@ const Index = () => {
                 </div>
                 </div>
               </div>
+              {flashBackground && (
+    <div
+      className="h-full w-full absolute top-0 left-0 bg-red-500 bg-opacity-50" /* Adjust the background color */
+      style={{ animation: 'flash 0.5s ease 1' }} /* Adjust the animation duration */
+    ></div>
+  )}
             </div>
           ) : (
             
             <div className="w-1/2 h-1/2 border-8 rounded-xl bg-white flex flex-col justify-center items-center font-medium gap-8 p-8 shadow-lg">
               <div className="w-full text-center">
                 <h1 className="text-4xl font-boom text-red-700 mb-2 text-with-stroke">Quiz Summary</h1>
-                <hr className="border-red-500 w-16 mx-auto mb-4" />
+                <hr className="border-red-500 w-16 mx-auto" />
               </div>
               <div className="flex flex-col items-center gap-4">
                 <div className="w-full flex flex-col justify-center items-center border-b-2 border-red-500 pb-4">
                   <h2 className="text-4xl font-ogoby text-with-stroke mb-4">Your score</h2>
                   <h2 className="text-6xl font-ogoby text-with-stroke mb-4">{calculatedScore}</h2>
+                {/* Conditionally render the caption */}
+                {calculatedScore == 100 && (
+                  <div className="text-3xl font-retropix text-black">Excellent job! Keep it up!</div>
+                )}
+                {calculatedScore >= 67 && calculatedScore < 80 && (
+                  <div className="text-3xl font-retropix text-black">Great job! Can you go higher?</div>
+                )}
+                {calculatedScore >= 34 && calculatedScore < 60 && (
+                  <div className="text-3xl font-retropix text-black">Nice! You can do better!</div>
+                )}
+                {calculatedScore < 34 && (
+                  <div className="text-3xl font-retropix text-black">Keep trying! You can do it!</div>
+                )}
                 </div>
 
               {/* Stars */}
@@ -301,7 +408,7 @@ const Index = () => {
               </div>
 
               </div>
-              <div className="flex w-full justify-center gap-4 pt-4">
+              <div className="flex w-full justify-center gap-4">
           <button
             className="bg-red-500 hover:bg-red-600 flex justify-center items-center text-white font-boom rounded-md p-3"
             onClick={handleRestartQuiz}
