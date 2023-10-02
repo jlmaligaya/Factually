@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { signOut } from 'next-auth/react';
+import Image from 'next/image';
 
 export default function GameSettingsModal({
   isOpen,
@@ -31,10 +32,10 @@ export default function GameSettingsModal({
   // Placeholder for account name and icon
   const placeholderAccountName = "John Doe";
   const placeholderIcon = (
-    <img
+    <Image
       src=""
       alt="User Icon"
-      className="h-40 w-30 max-w-30 max-h-40 rounded bg-white"
+      className="h-40 w-40 rounded-full bg-black"
       draggable='false'
     />
 
@@ -49,15 +50,16 @@ export default function GameSettingsModal({
             X
           </button>
         </div>
-        <div className="flex py-4 w-full">
+        <div className="flex items-center gap-2 flex-col w-full">
             {/* Placeholder for icon and account name using Tailwind CSS classes */}
-            <div className="mx-4">
+            <div>
               {placeholderIcon}
             </div>
             <div className=" text-2xl font-retropix x-5">
               {userFirstName.toUpperCase()}
             </div>
           </div>
+          <h1 className='mt-4 bg-red-500 p-2 text-white'>Settings</h1>
         <div className="flex items-center mt-2 p-4">
           <label className=" mr-2">BGM Volume</label>
           <input

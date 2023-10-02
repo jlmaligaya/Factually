@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
+
 const cutsceneSlides = [
   {
     image: '/chapters/1/cutscene/AID000001_intro_1.png',
@@ -85,6 +86,7 @@ const Cutscene = () => {
       nextSlide();
     }
   };
+  
 
   return (
     <div

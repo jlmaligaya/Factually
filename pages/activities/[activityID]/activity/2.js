@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import LoadingScreen from '../../../../components/loading';
 
 const CaptchaGame = () => {
   const [gameCompleted, setGameCompleted] = useState(false);
@@ -20,6 +21,7 @@ const CaptchaGame = () => {
   const [gameDataLength, setGameDataLength] = useState(0)
   const [incorrectAttempts, setIncorrectAttempts] = useState(0);
   const [increment, setIncrement] = useState(1);
+  const [loadingDone, setLoadingDone] = useState(false);
   const calculatedScore = Math.round((100 / gameDataLength) * totalScore);
 
 
@@ -33,6 +35,7 @@ const CaptchaGame = () => {
           console.log('Fetched game data:', data); 
           setGameData(data);
           setGameDataLength(data.length)
+          setLoadingDone(true); 
         } else {
           console.error('Failed to fetch game data');
         }
@@ -346,7 +349,13 @@ const CaptchaGame = () => {
 
   return (
     <div className="h-screen w-full flex flex-col gap-4 justify-center items-center">
-      {gameCompleted ? completionPage : gameContent}
+      {!loadingDone ? (
+        <LoadingScreen /> // Render loading screen while data is being fetched
+      ) : gameCompleted ? (
+        completionPage
+      ) : (
+        gameContent
+      )}
     </div>
   );
 };
