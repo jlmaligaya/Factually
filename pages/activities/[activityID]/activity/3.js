@@ -19,7 +19,7 @@ const Home = () => {
   const [score, setScore] = useState(0);
   const [isGameCompleted, setIsGameCompleted] = useState(false);
   const [gameLength, setGameLength] = useState(0);
-  const [calculatedScore, setCalculatedScore] = useState(0);
+  
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isSwiping, setIsSwiping] = useState(false);
@@ -33,6 +33,7 @@ const Home = () => {
   const [flashBackground, setFlashBackground] = useState(false);
   const [lives, setLives] = useState(5);
   const [timer, setTimer] = useState(60);
+  const calculatedScore = Math.round((100 / gameLength) * score);
 
   // Audio references
   const backgroundMusicRef = useRef(null);
@@ -53,7 +54,7 @@ const Home = () => {
       setGameLength(placeHolder.length);
     }
 
-    setCalculatedScore(Math.round((100 / gameLength) * score));
+    
   }, [cards, gameLength, isGameCompleted, score]);
 
 
@@ -220,7 +221,6 @@ const Home = () => {
     setLives(5);
     setIsGameCompleted(false);
     setGameLength(placeHolder.length);
-    setCalculatedScore(0);
     setIsOverlayVisible(false);
     setSelectedImage(null);
   };

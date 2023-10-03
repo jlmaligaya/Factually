@@ -17,11 +17,37 @@ export default async function handler(req, res) {
 
       if (existingScore) {
         // If there is an existing score, check if the new score or timeFinished is better
-        if (score < existingScore.score || timeFinished > existingScore.timeFinished) {
+        if (score >= existingScore.score) {
           // If either the score or timeFinished is worse, do not update the score
-          res.status(200).json(existingScore);
+          if (score === existingScore.score){
+            if (timeFinished >= existingScore.timeFinished){
+              res.status(200).json(existingScore)
+            }
+            else{
+              const updatedScore = await prisma.score.update({
+                where: {
+                  userId_activityId: `${uid}_${aid}`,
+                },
+                data: {
+                  score,
+                  timeFinished,
+                },
+              });
+              res.status(200).json(updatedScore);
+            }
+          } else {
+            const updatedScore = await prisma.score.update({
+              where: {
+                userId_activityId: `${uid}_${aid}`,
+              },
+              data: {
+                score,
+                timeFinished,
+              },
+            });
+            res.status(200).json(updatedScore);
+          }
         } else {
-          // Both the score and timeFinished are better, update the score
           const updatedScore = await prisma.score.update({
             where: {
               userId_activityId: `${uid}_${aid}`,
