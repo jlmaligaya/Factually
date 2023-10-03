@@ -6,6 +6,7 @@ import { useState, useRef, lazy, Suspense } from 'react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import Image from 'next/image';
+import LoadingScreen from '../components/loading';
 
 const GameSettingsModal = lazy(() => import('../components/settings'))
 const Leaderboard = lazy(() => import('../components/summary'))
@@ -138,8 +139,8 @@ useEffect(() => {
         <audio ref={clickAudioRef} src="/sounds/click.wav"></audio>
         <audio ref={hoverAudioRef} src="/sounds/hover.wav" preload="auto" ></audio>
         <audio ref={backgroundMusicRef} src="/sounds/bg_music.ogg" autoPlay loop></audio>
-        <Suspense>
-          <div className="bg-[url('/bground_menu.png')] bg-blend-darken">
+        <Suspense fallback={<LoadingScreen/>}>
+          <div className="bg-[url('/bground_menu.png')] bg-blend-darken w-full">
           <div className={`transparent-overlay ${isFading ? 'fade-out-overlay' : ''}`} />
           {showSettingsModal && (
                 <GameSettingsModal
@@ -152,7 +153,7 @@ useEffect(() => {
                   userFirstName={session.user.username} // Pass the user's first name as a prop
                 />
               )}
-          <div className={`flex justify-between items-center pt-20 ${isFading ? 'fade-out' : ''}`}>
+          <div className={`flex justify-between w-full items-center pt-20 ${isFading ? 'fade-out' : ''}`}>
               {/* Leaderboards icon */}
               <a onClick={toggleLeaderboardModal}>
                 <div className="w-20 h-20 bg-amber-400 border-4 flex items-center justify-center mb-4 ml-20">
@@ -161,10 +162,13 @@ useEffect(() => {
                   </svg>
                 </div>
               </a>
-              <div className="flex flex-row select-none text-4xl">
-                <Image src="/assets/r_hi.svg" height={80} width={80} className="robot-image p-4" draggable="false" alt="Description" />
+              <div className="flex flex-row select-none lg:text-4xl">
+                <Image src="/assets/r_hi.svg" height={80} width={80} className="sm:hidden robot-image p-4" draggable="false" alt="Description" />
                 <div className='font-boom text-white dark:text-white text-with-stroke select-none'>
-                  <h1 className="mt-5 ">Welcome to <span className="animate-text bg-gradient-to-r from-rose-500 via-slate-100 to-blue-500 bg-clip-text text-transparent">Factually</span></h1>
+                  <div>
+                  <h1 className="">Welcome to <span className="animate-text bg-gradient-to-r from-rose-500 via-slate-100 to-blue-500 bg-clip-text text-transparent">Factually</span></h1>
+                  </div>
+                  <h2 className='font-ogoby text-center mt-5'>Misinformed? Be fact-ed!</h2>
                 </div>
                 
               </div>

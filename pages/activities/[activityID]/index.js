@@ -48,7 +48,7 @@ export default function Index() {
   return (
     <div className="bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat h-screen w-screen flex flex-col items-center justify-center bg-gray-200" style={{ backgroundSize: '100% 100%' }}>
       {showCutscene && (
-        <Cutscene onClose={() => setShowCutscene(false)} />
+        <Cutscene isIntro={true} onClose={() => setShowCutscene(false)} />
       )}
       <div className="bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat h-screen w-screen flex flex-col items-center justify-center bg-gray-200" style={{ backgroundSize: '100% 100%' }}>
       <div className={`flex justify-between w-full`}>
@@ -84,7 +84,7 @@ export default function Index() {
             {/* Description */}
             <div className="bg-[url('/assets/activity/l_vertical.png')] bg-no-repeat bg-cover h-full p-4 rounded-lg text-black font-retropix" style={{ backgroundSize: '100% 100%' }}>
               <div className="p-10">
-                <h3 className="text-3xl text-white font-semibold text-center">Description</h3>
+                <h3 className="text-3xl text-white font-semibold text-center">MISSION</h3>
                 <p className="text-white text-lg mt-4">{description}</p>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
 const levels = ['Chapter 1', 'Chapter 2', 'Chapter 3', 'Chapter 4', 'Chapter 5', 'Chapter 6', 'Chapter 7', 'Chapter 8', 'Chapter 9', 'Chapter 10'];
 
@@ -7,7 +8,8 @@ const Leaderboard = () => {
   const [selectedLevel, setSelectedLevel] = useState(levels[0]);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [userRank, setUserRank] = useState(null);
+  const { data: session, status } = useSession();
   const getActivityIdForLevel = (level) => {
     // Define the prefix for activity IDs
     const activityIdPrefix = "AID";
@@ -38,6 +40,8 @@ const Leaderboard = () => {
       const data = await res.json();
       setLeaderboardData(data);
       setLoading(false); // Set loading to false when data is fetched
+      const userIndex = data.findIndex(score => score.user.username === session?.user?.username);
+      setUserRank(userIndex !== -1 ? userIndex + 1 : null);
     } catch (error) {
       console.error(error);
     }
@@ -50,13 +54,21 @@ const Leaderboard = () => {
   useEffect(() => {
     // Fetch leaderboard data when selectedLevel changes
     fetchLeaderboardData();
-  }, [selectedLevel]);
+  }, [selectedLevel, session]);
 
   return (
     <div className="h-full w-full bg-white text-gray-800 font-retropix font-3xl max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div className="px-4 sm:px-0">
-        <h1 className="text-4xl font-boom mb-8">Leaderboards</h1>
-        <div>
+        <div className='flex justify-center mb-4'>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-9 h-9 mr-2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0" />
+      </svg>
+      <h1 className="text-3xl font-boom mb-8 text-center">Leaderboard</h1>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-9 h-9 ml-2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0" />
+      </svg>
+        </div>
+        <div className='flex justify-between items-center'>
           <select
             id="levelSelect"
             className="px-2 py-1 border border-gray-300 rounded text-lg"
@@ -69,6 +81,7 @@ const Leaderboard = () => {
               </option>
             ))}
           </select>
+          
         </div>
         {loading ? (
           <div className='flex flex-col justify-center items-center p-10 text-xl'>
@@ -79,13 +92,13 @@ const Leaderboard = () => {
             <p className='py-5 text-center'>Loading...</p>
           </div>
           
-        ) : leaderboardData.length < 10 ? (
+        ) : leaderboardData.length == 0 ? (
           <div className='flex flex-col justify-center items-center p-10 text-xl'>
             <Image src='/assets/r_dead.svg'
             className='pointer-events-none'
             height={300}
             width={300}></Image>
-            <p className='py-5 text-center'>Not enough players. Check again later.</p>
+            <p className='text-center'>No players have reached this level.<br />Check again later.</p>
           </div>
           
         ) : (
@@ -97,20 +110,44 @@ const Leaderboard = () => {
                   <th className="px-4 py-2">Rank</th>
                   <th className="px-4 py-2">Name</th>
                   <th className="px-4 py-2">Score</th>
+                  <th className="px-4 py-2">Time</th>
                   {/* Add more table headers as needed */}
                 </tr>
               </thead>
               <tbody>
-                {leaderboardData.map((score, index) => (
-                  <tr key={score.id} className={index % 2 === 0 ? 'bg-gray-100 text-center' : 'bg-white text-center'}>
+              {leaderboardData.map((score, index) => (
+                  <tr
+                    key={score.id}
+                    className={
+                      index % 2 === 0 ? 'bg-gray-100 text-center' : 'bg-white text-center'
+                    }
+                    // Apply gold, silver, or bronze classes to the top 3 rows
+                    {...(index < 3
+                      ? {
+                          className: `${
+                            index === 0
+                              ? 'border-t-4 border-gold'
+                              : index === 1
+                              ? 'border-t-4 border-silver'
+                              : 'border-t-4 border-bronze'
+                          } ${index % 2 === 0 ? 'bg-gray-100 text-center' : 'bg-white text-center'}`
+                        }
+                      : {})}
+                  >
                     <td className="border border-gray-200 px-4 py-2">{index + 1}</td>
-                    <td className="border border-gray-200 px-4 py-2">{score.user.username.toUpperCase()}</td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {score.user.username.toUpperCase()}
+                    </td>
                     <td className="border border-gray-200 px-4 py-2">{score.score}</td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {score.timeFinished}s
+                    </td>
                     {/* Render additional data as needed */}
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div className='mt-4'>Current Rank: #{userRank}</div>
           </div>
         )}
       </div>

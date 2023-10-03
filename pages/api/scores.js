@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 // Define API route to create or update a score
 export default async function handler(req, res) {
-  const { uid, aid, score, timeFinished} = req.body;
+  const { uid, aid, score, timeFinished } = req.body;
 
   try {
     if (req.method === 'POST') {
@@ -15,19 +15,28 @@ export default async function handler(req, res) {
         },
       });
 
-      if (existingScore && score < existingScore.score) {
-        // If the new score is lower than the existing score, do not update it.
-        res.status(200).json(existingScore);
+      if (existingScore) {
+        // If there is an existing score, check if the new score or timeFinished is better
+        if (score < existingScore.score || timeFinished > existingScore.timeFinished) {
+          // If either the score or timeFinished is worse, do not update the score
+          res.status(200).json(existingScore);
+        } else {
+          // Both the score and timeFinished are better, update the score
+          const updatedScore = await prisma.score.update({
+            where: {
+              userId_activityId: `${uid}_${aid}`,
+            },
+            data: {
+              score,
+              timeFinished,
+            },
+          });
+          res.status(200).json(updatedScore);
+        }
       } else {
-        const updatedScore = await prisma.score.upsert({
-          where: {
-            userId_activityId: `${uid}_${aid}`,
-          },
-          update: {
-            score,
-            timeFinished,
-          },
-          create: {
+        // No existing score, create a new score
+        const newScore = await prisma.score.create({
+          data: {
             userId: uid,
             activityId: aid,
             score,
@@ -35,9 +44,7 @@ export default async function handler(req, res) {
             userId_activityId: `${uid}_${aid}`,
           },
         });
-
-        // Return response
-        res.status(200).json(updatedScore);
+        res.status(200).json(newScore);
       }
     } else if (req.method === 'GET') {
       // Access query parameter from req object directly
@@ -45,7 +52,7 @@ export default async function handler(req, res) {
 
       const scores = await prisma.score.findMany({
         where: { activityId },
-        orderBy: { score: 'desc' },
+        orderBy: [{ score: 'desc' }, { timeFinished: 'asc' }], // Order by score (descending) and timeFinished (ascending)
         include: { user: true },
         take: 10,
       });

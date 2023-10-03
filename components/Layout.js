@@ -37,7 +37,7 @@ export default function Layout({ children }) {
   return (
     <>
       <main
-        className={`min-h-screen overflow-x-hidden transition-all duration-[400ms] ${
+        className={`h-screen overflow-x-hidden transition-all duration-[400ms] ${
           showNav && !isMobile ? "pl-56" : ""
         } ${isFading ? "fade-out" : ""}`}
       >

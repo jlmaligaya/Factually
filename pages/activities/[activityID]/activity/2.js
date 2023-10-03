@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import LoadingScreen from '../../../../components/loading';
+import CompletionPage from '../../../../components/completion';
 
 const CaptchaGame = () => {
   const [gameCompleted, setGameCompleted] = useState(false);
@@ -33,6 +34,13 @@ const CaptchaGame = () => {
   const [showCountdown, setShowCountdown] = useState(true);
   const [flashBackground, setFlashBackground] = useState(false);
 
+
+  const stopGameOverMusic = () => {
+    gameOverRef.current.pause();
+    gameOver2Ref.current.pause();
+  };
+
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setCountdown((prevCountdown) => prevCountdown - 1);
@@ -182,8 +190,6 @@ const CaptchaGame = () => {
       // Increment the score when verification is correct
       setTotalScore(totalScore + increment);
       // Reset incorrect attempts when the user is correct
-      console.log("Current Score: ", calculatedScore)
-      console.log("Add points: ", increment)
       setIncrement(1)
       setIncorrectAttempts(0);
       correctSoundRef.current.play();
@@ -318,10 +324,10 @@ const CaptchaGame = () => {
       </div>
       <div className="absolute top-0 left-0 h-5 bg-red-500" style={{ width: `${(timer / 60) * 100}%` }}></div>
 
-      <div className='bg-slate-500 h-1/6 w-1/2 font-boom text-3xl flex items-center justify-center'>Select all the right pictures.</div>
+      <div className='bg-slate-500 h-1/6 w-1/2 font-ogoby text-4xl text-with-stroke flex items-center justify-center text-center border-4 border-gray-600 rounded-md'>Verify all the images based on the requirement.</div>
       <div className={`bg-white flex flex-col p-10 rounded-lg border-4 ${verificationState === 'correct' ? 'border-green-500' : verificationState === 'incorrect' ? 'border-red-500' : 'border-slate-500'}`}>
-        <h2 className="text-xl font-semibold mb-4 font-boom text-black text-center bg-red-100 p-5 rounded-full border-red-300 border-4">
-          {currentGameState?.title}
+        <h2 className="text-5xl font-ogoby text-with-stroke mb-4 text-black text-center bg-red-100 p-5 rounded-full border-red-300 border-4">
+          {currentGameState?.title.toUpperCase()}
         </h2>
         <div className="grid grid-cols-3 gap-4">
           {currentGameState?.images?.map((image) => (
@@ -382,80 +388,6 @@ const CaptchaGame = () => {
     </div>
   );
 
-  const completionPage = (
-    <div className="w-1/2 h-1/2 border-8 rounded-xl bg-white flex flex-col justify-center items-center font-medium gap-8 p-8 shadow-lg">
-    <div className="w-full text-center">
-      <h1 className="text-4xl font-boom text-red-700 mb-2 text-with-stroke">Quiz Summary</h1>
-      <hr className="border-red-500 w-16 mx-auto" />
-    </div>
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-full flex flex-col justify-center items-center border-b-2 border-red-500 pb-4">
-        <h2 className="text-4xl font-ogoby text-with-stroke mb-4">Your score</h2>
-        <h2 className="text-6xl font-ogoby text-with-stroke mb-4">{calculatedScore}</h2>
-      {/* Conditionally render the caption */}
-      {calculatedScore == 100 && (
-        <div className="text-3xl font-retropix text-black">Excellent job! Keep it up!</div>
-      )}
-      {calculatedScore >= 67 && calculatedScore < 80 && (
-        <div className="text-3xl font-retropix text-black">Great job! Can you go higher?</div>
-      )}
-      {calculatedScore >= 34 && calculatedScore < 60 && (
-        <div className="text-3xl font-retropix text-black">Nice! You can do better!</div>
-      )}
-      {calculatedScore < 34 && (
-        <div className="text-3xl font-retropix text-black">Keep trying! You can do it!</div>
-      )}
-      </div>
-
-    {/* Stars */}
-    <div className="flex items-center">
-      {Array.from({ length: 3 }, (_, index) => (
-        <div
-          key={index}
-          className={`w-16 h-16 ${
-            calculatedScore >= ((index + 1) / 3) * 100 ? 'fadeIn' : 'hidden'
-          } transition-opacity duration-1000`}
-        >
-          {/* Insert your star SVG or image here */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="yellow"
-            viewBox="0 0 24 24"
-            strokeWidth="1"
-            stroke="black"
-            className="w-100 h-100"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.040.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-            />
-          </svg>
-        </div>
-      ))}
-    </div>
-
-    </div>
-    <div className="flex w-full justify-center gap-4">
-      <button
-        className="bg-red-500 hover:bg-red-600 flex justify-center items-center text-white font-boom rounded-md p-3"
-        onClick={resetGame}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-8 h-8">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-        </svg>
-      </button>
-      <button
-        className="bg-red-500 hover:bg-red-600 flex justify-center items-center text-white font-boom rounded-md p-3"
-        onClick={() => router.push('/')}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-8 h-8">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z" />
-        </svg>
-      </button>
-      </div>
-    </div>
-  );
 
   useEffect(() => {
     handleEndGame();
@@ -465,8 +397,17 @@ const CaptchaGame = () => {
     <div className="h-screen w-full flex flex-col gap-4 justify-center items-center">
       {!loadingDone ? (
         <LoadingScreen /> // Render loading screen while data is being fetched
-      ) : gameCompleted ? (
-        completionPage
+      ) :
+      showCountdown ? ( // Render the countdown overlay if showCountdown is true
+      <div className="h-screen w-full flex justify-center items-center font-ogoby text-9xl">
+         {countdown === 0 ? (
+          <h1>GO!</h1>
+        ) : (
+          <h1>{countdown}</h1>
+        )}
+      </div>
+    ) : gameCompleted ? (
+        <CompletionPage calculatedScore={calculatedScore} timeFinished={60 - timer} resetGame={resetGame} stopGameOverMusic={() => stopGameOverMusic()} />
       ) : (
         gameContent
       )}

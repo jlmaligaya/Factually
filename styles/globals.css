@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-black overflow-hidden
+  @apply bg-black overflow-y-hidden
 }
 
 
@@ -218,4 +218,39 @@ body {
 
 .flash {
   animation: flash 0.5s ease 1; /* Adjust the duration as needed */
+}
+
+
+/* Gold border */
+.border-gold {
+  border-color: #FFD700; /* Gold color */
+}
+
+/* Silver border */
+.border-silver {
+  border-color: #C0C0C0; /* Silver color */
+}
+
+/* Bronze border */
+.border-bronze {
+  border-color: #CD7F32; /* Bronze color */
+}
+
+
+@keyframes swipe-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes swipe-right {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }

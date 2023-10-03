@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['schwebdesign.com', 'www.coe.int'], // Add your hostname here
+    domains: ['schwebdesign.com', 'www.coe.int', 'conversations.marketing-partners.com'], // Add your hostname here
   },
 }
 
