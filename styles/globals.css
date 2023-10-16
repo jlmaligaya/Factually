@@ -1,41 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Play:wght@700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Play:wght@700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  @apply bg-black overflow-y-hidden
+  @apply bg-black overflow-y-hidden;
 }
-
 
 /*General Textbox Class*/
 .text-label {
-  @apply block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2
+  @apply mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700;
 }
 .text-box {
-  @apply appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500
+  @apply block w-full appearance-none rounded-md border border-gray-400 bg-white py-3 px-4 leading-tight text-gray-700 shadow-inner focus:border-gray-500  focus:outline-none;
 }
 
 @font-face {
   font-family: retropix;
-  src: url('/font/retropix.ttf');
+  src: url("/font/retropix.ttf");
 }
 @font-face {
   font-family: boomgoesthedynamite-bold;
-  src: url('/font/boomgoesthedynamite-bold.ttf');
+  src: url("/font/boomgoesthedynamite-bold.ttf");
 }
 @font-face {
   font-family: ogoby-bold;
-  src: url('/font/ogoby-bold.ttf');
+  src: url("/font/ogoby-bold.ttf");
 }
-
 
 /* Menu styling */
 .circle {
   width: 75px;
   height: 75px;
   padding: 60px; /* Add padding to each circle */
-  margin-left: 60px; /* Add margin to create a horizontal gap */
+  margin-left: 100px; /* Add margin to create a horizontal gap */
 }
 
 .circle:nth-child(odd) {
@@ -91,9 +89,6 @@ body {
   z-index: 1; /* Set a higher z-index */
 }
 
-
-
-
 @keyframes fadeOut {
   0% {
     opacity: 1;
@@ -113,7 +108,7 @@ body {
 
 /* Style for the loading GIF image */
 .loading-image {
-  width: 32px;  /* Adjust the width as needed */
+  width: 32px; /* Adjust the width as needed */
   height: 32px; /* Adjust the height as needed */
 }
 
@@ -146,7 +141,6 @@ body {
 }
 
 /* Rest of the CSS remains the same */
-
 
 /* Style for the button container */
 .button-container {
@@ -183,7 +177,6 @@ body {
   animation: fadeIn 1s ease-in-out forwards;
 }
 
-
 /* Add this CSS to your component's CSS or a global CSS file */
 @keyframes float {
   0% {
@@ -202,7 +195,6 @@ body {
   animation: float 1.5s ease-in-out infinite; /* Adjust the duration and timing function as needed */
 }
 
-
 @keyframes flash {
   0% {
     background-color: rgba(255, 0, 0, 0.5); /* Red with 50% opacity */
@@ -215,27 +207,24 @@ body {
   }
 }
 
-
 .flash {
   animation: flash 0.5s ease 1; /* Adjust the duration as needed */
 }
 
-
 /* Gold border */
 .border-gold {
-  border-color: #FFD700; /* Gold color */
+  border-color: #ffd700; /* Gold color */
 }
 
 /* Silver border */
 .border-silver {
-  border-color: #C0C0C0; /* Silver color */
+  border-color: #c0c0c0; /* Silver color */
 }
 
 /* Bronze border */
 .border-bronze {
-  border-color: #CD7F32; /* Bronze color */
+  border-color: #cd7f32; /* Bronze color */
 }
-
 
 @keyframes swipe-left {
   0% {

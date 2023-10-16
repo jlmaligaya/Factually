@@ -29,18 +29,20 @@ model Activities {
   video      String
   id         Int            @id @default(autoincrement())
   type       Int            @default(0)
+  cutscenes  CutscenePics[]
   imagematch ImageMatch[]
   questions  QuizQuestion[]
   scores     Score[]
+  swipegame  Swiper[]
 }
 
 model Score {
   id                Int        @id @default(autoincrement())
   score             Int
-  timeFinished      Int
   activityId        String
   userId            String
   userId_activityId String     @unique
+  timeFinished      Int
   activity          Activities @relation(fields: [activityId], references: [aid])
   user              User       @relation(fields: [userId], references: [uid])
 }
@@ -71,4 +73,24 @@ model ImageMatchPics {
   value  Boolean
   gameID Int
   game   ImageMatch @relation(fields: [gameID], references: [id])
+}
+
+model CutscenePics {
+  id         Int        @id @default(autoincrement())
+  activityID String
+  url        String
+  caption    String
+  isIntro    Boolean
+  activity   Activities @relation(fields: [activityID], references: [aid])
+}
+
+model Swiper {
+  id             Int        @id @default(autoincrement())
+  activityId     String
+  correct_option String
+  option_one     String
+  option_two     String
+  imageUrl       String
+  description    String?
+  activity       Activities @relation(fields: [activityId], references: [aid])
 }

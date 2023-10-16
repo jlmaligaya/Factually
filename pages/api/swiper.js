@@ -7,16 +7,12 @@ export default async function handler(req, res) {
       // Access query parameter from req object directly
       const activityId = req.query.activityId;
 
-      const imageMatchData = await prisma.ImageMatch.findMany({
-        where: { activityID: activityId }, // Adjust the filter conditions as needed
-        include: {
-          images: true,
-        },
+      const swiperQuestions = await prisma.swiper.findMany({
+        where: { activityId: activityId }, // Adjust the filter conditions as needed
       });
 
       // Return response
-      console.log("API Reached");
-      res.status(200).json(imageMatchData);
+      res.status(200).json(swiperQuestions);
     } else {
       res.status(405).json({ message: "Method not allowed" });
     }

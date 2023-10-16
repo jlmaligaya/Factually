@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import LoadingScreen from "../../../../components/loading";
 import CompletionPage from "../../../../components/completion";
@@ -24,8 +24,8 @@ const Index = () => {
   const [loadingDone, setLoadingDone] = useState(false);
   const calculatedScore = Math.round((100 / questionLength) * totalScore);
   const backgroundMusicRef = useRef(null);
-  const gameOverRef = useRef(null)
-  const gameOver2Ref = useRef(null)
+  const gameOverRef = useRef(null);
+  const gameOver2Ref = useRef(null);
   const correctSoundRef = useRef(null);
   const wrongSoundRef = useRef(null);
   const [initialVolume, setInitialVolume] = useState(0.5);
@@ -33,57 +33,56 @@ const Index = () => {
   const [showCountdown, setShowCountdown] = useState(true);
   const [flashBackground, setFlashBackground] = useState(false);
 
-
   const stopGameOverMusic = () => {
     gameOverRef.current.pause();
     gameOver2Ref.current.pause();
   };
-  
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
-    }, 1000);
+    // Only start the countdown and music when loading is done
+    if (loadingDone) {
+      const interval = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
 
-    if (countdown < 0) {
-      setShowCountdown(false); // Hide the countdown when it reaches zero
+      if (countdown < 0) {
+        setShowCountdown(false); // Hide the countdown when it reaches zero
+      }
+
+      return () => clearInterval(interval);
     }
-
-    return () => clearInterval(interval);
-  }, [countdown]);
+  }, [countdown, loadingDone]);
 
   useEffect(() => {
     // Set the volume value in localStorage when it changes
-    const savedBgmVolume = parseFloat(localStorage.getItem('bgmVolume'));
-    if (!isNaN(savedBgmVolume)){
+    const savedBgmVolume = parseFloat(localStorage.getItem("bgmVolume"));
+    if (!isNaN(savedBgmVolume)) {
       setInitialVolume(savedBgmVolume);
     }
   }, [initialVolume]);
- 
+
   useEffect(() => {
     // Load and play background music when the component mounts
-    backgroundMusicRef.current = new Audio('/sounds/actC1_bgm.ogg');
+    backgroundMusicRef.current = new Audio("/sounds/actC1_bgm.ogg");
     backgroundMusicRef.current.volume = initialVolume; // Set the initial volume as needed
     backgroundMusicRef.current.loop = true;
     backgroundMusicRef.current.play();
 
-    gameOverRef.current = new Audio('/sounds/gameOver_bgm.ogg');
+    gameOverRef.current = new Audio("/sounds/gameOver_bgm.ogg");
     gameOverRef.current.volume = initialVolume; // Set the initial volume as needed
     gameOverRef.current.loop = false;
 
-    gameOver2Ref.current = new Audio('/sounds/gameOver2_bgm.ogg');
+    gameOver2Ref.current = new Audio("/sounds/gameOver2_bgm.ogg");
     gameOver2Ref.current.volume = initialVolume; // Set the initial volume as needed
     gameOver2Ref.current.loop = false;
 
-    correctSoundRef.current = new Audio('/sounds/correct_sfx.wav');
+    correctSoundRef.current = new Audio("/sounds/correct_sfx.wav");
     correctSoundRef.current.volume = initialVolume; // Set the initial volume as needed
     correctSoundRef.current.loop = false;
 
-    wrongSoundRef.current = new Audio('/sounds/wrong_sfx.wav');
+    wrongSoundRef.current = new Audio("/sounds/wrong_sfx.wav");
     wrongSoundRef.current.volume = initialVolume; // Set the initial volume as needed
     wrongSoundRef.current.loop = false;
-
-    
 
     // Cleanup when the component unmounts
     return () => {
@@ -103,13 +102,15 @@ const Index = () => {
     const fetchData = async () => {
       try {
         if (quizQuestions.length === 0) {
-          const result = await fetch(`../../../api/questions?activityId=${activityID}`);
+          const result = await fetch(
+            `../../../api/questions?activityId=${activityID}`
+          );
           const data = await result.json();
           setQuizQuestions(data);
           setQuestionLength(data.length);
           setQuizStarted(true);
-          setLoadingDone(true); 
-          console.log("Data: ", data)
+          setLoadingDone(true);
+          console.log("Data: ", data);
         }
       } catch (error) {
         console.error(error);
@@ -148,7 +149,7 @@ const Index = () => {
         score,
         timeFinished,
       });
-      console.log(response.data)
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -156,18 +157,24 @@ const Index = () => {
   };
 
   const handleChoice = (choice) => {
-    if (choice === quizQuestions[questionNumber]?.correct_option && !isQuestionAnswered) {
+    if (
+      choice === quizQuestions[questionNumber]?.correct_option &&
+      !isQuestionAnswered
+    ) {
       setIsQuestionAnswered(true);
       setTotalScore(totalScore + 1);
       correctSoundRef.current.play();
       correctSoundRef.current.currentTime = 0;
-    } else if (choice !== quizQuestions[questionNumber]?.correct_option && !isQuestionAnswered) {
+    } else if (
+      choice !== quizQuestions[questionNumber]?.correct_option &&
+      !isQuestionAnswered
+    ) {
       setIsQuestionAnswered(true);
       setLostLives([...lostLives, lives - 1]);
       setLives(lives - 1);
       wrongSoundRef.current.play();
       wrongSoundRef.current.currentTime = 0;
-      
+
       // Trigger the flash animation
       setFlashBackground(true);
       setTimeout(() => {
@@ -178,7 +185,6 @@ const Index = () => {
     }
     setChoice(choice);
   };
-  
 
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -188,23 +194,19 @@ const Index = () => {
     return array;
   };
 
-
-
   const handleEndQuiz = () => {
     if (quizStarted && (lives === 0 || timer === 0 || quizEnded)) {
       backgroundMusicRef.current.pause();
-      if (calculatedScore > 34){
+      if (calculatedScore > 34) {
         gameOverRef.current.play();
-      }
-      else{
+      } else {
         gameOver2Ref.current.play();
       }
       postScore(userID, activityID, calculatedScore, 60 - timer);
       setQuizEnded(true);
       // Only post the score when the quiz ends
-      
     }
-  }; 
+  };
 
   const handleRestartQuiz = () => {
     gameOverRef.current.pause();
@@ -213,8 +215,8 @@ const Index = () => {
     gameOverRef.current.currentTime = 0;
     gameOver2Ref.current.currentTime = 0;
     backgroundMusicRef.current.currentTime = 0;
-    setCountdown(5)
-    setShowCountdown(true)
+    setCountdown(5);
+    setShowCountdown(true);
     setLives(5);
     setTimer(60);
     setQuestionNumber(0);
@@ -229,7 +231,6 @@ const Index = () => {
   useEffect(() => {
     handleEndQuiz();
   }, [lives, timer, quizEnded]);
-  
 
   const moveToNextQuestion = () => {
     // Check if there are more questions and proceed to the next question
@@ -246,125 +247,210 @@ const Index = () => {
 
   return (
     <>
-
-      {showCountdown ? ( // Render the countdown overlay if showCountdown is true
-        <div className="h-screen w-full flex justify-center items-center font-ogoby text-9xl">
-           {countdown === 0 ? (
-            <h1>GO!</h1>
-          ) : (
-            <h1>{countdown}</h1>
-          )}
+      {showCountdown && loadingDone ? ( // Render the countdown overlay if showCountdown is true
+        <div className="flex h-screen w-full items-center justify-center font-ogoby text-9xl">
+          {countdown === 0 ? <h1>GO!</h1> : <h1>{countdown}</h1>}
         </div>
-      ) :quizQuestions?.length > 0 && loadingDone ? (
-        <div className="h-screen w-full flex justify-center items-center">
+      ) : quizQuestions?.length > 0 && loadingDone ? (
+        <div className="flex h-screen w-full items-center justify-center">
           {!quizEnded ? (
-            <div className="h-screen w-full flex justify-center items-center">
-              <div className="h-full w-full bg-[url('/chapters/1/actC1_bg.jpg')] bg-cover bg-center flex flex-col justify-center items-center text-white font-medium gap-16" style={{ backgroundSize: '100% 100%' }}>
-                <div className="flex justify-between w-full px-10 absolute top-0">
+            <div className="flex h-screen w-full items-center justify-center">
+              <div
+                className="flex h-full w-full flex-col items-center justify-center gap-16 bg-[url('/chapters/1/actC1_bg.jpg')] bg-cover bg-center font-medium text-white"
+                style={{ backgroundSize: "100% 100%" }}
+              >
+                <div className="absolute top-0 flex w-full justify-between px-10">
                   {/* lives */}
-                  <div className="flex gap-10 items-center mt-10">
-                  {[...Array(lives)].map((_, i) => (
-                      <div key={i} className="h-6 w-6 mr-2 relative">
+                  <div className="mt-10 flex items-center gap-10">
+                    {[...Array(lives)].map((_, i) => (
+                      <div key={i} className="relative mr-2 h-6 w-6">
                         {lostLives.includes(i) ? (
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-6 h-6">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                        </svg>                        
-                        ) : (
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="red"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="black"
+                            className="h-6 w-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                            />
                           </svg>
-
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="red"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="black"
+                            className="h-6 w-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                            />
+                          </svg>
                         )}
                       </div>
                     ))}
                   </div>
                   {/* timer */}
-                  <div className="absolute top-0 left-0 h-5 bg-red-500" style={{ width: `${(timer / 60) * 100}%` }}></div>
-                  
+                  <div
+                    className="absolute top-0 left-0 h-5 bg-red-500"
+                    style={{ width: `${(timer / 60) * 100}%` }}
+                  ></div>
                 </div>
-                <div className="flex flex-col w-full h-full items-center justify-center gap-8">
-                <div className="w-full max-w-6xl h-1/2 bg-[url('/chapters/1/actC1_main.png')] mt-15 bg-cover bg-center flex justify-center items-center" style={{ backgroundSize: '100% 100%' }}>
-                  <h1 className="text-5xl text-center text-with-stroke font-ogoby p-10 rounded-md max-w-[80%] overflow-auto">{quizQuestions[questionNumber]?.quiz_question}</h1>
-                </div>
-                <div className="grid grid-flow-row justify-items-center lg:grid-cols-2 gap-x-0 gap-y-5 text-4xl text-center text-with-stroke font-ogoby w-full ">
-                  {/* options */}
-                  <div 
-                    className={`w-[500px] h-[165px] bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center rounded-md flex justify-center items-center p-4 text-white transform active:scale-75 transition-transform 
-                      hover:cursor-pointer 
-                      ${!isQuestionAnswered ? '' : ''}
-                      ${isQuestionAnswered && choice === quizQuestions[questionNumber].option_one && choice !== quizQuestions[questionNumber][`option_${quizQuestions[questionNumber].correct_option.toLowerCase()}`] ? 'bg-red-500' : ''}
-                    `}
-                    onClick={() => {
-                      handleChoice(quizQuestions[questionNumber]?.option_one);
-                      setIsQuestionAnswered(true);
-                      moveToNextQuestion(); // Move to the next question
-                    }}
-                    style={{ backgroundSize: '100% 100%' }}
+                <div className="flex h-full w-full flex-col items-center justify-center gap-8">
+                  <div
+                    className="mt-15 flex h-1/2 w-full max-w-6xl items-center justify-center bg-[url('/chapters/1/actC1_main.png')] bg-cover bg-center"
+                    style={{ backgroundSize: "100% 100%" }}
                   >
-                    <span className="p-10">{quizQuestions[questionNumber]?.option_one}</span>
+                    <h1 className="text-with-stroke max-w-[80%] overflow-auto rounded-md p-10 text-center font-ogoby text-5xl">
+                      {quizQuestions[questionNumber]?.quiz_question}
+                    </h1>
                   </div>
-                  <div 
-                    className={`w-[500px] h-[165px] bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center rounded-md flex justify-center items-center p-4 text-white transform active:scale-75 transition-transform 
-                      hover:cursor-pointer 
-                      ${!isQuestionAnswered ? '' : ''}
-                      ${isQuestionAnswered && choice === quizQuestions[questionNumber].option_two && choice !== quizQuestions[questionNumber][`option_${quizQuestions[questionNumber].correct_option.toLowerCase()}`] ? 'bg-red-500' : ''}
+                  <div className="text-with-stroke grid w-full grid-flow-row justify-items-center gap-x-0 gap-y-5 text-center font-ogoby text-4xl lg:grid-cols-2 ">
+                    {/* options */}
+                    <div
+                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-white transition-transform hover:cursor-pointer 
+                      active:scale-75 
+                      ${!isQuestionAnswered ? "" : ""}
+                      ${
+                        isQuestionAnswered &&
+                        choice === quizQuestions[questionNumber].option_one &&
+                        choice !==
+                          quizQuestions[questionNumber][
+                            `option_${quizQuestions[
+                              questionNumber
+                            ].correct_option.toLowerCase()}`
+                          ]
+                          ? "bg-red-500"
+                          : ""
+                      }
                     `}
-                    onClick={() => {
-                      handleChoice(quizQuestions[questionNumber]?.option_two);
-                      setIsQuestionAnswered(true);
-                      moveToNextQuestion(); // Move to the next question
-                    }}
-                    style={{ backgroundSize: '100% 100%' }}
-                  >
-                    <span className="p-10">{quizQuestions[questionNumber]?.option_two}</span>
-                  </div>
-                  <div 
-                    className={`w-[500px] h-[165px] bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center rounded-md flex justify-center items-center p-4 text-white transform active:scale-75 transition-transform
-                      hover:cursor-pointer 
-                      ${!isQuestionAnswered ? '' : ''}
-                      ${isQuestionAnswered && choice === quizQuestions[questionNumber].option_three && choice !== quizQuestions[questionNumber][`option_${quizQuestions[questionNumber].correct_option.toLowerCase()}`] ? 'bg-red-500' : ''}
+                      onClick={() => {
+                        handleChoice(quizQuestions[questionNumber]?.option_one);
+                        setIsQuestionAnswered(true);
+                        moveToNextQuestion(); // Move to the next question
+                      }}
+                      style={{ backgroundSize: "100% 100%" }}
+                    >
+                      <span className="p-10">
+                        {quizQuestions[questionNumber]?.option_one}
+                      </span>
+                    </div>
+                    <div
+                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-white transition-transform hover:cursor-pointer 
+                      active:scale-75 
+                      ${!isQuestionAnswered ? "" : ""}
+                      ${
+                        isQuestionAnswered &&
+                        choice === quizQuestions[questionNumber].option_two &&
+                        choice !==
+                          quizQuestions[questionNumber][
+                            `option_${quizQuestions[
+                              questionNumber
+                            ].correct_option.toLowerCase()}`
+                          ]
+                          ? "bg-red-500"
+                          : ""
+                      }
                     `}
-                    onClick={() => {
-                      handleChoice(quizQuestions[questionNumber]?.option_three);
-                      setIsQuestionAnswered(true);
-                      moveToNextQuestion(); // Move to the next question
-                    }}
-                    style={{ backgroundSize: '100% 100%' }}
-                  >
-                    <span className="p-10">{quizQuestions[questionNumber]?.option_three}</span>
-                  </div>
-                  <div 
-                    className={`w-[500px] h-[165px] bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center rounded-md flex justify-center items-center p-4 text-white transform active:scale-75 transition-transform 
-                      hover:cursor-pointer 
-                      ${!isQuestionAnswered ? '' : ''}
-                      ${isQuestionAnswered && choice === quizQuestions[questionNumber].option_four && choice !== quizQuestions[questionNumber][`option_${quizQuestions[questionNumber].correct_option.toLowerCase()}`] ? 'bg-red-500' : ''}
+                      onClick={() => {
+                        handleChoice(quizQuestions[questionNumber]?.option_two);
+                        setIsQuestionAnswered(true);
+                        moveToNextQuestion(); // Move to the next question
+                      }}
+                      style={{ backgroundSize: "100% 100%" }}
+                    >
+                      <span className="p-10">
+                        {quizQuestions[questionNumber]?.option_two}
+                      </span>
+                    </div>
+                    <div
+                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-white transition-transform hover:cursor-pointer
+                      active:scale-75 
+                      ${!isQuestionAnswered ? "" : ""}
+                      ${
+                        isQuestionAnswered &&
+                        choice === quizQuestions[questionNumber].option_three &&
+                        choice !==
+                          quizQuestions[questionNumber][
+                            `option_${quizQuestions[
+                              questionNumber
+                            ].correct_option.toLowerCase()}`
+                          ]
+                          ? "bg-red-500"
+                          : ""
+                      }
                     `}
-                    onClick={() => {
-                      handleChoice(quizQuestions[questionNumber]?.option_four);
-                      setIsQuestionAnswered(true);
-                      moveToNextQuestion(); // Move to the next question
-                    }}
-                    style={{ backgroundSize: '100% 100%' }}
-                  >
-                    <span className="p-10">{quizQuestions[questionNumber]?.option_four}</span>
+                      onClick={() => {
+                        handleChoice(
+                          quizQuestions[questionNumber]?.option_three
+                        );
+                        setIsQuestionAnswered(true);
+                        moveToNextQuestion(); // Move to the next question
+                      }}
+                      style={{ backgroundSize: "100% 100%" }}
+                    >
+                      <span className="p-10">
+                        {quizQuestions[questionNumber]?.option_three}
+                      </span>
+                    </div>
+                    <div
+                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-white transition-transform hover:cursor-pointer 
+                      active:scale-75 
+                      ${!isQuestionAnswered ? "" : ""}
+                      ${
+                        isQuestionAnswered &&
+                        choice === quizQuestions[questionNumber].option_four &&
+                        choice !==
+                          quizQuestions[questionNumber][
+                            `option_${quizQuestions[
+                              questionNumber
+                            ].correct_option.toLowerCase()}`
+                          ]
+                          ? "bg-red-500"
+                          : ""
+                      }
+                    `}
+                      onClick={() => {
+                        handleChoice(
+                          quizQuestions[questionNumber]?.option_four
+                        );
+                        setIsQuestionAnswered(true);
+                        moveToNextQuestion(); // Move to the next question
+                      }}
+                      style={{ backgroundSize: "100% 100%" }}
+                    >
+                      <span className="p-10">
+                        {quizQuestions[questionNumber]?.option_four}
+                      </span>
+                    </div>
                   </div>
-                </div>
                 </div>
               </div>
               {flashBackground && (
-    <div
-      className="h-full w-full absolute top-0 left-0 bg-red-500 bg-opacity-50" /* Adjust the background color */
-      style={{ animation: 'flash 0.5s ease 1' }} /* Adjust the animation duration */
-    ></div>
-  )}
+                <div
+                  className="absolute top-0 left-0 h-full w-full bg-red-500 bg-opacity-50" /* Adjust the background color */
+                  style={{
+                    animation: "flash 0.5s ease 1",
+                  }} /* Adjust the animation duration */
+                ></div>
+              )}
             </div>
-          ) : ( 
+          ) : (
             <CompletionPage
-            calculatedScore={calculatedScore}
-            timeFinished={60 - timer}
-            resetGame={handleRestartQuiz}
-            stopGameOverMusic={() => stopGameOverMusic()}
-          />
+              calculatedScore={calculatedScore}
+              timeFinished={60 - timer}
+              activityID={activityID}
+              resetGame={handleRestartQuiz}
+              stopGameOverMusic={() => stopGameOverMusic()}
+            />
           )}
         </div>
       ) : (

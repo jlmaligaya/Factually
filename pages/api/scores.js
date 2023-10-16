@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const { uid, aid, score, timeFinished } = req.body;
 
   try {
-    if (req.method === 'POST') {
+    if (req.method === "POST") {
       const existingScore = await prisma.score.findUnique({
         where: {
           userId_activityId: `${uid}_${aid}`,
@@ -19,11 +19,10 @@ export default async function handler(req, res) {
         // If there is an existing score, check if the new score or timeFinished is better
         if (score >= existingScore.score) {
           // If either the score or timeFinished is worse, do not update the score
-          if (score === existingScore.score){
-            if (timeFinished >= existingScore.timeFinished){
-              res.status(200).json(existingScore)
-            }
-            else{
+          if (score === existingScore.score) {
+            if (timeFinished >= existingScore.timeFinished) {
+              res.status(200).json(existingScore);
+            } else {
               const updatedScore = await prisma.score.update({
                 where: {
                   userId_activityId: `${uid}_${aid}`,
@@ -48,16 +47,7 @@ export default async function handler(req, res) {
             res.status(200).json(updatedScore);
           }
         } else {
-          const updatedScore = await prisma.score.update({
-            where: {
-              userId_activityId: `${uid}_${aid}`,
-            },
-            data: {
-              score,
-              timeFinished,
-            },
-          });
-          res.status(200).json(updatedScore);
+          res.status(200).json(existingScore);
         }
       } else {
         // No existing score, create a new score
@@ -72,13 +62,13 @@ export default async function handler(req, res) {
         });
         res.status(200).json(newScore);
       }
-    } else if (req.method === 'GET') {
+    } else if (req.method === "GET") {
       // Access query parameter from req object directly
       const activityId = req.query.activityId;
 
       const scores = await prisma.score.findMany({
         where: { activityId },
-        orderBy: [{ score: 'desc' }, { timeFinished: 'asc' }], // Order by score (descending) and timeFinished (ascending)
+        orderBy: [{ score: "desc" }, { timeFinished: "asc" }], // Order by score (descending) and timeFinished (ascending)
         include: { user: true },
         take: 10,
       });
@@ -86,11 +76,11 @@ export default async function handler(req, res) {
       // Return response
       res.status(200).json(scores);
     } else {
-      res.status(405).json({ message: 'Method not allowed' });
+      res.status(405).json({ message: "Method not allowed" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   } finally {
     await prisma.$disconnect();
   }
