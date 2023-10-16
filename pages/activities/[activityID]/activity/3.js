@@ -329,8 +329,8 @@ const Home = () => {
           {!isGameCompleted && (
             <div>
               <div className="text-with-stroke mb-4 flex h-[150px] w-[815px] items-center justify-center rounded-md border-4 border-gray-600 bg-slate-500 text-center font-ogoby text-4xl shadow-md">
-                Swipe the card left if it's {cards[0]?.option_one} otherwise
-                swipe right if {cards[0]?.option_two}.
+                Swipe the card left if it&apos;s {cards[0]?.option_one}{" "}
+                otherwise swipe right if {cards[0]?.option_two}.
               </div>
               <div className="flex flex-row">
                 <button
