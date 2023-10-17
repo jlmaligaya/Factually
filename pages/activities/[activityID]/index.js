@@ -17,7 +17,15 @@ export default function Index() {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const res = await fetch(`/api/introduction?activityID=${activityID}`);
+        const currentActivityID = activityID || router.query.activityID;
+        if (!currentActivityID) {
+          router.push("/");
+          return;
+        }
+        const res = await fetch(
+          `/api/introduction?activityID=${currentActivityID}`
+        );
+
         const activity = await res.json();
 
         setVideoURL(activity.video);
@@ -28,11 +36,12 @@ export default function Index() {
       } catch (error) {
         console.error(error);
         setIsLoading(false);
+        router.push("/");
       }
     };
 
     fetchVideo();
-  }, [activityID]);
+  }, [activityID, router]);
 
   // Conditional rendering based on isLoading
   if (isLoading) {

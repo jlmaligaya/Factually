@@ -7,7 +7,7 @@ const ImageOverlay = ({ imageUrl, onClose }) => (
       >
         X
       </button>
-      <img src={imageUrl} alt="Selected" className="max-h-full max-w-full" />
+      <img src={imageUrl} alt="Selected" className="h-[900px] w-full p-10 " />
     </div>
   </div>
 );

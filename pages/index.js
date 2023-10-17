@@ -178,7 +178,7 @@ export default function Home({ data, actv, userScore }) {
                   playSoundEffect(clickAudioRef, sfxVolume);
                 }}
               >
-                <div className="mb-4 ml-20 flex h-20 w-20 items-center justify-center border-4 bg-amber-400">
+                <div className="mb-4 ml-20 flex h-20 w-20 items-center justify-center rounded-full border-4 bg-amber-400">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -225,7 +225,7 @@ export default function Home({ data, actv, userScore }) {
                   playSoundEffect(clickAudioRef, sfxVolume);
                 }}
               >
-                <div className="mb-4 mr-20 flex h-20  w-20 items-center justify-center border-4 bg-white">
+                <div className="mb-4 mr-20 flex h-20  w-20 items-center justify-center rounded-full border-4 bg-white">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -256,15 +256,7 @@ export default function Home({ data, actv, userScore }) {
                   onClick={toggleLeaderboardModal}
                 ></div>
                 <div className="w-4xl z-10 rounded-md border-4 border-red-500 bg-white p-8 shadow-lg">
-                  <div className="w-full">
-                    <button
-                      onClick={toggleLeaderboardModal}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-500 px-4 py-2 text-center font-boom text-white hover:bg-red-600"
-                    >
-                      X
-                    </button>
-                  </div>
-                  <Leaderboard />
+                  <Leaderboard onClose={toggleLeaderboardModal} />
                 </div>
               </div>
             )}

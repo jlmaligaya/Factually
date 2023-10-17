@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import AchievementsComponent from "./achievements";
 
 const levels = [
   "Chapter 1",
@@ -15,66 +16,57 @@ const levels = [
   "Chapter 10",
 ];
 
-const Leaderboard = () => {
-  const [selectedLevel, setSelectedLevel] = useState(levels[0]);
-  const [leaderboardData, setLeaderboardData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [userRank, setUserRank] = useState(null);
-  const { data: session, status } = useSession();
-  const getActivityIdForLevel = (level) => {
-    // Define the prefix for activity IDs
-    const activityIdPrefix = "AID";
-
-    // Define the number of activities you have
-    const numActivities = 10;
-
-    // Ensure the level is a number between 1 and numActivities
-    const levelNumber = parseInt(level.replace("Chapter ", ""));
-    if (isNaN(levelNumber) || levelNumber < 1 || levelNumber > numActivities) {
-      return ""; // Handle invalid input if necessary
-    }
-
-    // Generate the activity ID based on the level number
-    const activityId = `${activityIdPrefix}${String(levelNumber).padStart(
-      6,
-      "0"
-    )}`;
-
-    return activityId;
-  };
-
-  const fetchLeaderboardData = async () => {
-    try {
-      setLoading(true); // Set loading to true when fetching data
-
-      const newActivityId = getActivityIdForLevel(selectedLevel);
-      // Fetch leaderboard data based on the new activityId
-      const res = await fetch(`/api/leaderboards?activityID=${newActivityId}`);
-      const data = await res.json();
-      setLeaderboardData(data);
-      setLoading(false); // Set loading to false when data is fetched
-      const userIndex = data.findIndex(
-        (score) => score.user.username === session?.user?.username
-      );
-      setUserRank(userIndex !== -1 ? userIndex + 1 : null);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleLevelChange = (e) => {
-    setSelectedLevel(e.target.value);
-  };
-
-  useEffect(() => {
-    // Fetch leaderboard data when selectedLevel changes
-    fetchLeaderboardData();
-  }, [selectedLevel, session]);
-
+const MainMenu = ({ handleMenuSelect }) => {
   return (
-    <div className="font-3xl mx-auto h-full w-full max-w-7xl bg-white py-6 font-retropix text-gray-800 sm:px-6 lg:px-8">
-      <div className="px-4 sm:px-0">
-        <div className="mb-4 flex justify-center">
+    <div className="mb-4 flex flex-col items-center justify-center gap-4 font-boom text-lg">
+      <button
+        className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white"
+        onClick={() => handleMenuSelect("achievements")}
+      >
+        Achievements
+      </button>
+      <button
+        className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white"
+        onClick={() => handleMenuSelect("leaderboards")}
+      >
+        Leaderboards
+      </button>
+    </div>
+  );
+};
+
+const LeaderboardContent = ({
+  levels,
+  selectedLevel,
+  handleLevelChange,
+  loading,
+  leaderboardData,
+  userRank,
+  onClose,
+}) => {
+  return (
+    <div>
+      <div className="mb-4 flex flex-col justify-center gap-5">
+        <button
+          onClick={onClose}
+          className="justify-self-start text-gray-600 hover:text-gray-900"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-6 w-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+            />
+          </svg>
+        </button>
+        <div className="flex flex-row">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="yellow"
@@ -105,106 +97,199 @@ const Leaderboard = () => {
             />
           </svg>
         </div>
-        <div className="flex items-center justify-between">
-          <select
-            id="levelSelect"
-            className="rounded border border-gray-300 px-2 py-1 text-lg"
-            value={selectedLevel}
-            onChange={handleLevelChange}
-          >
-            {levels.map((level) => (
-              <option key={level} value={level}>
-                {level}
-              </option>
-            ))}
-          </select>
+      </div>
+      <div className="flex items-center justify-between">
+        <select
+          id="levelSelect"
+          className="rounded border border-gray-300 px-2 py-1 text-lg"
+          value={selectedLevel}
+          onChange={handleLevelChange}
+        >
+          {levels.map((level) => (
+            <option key={level} value={level}>
+              {level}
+            </option>
+          ))}
+        </select>
+      </div>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center p-10 text-xl">
+          <Image
+            src={"/assets/r_loading.png"}
+            height={300}
+            className="robot-image pointer-events-none"
+            width={300}
+          ></Image>
+          <p className="py-5 text-center">Loading...</p>
         </div>
-        {loading ? (
-          <div className="flex flex-col items-center justify-center p-10 text-xl">
-            <Image
-              src={"/assets/r_loading.png"}
-              height={300}
-              className="robot-image pointer-events-none"
-              width={300}
-            ></Image>
-            <p className="py-5 text-center">Loading...</p>
-          </div>
-        ) : leaderboardData.length == 0 ? (
-          <div className="flex flex-col items-center justify-center p-10 text-xl">
-            <Image
-              src="/assets/r_dead.svg"
-              className="pointer-events-none"
-              height={300}
-              width={300}
-            ></Image>
-            <p className="text-center">
-              No players have reached this level.
-              <br />
-              Check again later.
-            </p>
+      ) : leaderboardData.length == 0 ? (
+        <div className="flex flex-col items-center justify-center p-10 text-xl">
+          <Image
+            src="/assets/r_dead.svg"
+            className="pointer-events-none"
+            height={300}
+            width={300}
+          ></Image>
+          <p className="text-center">
+            No players have reached this level.
+            <br />
+            Check again later.
+          </p>
+        </div>
+      ) : (
+        <div>
+          {/* Render the leaderboard data here */}
+          <table className="w-full table-auto">
+            <thead className="bg-white">
+              <tr>
+                <th className="px-4 py-2">Rank</th>
+                <th className="px-4 py-2">Name</th>
+                <th className="px-4 py-2">Score</th>
+                <th className="px-4 py-2">Time</th>
+                {/* Add more table headers as needed */}
+              </tr>
+            </thead>
+            <tbody>
+              {leaderboardData.map((score, index) => (
+                <tr
+                  key={score.id}
+                  className={
+                    index % 2 === 0
+                      ? "bg-gray-100 text-center"
+                      : "bg-white text-center"
+                  }
+                  // Apply gold, silver, or bronze classes to the top 3 rows
+                  {...(index < 3
+                    ? {
+                        className: `${
+                          index === 0
+                            ? "border-t-4 border-gold"
+                            : index === 1
+                            ? "border-t-4 border-silver"
+                            : "border-t-4 border-bronze"
+                        } ${
+                          index % 2 === 0
+                            ? "bg-gray-100 text-center"
+                            : "bg-white text-center"
+                        }`,
+                      }
+                    : {})}
+                >
+                  <td className="border border-gray-200 px-4 py-2">
+                    {index + 1}
+                  </td>
+                  <td className="border border-gray-200 px-4 py-2">
+                    {score.user.username.toUpperCase()}
+                  </td>
+                  <td className="border border-gray-200 px-4 py-2">
+                    {score.score}
+                  </td>
+                  <td className="border border-gray-200 px-4 py-2">
+                    {score.timeFinished}s
+                  </td>
+                  {/* Render additional data as needed */}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="mt-4">Current Rank: #{userRank}</div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Main = ({ onClose }) => {
+  const [selectedLevel, setSelectedLevel] = useState(levels[0]);
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userRank, setUserRank] = useState(null);
+  const { data: session, status } = useSession();
+  const getActivityIdForLevel = (level) => {
+    // Define the prefix for activity IDs
+    const activityIdPrefix = "AID";
+
+    // Define the number of activities you have
+    const numActivities = 10;
+
+    // Ensure the level is a number between 1 and numActivities
+    const levelNumber = parseInt(level.replace("Chapter ", ""));
+    if (isNaN(levelNumber) || levelNumber < 1 || levelNumber > numActivities) {
+      return ""; // Handle invalid input if necessary
+    }
+
+    // Generate the activity ID based on the level number
+    const activityId = `${activityIdPrefix}${String(levelNumber).padStart(
+      6,
+      "0"
+    )}`;
+
+    return activityId;
+  };
+  const [showMenu, setShowMenu] = useState(true);
+  const [menuSelection, setMenuSelection] = useState("");
+
+  const handleMenuSelect = (selection) => {
+    setMenuSelection(selection);
+    setShowMenu(false);
+  };
+
+  const fetchLeaderboardData = async () => {
+    try {
+      setLoading(true); // Set loading to true when fetching data
+
+      const newActivityId = getActivityIdForLevel(selectedLevel);
+      // Fetch leaderboard data based on the new activityId
+      const res = await fetch(`/api/leaderboards?activityID=${newActivityId}`);
+      const data = await res.json();
+      setLeaderboardData(data);
+      setLoading(false); // Set loading to false when data is fetched
+      const userIndex = data.findIndex(
+        (score) => score.user.username === session?.user?.username
+      );
+      setUserRank(userIndex !== -1 ? userIndex + 1 : null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleLevelChange = (e) => {
+    setSelectedLevel(e.target.value);
+  };
+
+  const handleClose = () => {
+    setShowMenu(true); // Set the showMenu state to true to return to the main menu
+  };
+
+  useEffect(() => {
+    // Fetch leaderboard data when selectedLevel changes
+    fetchLeaderboardData();
+  }, [selectedLevel, session]);
+
+  return (
+    <div className="font-3xl mx-auto h-full w-full max-w-7xl bg-white py-6 font-retropix text-gray-800 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-0">
+        {showMenu ? (
+          <MainMenu handleMenuSelect={handleMenuSelect} />
+        ) : menuSelection === "achievements" ? (
+          <div>
+            {/* ... (achievements component) */}
+            <AchievementsComponent userID={session?.user?.uid} />
           </div>
         ) : (
-          <div>
-            {/* Render the leaderboard data here */}
-            <table className="w-full table-auto">
-              <thead className="bg-white">
-                <tr>
-                  <th className="px-4 py-2">Rank</th>
-                  <th className="px-4 py-2">Name</th>
-                  <th className="px-4 py-2">Score</th>
-                  <th className="px-4 py-2">Time</th>
-                  {/* Add more table headers as needed */}
-                </tr>
-              </thead>
-              <tbody>
-                {leaderboardData.map((score, index) => (
-                  <tr
-                    key={score.id}
-                    className={
-                      index % 2 === 0
-                        ? "bg-gray-100 text-center"
-                        : "bg-white text-center"
-                    }
-                    // Apply gold, silver, or bronze classes to the top 3 rows
-                    {...(index < 3
-                      ? {
-                          className: `${
-                            index === 0
-                              ? "border-t-4 border-gold"
-                              : index === 1
-                              ? "border-t-4 border-silver"
-                              : "border-t-4 border-bronze"
-                          } ${
-                            index % 2 === 0
-                              ? "bg-gray-100 text-center"
-                              : "bg-white text-center"
-                          }`,
-                        }
-                      : {})}
-                  >
-                    <td className="border border-gray-200 px-4 py-2">
-                      {index + 1}
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {score.user.username.toUpperCase()}
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {score.score}
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {score.timeFinished}s
-                    </td>
-                    {/* Render additional data as needed */}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="mt-4">Current Rank: #{userRank}</div>
-          </div>
+          <LeaderboardContent
+            levels={levels}
+            selectedLevel={selectedLevel}
+            handleLevelChange={handleLevelChange}
+            loading={loading}
+            leaderboardData={leaderboardData}
+            userRank={userRank}
+            onClose={handleClose}
+          />
         )}
       </div>
     </div>
   );
 };
 
-export default Leaderboard;
+export default Main;
