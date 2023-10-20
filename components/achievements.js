@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 const AchievementsComponent = ({ userID }) => {
   const [userScores, setUserScores] = useState([]);
@@ -86,12 +87,50 @@ const AchievementsComponent = ({ userID }) => {
   }, [userID]);
 
   if (loading) {
-    return <div>Loading...</div>; // Add a loading indicator
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <Image
+          src="/assets/r_loading.png"
+          height={300}
+          className="robot-image pointer-events-none select-none"
+          width={300}
+          alt="Loading"
+          loading="eager"
+          draggable="false"
+          priority
+        />
+        Loading...
+      </div>
+    ); // Add a loading indicator
   }
 
   return (
     <div>
-      <h1 className="mb-8 text-center font-boom text-3xl">Achievements</h1>
+      <div className="mb-4 flex items-center justify-center gap-4">
+        <Image
+          src="/assets/achievements_icon.svg"
+          height={50}
+          className="pointer-events-none select-none"
+          width={50}
+          alt="Loading"
+          loading="eager"
+          draggable="false"
+          priority
+        />
+        <h1 className="mb-8 mt-4 text-center font-boom text-3xl">
+          Achievements
+        </h1>
+        <Image
+          src="/assets/achievements_icon.svg"
+          height={50}
+          className="pointer-events-none select-none"
+          width={50}
+          alt="Loading"
+          loading="eager"
+          draggable="false"
+          priority
+        />
+      </div>
       <div className="max-h-96 overflow-y-auto px-4 scrollbar scrollbar-track-gray-100 scrollbar-thumb-red-500">
         {achievements.map((achievement) => {
           let additionalInfo = "";

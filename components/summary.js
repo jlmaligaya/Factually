@@ -19,6 +19,7 @@ const levels = [
 const MainMenu = ({ handleMenuSelect }) => {
   return (
     <div className="mb-4 flex flex-col items-center justify-center gap-4 font-boom text-lg">
+      <div>STATISTICS</div>
       <button
         className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white"
         onClick={() => handleMenuSelect("achievements")}
