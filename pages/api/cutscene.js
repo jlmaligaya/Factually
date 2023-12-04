@@ -9,6 +9,9 @@ export default async function handler(req, res) {
         isIntro: isIntroBool,
         activityID: String(activityID),
       },
+      orderBy: {
+        id: "asc", // 'asc' for ascending order, 'desc' for descending order
+      },
     });
     console.log("Data: ", cutscene);
     console.log("isIntro: ", isIntroBool);

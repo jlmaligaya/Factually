@@ -373,6 +373,7 @@ const Home = () => {
           {/* Game Over */}
           {isGameCompleted && (
             <CompletionPage
+              activityID={activityID}
               calculatedScore={calculatedScore}
               timeFinished={60 - timer}
               stopGameOverMusic={stopGameOverMusic}
