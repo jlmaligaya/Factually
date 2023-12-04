@@ -38,14 +38,14 @@ const AchievementsComponent = ({ userID }) => {
         userScores.some((score) => score.score === 100),
       progress: 0,
     },
-    {
-      id: 4,
-      name: "Punctual",
-      description: "Complete all activities within 60 seconds each",
-      condition: (userScores) =>
-        userScores.every((score) => score.timeFinished <= 60),
-      progress: 0,
-    },
+    // {
+    //   id: 4,
+    //   name: "Punctual",
+    //   description: "Complete all activities within 60 seconds each",
+    //   condition: (userScores) =>
+    //     userScores.every((score) => score.timeFinished <= 60),
+    //   progress: 0,
+    // },
     {
       id: 5,
       name: "Dedicated",
@@ -135,44 +135,53 @@ const AchievementsComponent = ({ userID }) => {
         {achievements.map((achievement) => {
           let additionalInfo = "";
           let progressValue = "0";
-          if (achievement.id === 1) {
-            const activitiesFinished = Math.min(
-              userScores.filter((score) => score.score > 0).length,
-              3
-            );
-            additionalInfo = `Activities finished: ${activitiesFinished}/3`;
-            progressValue = `${activitiesFinished}/3`;
-          } else if (achievement.id === 2) {
-            const fastestTime = userScores.reduce(
-              (min, current) =>
-                current.timeFinished < min ? current.timeFinished : min,
-              userScores[0].timeFinished
-            );
-            additionalInfo = `Fastest time: ${fastestTime}s`;
-            progressValue = `${
-              userScores.filter((score) => score.timeFinished < 30).length > 0
-                ? 1
-                : 0
-            }/1`;
-          } else if (achievement.id === 3) {
-            const perfectScoredActivities = userScores.filter(
-              (score) => score.score === 100
-            ).length;
-            additionalInfo = `Perfectly scored activities: ${perfectScoredActivities}/1`;
-            progressValue = `${perfectScoredActivities}/1`;
-          } else if (achievement.id === 4) {
-            additionalInfo = `All activities completed within 60 seconds`;
-            progressValue = `${achievement.condition(userScores) ? 1 : 0}/1`;
-          } else if (achievement.id === 5) {
-            additionalInfo = `Total activities completed: ${userScores.length}/10`;
-            progressValue = `${userScores.length}/10`;
-          } else if (achievement.id === 6) {
-            const totalStars = userScores.reduce(
-              (total, score) => total + (score.score / 100) * 3,
-              0
-            );
-            additionalInfo = `Total Stars: ${Math.round(totalStars)}/30`;
-            progressValue = `${Math.round(totalStars)}/30`;
+          if (userScores && userScores.length > 0) {
+            if (achievement.id === 1) {
+              const activitiesFinished = Math.min(
+                userScores.filter((score) => score.score > 0).length,
+                3
+              );
+              additionalInfo = `Activities finished: ${activitiesFinished}/3`;
+              progressValue = `${activitiesFinished}/3`;
+            } else if (achievement.id === 2) {
+              const fastestTime = userScores.reduce(
+                (min, current) =>
+                  current.timeFinished < min ? current.timeFinished : min,
+                userScores[0].timeFinished
+              );
+              additionalInfo = `Fastest time: ${fastestTime}s`;
+              progressValue = `${
+                userScores.filter((score) => score.timeFinished < 30).length > 0
+                  ? 1
+                  : 0
+              }/1`;
+            } else if (achievement.id === 3) {
+              const perfectScoredActivities = userScores.filter(
+                (score) => score.score === 100
+              ).length;
+              additionalInfo = `Perfectly scored activities: ${perfectScoredActivities}/1`;
+              progressValue = `${perfectScoredActivities}/1`;
+              // } else if (achievement.id === 4) {
+              // additionalInfo = `All activities completed within 60 seconds`;
+              // const punctualActivities = userScores.filter(
+              //   (score) => score.timeFinished <= 60
+              // ).length;
+              // progressValue = `${
+              //   userScores.length > 0 && achievement.condition(userScores)
+              //     ? punctualActivities / userScores.length
+              //     : 0
+              // }/1`;
+            } else if (achievement.id === 5) {
+              additionalInfo = `Total activities completed: ${userScores.length}/10`;
+              progressValue = `${userScores.length}/10`;
+            } else if (achievement.id === 6) {
+              const totalStars = userScores.reduce(
+                (total, score) => total + (score.score / 100) * 3,
+                0
+              );
+              additionalInfo = `Total Stars: ${Math.round(totalStars)}/30`;
+              progressValue = `${Math.round(totalStars)}/30`;
+            }
           }
 
           return (
