@@ -35,6 +35,16 @@ export default function Register() {
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const clearErrors = () => {
+    setFirstNameError(false);
+    setLastNameError(false);
+    setUsernameError(false);
+    setEmailError(false);
+    setPasswordError(false);
+    setConfirmPasswordError(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,9 +53,27 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    clearErrors();
+
     try {
+      setLoading(true);
       // Validate form using Yup schema
       await registerSchema.validate(form, { abortEarly: false });
+
+      // Check if the username or email already exists
+      const existingUser = await axios.post("/api/checkUserExistence", {
+        username: form.username,
+        email: form.email,
+      });
+
+      if (existingUser.data.exists) {
+        const { username, email } = existingUser.data;
+        setUsernameError(`Username '${form.username}' already exists`);
+        setEmailError(`Email '${form.email}' already exists`);
+        return;
+      }
+
+      // Continue with user creation if no existing user found
       const res = await axios.post("/api/register", form);
       setShowModal(true);
     } catch (error) {
@@ -71,6 +99,8 @@ export default function Register() {
       } else {
         console.error(error);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -98,7 +128,10 @@ export default function Register() {
             <Link href="/auth/signIn">
               <button
                 className="w-full rounded bg-green-500 py-2 px-4 text-white"
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  clearErrors(); // Clear errors when Sign In button is clicked
+                  router.push("/auth/signIn");
+                }}
               >
                 OK
               </button>
@@ -240,7 +273,7 @@ export default function Register() {
                   className="m-4 inline-block w-48 place-self-center rounded-full border-2 border-white px-12 py-2 text-lg font-semibold text-white hover:bg-white hover:text-[#CE4044]"
                   onClick={handleSubmit}
                 >
-                  SIGN UP
+                  {loading ? "Signing Up..." : "SIGN UP"}
                 </button>
               </form>
             </center>
