@@ -43,6 +43,7 @@ const LeaderboardContent = ({
   loading,
   leaderboardData,
   userRank,
+
   onClose,
 }) => {
   return (
@@ -179,8 +180,18 @@ const LeaderboardContent = ({
                   <td className="border border-gray-200 px-4 py-2">
                     {index + 1}
                   </td>
-                  <td className="border border-gray-200 px-4 py-2">
-                    {score.user.username.toUpperCase()}
+                  <td className="flex items-center gap-4 border border-gray-200 px-4 py-2">
+                    <div>
+                      {" "}
+                      <Image
+                        src={`/avatars/${score.user.avatar}.png`}
+                        alt={`${score.user.username}`}
+                        width={35}
+                        height={35}
+                        className="rounded-full"
+                      />
+                    </div>
+                    <div>{score.user.username.toUpperCase()}</div>
                   </td>
                   <td className="border border-gray-200 px-4 py-2">
                     {score.score}
@@ -206,6 +217,7 @@ const Main = ({ onClose }) => {
   const [loading, setLoading] = useState(true);
   const [userRank, setUserRank] = useState(null);
   const { data: session, status } = useSession();
+  const avatar = session.user.avatar;
   const getActivityIdForLevel = (level) => {
     // Define the prefix for activity IDs
     const activityIdPrefix = "AID";

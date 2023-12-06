@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { signOut } from 'next-auth/react';
-import Image from 'next/image';
+import React, { useState, useEffect } from "react";
+import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 export default function GameSettingsModal({
   isOpen,
@@ -10,12 +10,13 @@ export default function GameSettingsModal({
   onBgmVolumeChange,
   onSfxVolumeChange,
   userFirstName,
+  userAvatar,
 }) {
-  const [localBgmVolume, setLocalBgmVolume] = useState(() =>
-    parseFloat(localStorage.getItem('bgmVolume')) || 0.5
+  const [localBgmVolume, setLocalBgmVolume] = useState(
+    () => parseFloat(localStorage.getItem("bgmVolume")) || 0.5
   );
-  const [localSfxVolume, setLocalSfxVolume] = useState(() =>
-    parseFloat(localStorage.getItem('sfxVolume')) || 0.5
+  const [localSfxVolume, setLocalSfxVolume] = useState(
+    () => parseFloat(localStorage.getItem("sfxVolume")) || 0.5
   );
 
   useEffect(() => {
@@ -24,8 +25,8 @@ export default function GameSettingsModal({
   }, [bgmVolume, sfxVolume]);
 
   const handleClose = () => {
-    localStorage.setItem('bgmVolume', localBgmVolume.toString());
-    localStorage.setItem('sfxVolume', localSfxVolume.toString());
+    localStorage.setItem("bgmVolume", localBgmVolume.toString());
+    localStorage.setItem("sfxVolume", localSfxVolume.toString());
     onClose();
   };
 
@@ -33,34 +34,42 @@ export default function GameSettingsModal({
   const placeholderAccountName = "John Doe";
   const placeholderIcon = (
     <Image
-      src=""
+      src={`/avatars/${userAvatar}.png`}
       alt="User Icon"
-      className="h-40 w-40 rounded-full bg-black"
-      draggable='false'
+      width={500}
+      height={500}
+      className="pointer-events-none h-40 w-40 border-4 border-gray-500"
+      draggable="false"
     />
-
   );
 
   return (
-    <div className={`modal ${isOpen ? 'modal-open' : 'modal-closed'} font-boom text-black`}>
-      <div className="bg-white border-red-500 border-4 bg-contain bg-no-repeat w-4xl h-4/12 p-4 flex flex-col justify-center items-center text-black rounded-lg">
+    <div
+      className={`modal ${
+        isOpen ? "modal-open" : "modal-closed"
+      } font-boom text-black`}
+    >
+      <div className="w-4xl h-4/12 flex flex-col items-center justify-center rounded-lg border-4 border-red-500 bg-white bg-contain bg-no-repeat p-4 text-black">
         {/* Close button as an "x" inside the game container */}
-        <div className="w-full flex justify-between items-center">
-          <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={handleClose}>
+        <div className="flex w-full items-center justify-between">
+          <button
+            className="rounded-lg bg-red-500 px-4 py-2 text-white"
+            onClick={handleClose}
+          >
             X
           </button>
         </div>
-        <div className="flex items-center gap-2 flex-col w-full">
-            {/* Placeholder for icon and account name using Tailwind CSS classes */}
-            <div>
-              {placeholderIcon}
-            </div>
-            <div className=" text-2xl font-retropix x-5">
-              {userFirstName.toUpperCase()}
-            </div>
+        <div className="flex w-full flex-col items-center gap-2">
+          {/* Placeholder for icon and account name using Tailwind CSS classes */}
+          <div>{placeholderIcon}</div>
+          <div className=" x-5 font-retropix text-2xl">
+            {userFirstName.toUpperCase()}
           </div>
-          <h1 className='mt-4 bg-red-500 p-2 border-red-400 border-4 text-white'>Settings</h1>
-        <div className="flex items-center mt-2 p-4">
+        </div>
+        <h1 className="mt-4 border-4 border-red-400 bg-red-500 p-2 text-white">
+          Settings
+        </h1>
+        <div className="mt-2 flex items-center p-4">
           <label className=" mr-2">BGM Volume</label>
           <input
             type="range"
@@ -75,7 +84,7 @@ export default function GameSettingsModal({
             }}
           />
         </div>
-        <div className="flex items-center mt-2">
+        <div className="mt-2 flex items-center">
           <label className=" mr-2">SFX Volume</label>
           <input
             type="range"
@@ -92,7 +101,10 @@ export default function GameSettingsModal({
         </div>
         <div className="mt-4">
           {/* Logout button */}
-          <button className="bg-red-500 text-white px-4 py-2 rounded-lg my-4" onClick={signOut}>
+          <button
+            className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white"
+            onClick={signOut}
+          >
             Logout
           </button>
         </div>

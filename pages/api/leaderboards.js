@@ -6,8 +6,8 @@ export default async function handler(req, res) {
     const scoresWithUsername = await prisma.score.findMany({
       where: { activityId: activityID },
       orderBy: [
-        { score: 'desc' }, // Order by score in descending order
-        { timeFinished: 'asc' }, // Then order by timeFinished in ascending order
+        { score: "desc" }, // Order by score in descending order
+        { timeFinished: "asc" }, // Then order by timeFinished in ascending order
       ],
 
       take: 10,
@@ -15,19 +15,20 @@ export default async function handler(req, res) {
         user: {
           select: {
             username: true, // Include the username field
+            avatar: true,
           },
         },
       },
     });
 
     if (!scoresWithUsername) {
-      res.status(404).json({ error: 'Video not found' });
+      res.status(404).json({ error: "Video not found" });
       return;
     }
 
     res.status(200).json(scoresWithUsername);
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   } finally {
     await prisma.$disconnect();
   }

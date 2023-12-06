@@ -61,6 +61,7 @@ const authOptions = {
       });
 
       // Add the additional user data to the session object
+
       session.user.email = user.email;
       session.user.firstName = user.firstName;
       session.user.lastName = user.lastName;
@@ -68,7 +69,7 @@ const authOptions = {
       session.user.exp = user.exp;
       session.user.level = user.level;
       session.user.username = user.username;
-
+      session.user.avatar = user.avatar;
       return session;
     },
   },

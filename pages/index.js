@@ -7,11 +7,12 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Image from "next/image";
 import LoadingScreen from "../components/loading";
+import AvatarSelectionModal from "../components/AvatarSelectionModal";
 
 const GameSettingsModal = lazy(() => import("../components/settings"));
 const Leaderboard = lazy(() => import("../components/summary"));
 
-export default function Home({ data, actv, userScore }) {
+export default function Home({ useravatar, actv, userScore }) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [hoveredCircle, setHoveredCircle] = useState(null);
@@ -23,6 +24,17 @@ export default function Home({ data, actv, userScore }) {
   const backgroundMusicRef = useRef(null);
   const [bgmVolume, setBgmVolume] = useState(0.5); // Initial BGM volume
   const [sfxVolume, setSfxVolume] = useState(0.5); // Initial SFX volume
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [isFirstTime, setIsFirstTime] = useState(useravatar.avatar === "0");
+  const [showAvatarModal, setShowAvatarModal] = useState(isFirstTime);
+
+  const handleAvatarSelection = (selectedAvatar) => {
+    setIsFirstTime(false);
+  };
+
+  const handleCloseAvatarModal = () => {
+    setShowAvatarModal(false);
+  };
 
   // Function to toggle the settings modal
   const toggleSettingsModal = () => {
@@ -149,6 +161,13 @@ export default function Home({ data, actv, userScore }) {
           loop
         ></audio>
         <Suspense fallback={<LoadingScreen />}>
+          {showAvatarModal && (
+            <AvatarSelectionModal
+              onClose={handleCloseAvatarModal}
+              onSelectAvatar={handleAvatarSelection}
+              avatar={useravatar.avatar}
+            />
+          )}
           <div className="w-full bg-[url('/bground_menu.png')] bg-blend-darken">
             <div
               className={`transparent-overlay ${
@@ -164,8 +183,10 @@ export default function Home({ data, actv, userScore }) {
                 onBgmVolumeChange={onBgmVolumeChange}
                 onSfxVolumeChange={onSfxVolumeChange}
                 userFirstName={session.user.username} // Pass the user's first name as a prop
+                userAvatar={session.user.avatar}
               />
             )}
+            {console.log(session.user.avatar)}
             <div
               className={`flex w-full items-center justify-between pt-20 ${
                 isFading ? "fade-out" : ""
@@ -248,7 +269,6 @@ export default function Home({ data, actv, userScore }) {
                 </div>
               </a>
             </div>
-
             {showLeaderboard && (
               <div className="fixed inset-0 z-50 flex items-center justify-center">
                 <div
@@ -260,7 +280,6 @@ export default function Home({ data, actv, userScore }) {
                 </div>
               </div>
             )}
-
             <div>
               <div className="container">
                 <div className="item ml-20 flex space-x-10">
@@ -286,15 +305,27 @@ export default function Home({ data, actv, userScore }) {
                           if (!isLocked) {
                             setHoveredCircle(index);
                             playSoundEffect(hoverAudioRef, sfxVolume);
+                          } else {
+                            setShowTooltip(true);
                           }
                         }}
-                        onMouseLeave={() => setHoveredCircle(null)}
+                        onMouseLeave={() => {
+                          setHoveredCircle(null);
+                          setShowTooltip(false);
+                        }}
                         onClick={() => {
                           if (!isLocked) {
                             handleCircleClick(item.aid);
                             playSoundEffect(clickAudioRef, sfxVolume);
+                          } else {
+                            setShowTooltip(true);
                           }
                         }}
+                        title={
+                          showTooltip && isLocked
+                            ? "Achieve 2 stars on the previous activity to unlock"
+                            : ""
+                        }
                       >
                         <div className="relative">
                           {isLastUnlocked && !isLocked && (
@@ -416,6 +447,15 @@ export async function getServerSideProps(context) {
     ],
   });
 
+  const useravatar = await prisma.user.findUnique({
+    where: {
+      username: session.user.username,
+    },
+    select: {
+      avatar: true,
+    },
+  });
+
   const userScore = await prisma.score.findMany({
     where: {
       userId: session.user.uid,
@@ -429,6 +469,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      useravatar,
       actv,
       userScore,
     },

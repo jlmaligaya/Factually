@@ -17,6 +17,7 @@ model User {
   uid       String  @unique @default(dbgenerated("('UID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
   exp       Int     @default(0)
   id        Int     @id @default(autoincrement())
+  avatar    String? @default("0")
   scores    Score[]
 }
 
