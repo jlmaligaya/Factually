@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
+import AvatarSelectionModal from "./AvatarSelectionModal";
 
 export default function GameSettingsModal({
   isOpen,
@@ -24,21 +25,25 @@ export default function GameSettingsModal({
     setLocalSfxVolume(sfxVolume);
   }, [bgmVolume, sfxVolume]);
 
+  const [isAvatarHovered, setIsAvatarHovered] = useState(false);
+  const [isAvatarSelectionModalOpen, setIsAvatarSelectionModalOpen] =
+    useState(false);
+
   const handleClose = () => {
     localStorage.setItem("bgmVolume", localBgmVolume.toString());
     localStorage.setItem("sfxVolume", localSfxVolume.toString());
     onClose();
   };
 
-  // Placeholder for account name and icon
-  const placeholderAccountName = "John Doe";
   const placeholderIcon = (
     <Image
       src={`/avatars/${userAvatar}.png`}
       alt="User Icon"
       width={500}
       height={500}
-      className="pointer-events-none h-40 w-40 border-4 border-gray-500"
+      className={`pointer-events-none h-40 w-40 border-4 ${
+        isAvatarHovered ? "border-red-500" : "border-gray-500"
+      }`}
       draggable="false"
     />
   );
@@ -59,9 +64,33 @@ export default function GameSettingsModal({
             X
           </button>
         </div>
-        <div className="flex w-full flex-col items-center gap-2">
+        <div className="relative flex w-full flex-col items-center gap-2">
           {/* Placeholder for icon and account name using Tailwind CSS classes */}
-          <div>{placeholderIcon}</div>
+          <div
+            onMouseEnter={() => setIsAvatarHovered(true)}
+            onMouseLeave={() => setIsAvatarHovered(false)}
+          >
+            {/* Display your avatar image here */}
+            <Image
+              src={`/avatars/${userAvatar}.png`}
+              alt="User Icon"
+              width={500}
+              height={500}
+              className={`pointer-events-none h-40 w-40 border-4 ${
+                isAvatarHovered ? "border-red-500" : "border-gray-500"
+              }`}
+              draggable="false"
+            />
+            {isAvatarHovered && (
+              <div
+                className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black bg-opacity-50"
+                onClick={() => setIsAvatarSelectionModalOpen(true)}
+              >
+                Change Avatar
+              </div>
+            )}
+          </div>
+
           <div className=" x-5 font-retropix text-2xl">
             {userFirstName.toUpperCase()}
           </div>

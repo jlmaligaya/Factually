@@ -13,7 +13,6 @@ const AvatarSelectionModal = ({ onClose, onSelectAvatar, uname }) => {
   };
 
   const handleSaveAvatar = async () => {
-    // Update the user's avatar using the Axios library
     try {
       const response = await axios.post(
         "/api/updateAvatar",
@@ -27,18 +26,15 @@ const AvatarSelectionModal = ({ onClose, onSelectAvatar, uname }) => {
       if (response.status === 200) {
         const updatedUser = response.data;
 
-        // Call the callback to inform the parent component about the avatar selection
+        // Update the avatar immediately
         onSelectAvatar(updatedUser.avatar);
 
-        // Close the modal
         onClose();
       } else {
         console.error("Error updating avatar:", response.statusText);
-        // Handle the error, e.g., show an error message to the user
       }
     } catch (error) {
       console.error("Error updating avatar:", error);
-      // Handle the error, e.g., show an error message to the user
     }
   };
 

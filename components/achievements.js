@@ -36,7 +36,7 @@ const AchievementsComponent = ({ userID }) => {
       description: "Achieve a perfect score in an activity",
       condition: (userScores) =>
         userScores.some((score) => score.score === 100),
-      progress: 0,
+      progress: userScores.some((score) => score.score === 100) ? 1 : 0,
     },
     // {
     //   id: 4,
@@ -51,7 +51,7 @@ const AchievementsComponent = ({ userID }) => {
       name: "Dedicated",
       description: "Complete all activities available",
       condition: (userScores) => userScores.length >= 10,
-      progress: 0,
+      progress: userScores.length >= 10 ? 1 : userScores.length / 10,
     },
     {
       id: 6,
@@ -64,7 +64,16 @@ const AchievementsComponent = ({ userID }) => {
         );
         return totalStars >= 30;
       },
-      progress: 0,
+      progress:
+        Math.min(
+          (userScores.reduce(
+            (total, score) => total + (score.score / 100) * 3,
+            0
+          ) /
+            30) *
+            100,
+          100
+        ) / 100,
     },
     // Add more achievements with progress properties as needed
   ];
@@ -156,9 +165,11 @@ const AchievementsComponent = ({ userID }) => {
                   : 0
               }/1`;
             } else if (achievement.id === 3) {
-              const perfectScoredActivities = userScores.filter(
+              const perfectScoredActivities = userScores.some(
                 (score) => score.score === 100
-              ).length;
+              )
+                ? 1
+                : 0;
               additionalInfo = `Perfectly scored activities: ${perfectScoredActivities}/1`;
               progressValue = `${perfectScoredActivities}/1`;
               // } else if (achievement.id === 4) {
@@ -202,7 +213,7 @@ const AchievementsComponent = ({ userID }) => {
                   style={{
                     width: achievement.condition(userScores)
                       ? "100%"
-                      : `calc(${progressValue} / 3 * 100%)`,
+                      : `calc(${progressValue} / 1 * 100%)`,
                   }}
                 >
                   {progressValue}
