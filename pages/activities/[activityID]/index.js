@@ -106,7 +106,6 @@ export default function Index() {
                   height="435"
                   src={`${videoURL}?rel=0`}
                   title="Video Player"
-                  allowFullScreen
                 ></iframe>
               </div>
               <div

@@ -6,6 +6,7 @@ import axios from "axios";
 
 const AvatarSelectionModal = ({ onClose, onSelectAvatar, uname }) => {
   const [selectedAvatar, setSelectedAvatar] = useState(1); // Default selected avatar
+  const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
 
   const handleAvatarClick = (avatarIndex) => {
@@ -14,6 +15,7 @@ const AvatarSelectionModal = ({ onClose, onSelectAvatar, uname }) => {
 
   const handleSaveAvatar = async () => {
     try {
+      setLoading(true);
       const response = await axios.post(
         "/api/updateAvatar",
         {
@@ -35,6 +37,8 @@ const AvatarSelectionModal = ({ onClose, onSelectAvatar, uname }) => {
       }
     } catch (error) {
       console.error("Error updating avatar:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,10 +73,21 @@ const AvatarSelectionModal = ({ onClose, onSelectAvatar, uname }) => {
 
         <div className="mt-6 flex justify-center font-boom">
           <button
-            className="rounded bg-red-500 px-4 py-2 text-white hover:bg-blue-600"
+            className={`rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 ${
+              loading ? "cursor-not-allowed opacity-50" : ""
+            }`}
             onClick={handleSaveAvatar}
+            disabled={loading}
           >
-            Save
+            {loading ? (
+              <img
+                src="/assets/loading_icon.svg"
+                alt="Loading"
+                className="loading-image"
+              />
+            ) : (
+              "Save"
+            )}
           </button>
           {/* <button
             className="ml-2 rounded bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
