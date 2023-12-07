@@ -199,7 +199,7 @@ const Cutscene = ({ activityID, isIntro, onClose }) => {
                             index === currentSlide ? "" : "hidden"
                           }`}
                         >
-                          <p className="select-none p-10 text-left font-retropix text-4xl font-semibold leading-relaxed">
+                          <p className="select-none overflow-auto p-10 text-left font-retropix text-sm font-semibold leading-relaxed lg:text-2xl">
                             {displayedText}
                           </p>
                         </div>

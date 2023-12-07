@@ -12,6 +12,7 @@ export default function GameSettingsModal({
   onSfxVolumeChange,
   userFirstName,
   userAvatar,
+  onAvatarChange,
 }) {
   const [localBgmVolume, setLocalBgmVolume] = useState(
     () => parseFloat(localStorage.getItem("bgmVolume")) || 0.5
@@ -25,6 +26,15 @@ export default function GameSettingsModal({
     setLocalSfxVolume(sfxVolume);
   }, [bgmVolume, sfxVolume]);
 
+  useEffect(() => {
+    // Update the avatar state when the user makes a selection
+    if (userAvatar !== localAvatar) {
+      setLocalAvatar(userAvatar);
+    }
+  }, [userAvatar]);
+
+  const [localAvatar, setLocalAvatar] = useState(userAvatar);
+
   const [isAvatarHovered, setIsAvatarHovered] = useState(false);
   const [isAvatarSelectionModalOpen, setIsAvatarSelectionModalOpen] =
     useState(false);
@@ -37,7 +47,7 @@ export default function GameSettingsModal({
 
   const placeholderIcon = (
     <Image
-      src={`/avatars/${userAvatar}.png`}
+      src={`/avatars/${localAvatar}.png`}
       alt="User Icon"
       width={500}
       height={500}
@@ -64,7 +74,7 @@ export default function GameSettingsModal({
             X
           </button>
         </div>
-        <div className="relative flex w-full flex-col items-center gap-2">
+        <div className="relative flex flex-col items-center gap-2 text-center font-retropix text-white">
           {/* Placeholder for icon and account name using Tailwind CSS classes */}
           <div
             onMouseEnter={() => setIsAvatarHovered(true)}
@@ -72,7 +82,7 @@ export default function GameSettingsModal({
           >
             {/* Display your avatar image here */}
             <Image
-              src={`/avatars/${userAvatar}.png`}
+              src={`/avatars/${localAvatar}.png`}
               alt="User Icon"
               width={500}
               height={500}
@@ -83,17 +93,16 @@ export default function GameSettingsModal({
             />
             {isAvatarHovered && (
               <div
-                className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black bg-opacity-50"
+                className="absolute inset-x-0 bottom-0 flex cursor-pointer items-center justify-center bg-black bg-opacity-50"
                 onClick={() => setIsAvatarSelectionModalOpen(true)}
               >
                 Change Avatar
               </div>
             )}
           </div>
-
-          <div className=" x-5 font-retropix text-2xl">
-            {userFirstName.toUpperCase()}
-          </div>
+        </div>
+        <div className=" x-5 font-retropix text-2xl">
+          {userFirstName.toUpperCase()}
         </div>
         <h1 className="mt-4 border-4 border-red-400 bg-red-500 p-2 text-white">
           Settings
@@ -137,6 +146,16 @@ export default function GameSettingsModal({
             Logout
           </button>
         </div>
+        {isAvatarSelectionModalOpen && (
+          <AvatarSelectionModal
+            onClose={() => setIsAvatarSelectionModalOpen(false)}
+            onSelectAvatar={(newAvatar) => {
+              setLocalAvatar(newAvatar); // Update the local avatar immediately
+              setIsAvatarSelectionModalOpen(false);
+            }}
+            uname={userFirstName}
+          />
+        )}
       </div>
     </div>
   );

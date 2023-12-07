@@ -14,7 +14,7 @@ const LoadingScreen = () => {
         draggable="false"
         priority
       />
-      <p className="py-5 text-center">Loading...</p>
+      <p className="py-5 text-center text-white">Loading...</p>
     </div>
   );
 };

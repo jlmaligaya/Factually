@@ -8,6 +8,7 @@ const nextConfig = {
       "www.coe.int",
       "conversations.marketing-partners.com",
       "edukasyon-production.s3.amazonaws.com",
+      "cdn3.vectorstock.com",
     ], // Add your hostname here
   },
 };

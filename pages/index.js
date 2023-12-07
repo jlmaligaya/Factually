@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import LoadingScreen from "../components/loading";
 import AvatarSelectionModal from "../components/AvatarSelectionModal";
+import ScreenAdjustment from "../components/screenadjustment";
 
 const GameSettingsModal = lazy(() => import("../components/settings"));
 const Leaderboard = lazy(() => import("../components/summary"));
@@ -27,6 +28,24 @@ export default function Home({ useravatar, actv, userScore }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [isFirstTime, setIsFirstTime] = useState(useravatar.avatar === "0");
   const [showAvatarModal, setShowAvatarModal] = useState(isFirstTime);
+  const [adjustmentCompleted, setAdjustmentCompleted] = useState(false);
+  const [showAdjustment, setShowAdjustment] = useState(false);
+
+  const handleFinishAdjustment = () => {
+    setAdjustmentCompleted(true);
+    // Save in local storage that the adjustment has been completed
+    localStorage.setItem("adjustmentCompleted", "true");
+  };
+
+  useEffect(() => {
+    // Check if the adjustment has already been completed in local storage
+    const isAdjustmentCompleted =
+      localStorage.getItem("adjustmentCompleted") === "true";
+
+    if (!isAdjustmentCompleted) {
+      setShowAdjustment(true);
+    }
+  }, []);
 
   const handleAvatarSelection = (selectedAvatar) => {
     setIsFirstTime(false);
@@ -161,6 +180,9 @@ export default function Home({ useravatar, actv, userScore }) {
           loop
         ></audio>
         <Suspense fallback={<LoadingScreen />}>
+          {showAdjustment && !adjustmentCompleted && (
+            <ScreenAdjustment onFinishAdjustment={handleFinishAdjustment} />
+          )}
           {showAvatarModal && (
             <AvatarSelectionModal
               onClose={handleCloseAvatarModal}

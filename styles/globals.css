@@ -5,6 +5,7 @@
 
 body {
   @apply bg-black overflow-y-hidden;
+  zoom: 100%;
 }
 
 /*General Textbox Class*/
@@ -26,6 +27,50 @@ body {
 @font-face {
   font-family: ogoby-bold;
   src: url("/font/ogoby-bold.ttf");
+}
+
+/* ScreenAdjustment.css */
+
+.screen-adjustment {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.screen-adjustment.hidden {
+  display: none;
+}
+
+.adjustment-content {
+  background-color: #fff;
+  width: 1920px;
+  height: 1080px;
+  padding: 20px;
+  text-align: center;
+  border-radius: 8px;
+  border-color: red;
+  border-width: 4px;
+}
+
+.adjustment-box {
+  background-color: #3498db;
+  margin: 20px auto;
+}
+
+.adjustment-content button {
+  background-color: #27ae60;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 /* Menu styling */

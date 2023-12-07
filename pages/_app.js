@@ -11,7 +11,10 @@ export default function MyApp({
   return (
     <SessionProvider session={session}>
       <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
         {/* Other head elements, like title, link to stylesheets, etc. */}
       </Head>
       <Component {...pageProps} />
