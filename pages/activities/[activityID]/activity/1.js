@@ -32,6 +32,7 @@ const Index = () => {
   const [countdown, setCountdown] = useState(5); // Initial countdown duration in seconds
   const [showCountdown, setShowCountdown] = useState(true);
   const [flashBackground, setFlashBackground] = useState(false);
+  const [timeGained, setTimeGained] = useState(0);
 
   const stopGameOverMusic = () => {
     gameOverRef.current.pause();
@@ -124,11 +125,14 @@ const Index = () => {
     if (!showCountdown) {
       // Start the timer when showCountdown becomes false (after "GO!" is displayed)
       const timerInterval = setInterval(() => {
-        if (timer === 0) {
+        if (timer + timeGained === 0) {
           // Handle timer reaching zero
           clearInterval(timerInterval);
         } else {
-          setTimer((prevTimer) => prevTimer - 1);
+          setTimer((prevTimer) => {
+            const newTime = prevTimer - 1;
+            return newTime >= 0 ? newTime : 0;
+          });
         }
       }, 1000);
 
@@ -139,7 +143,7 @@ const Index = () => {
 
       return () => clearInterval(timerInterval);
     }
-  }, [showCountdown, timer, quizEnded]);
+  }, [showCountdown, timer, quizEnded, timeGained]);
 
   const postScore = async (uid, aid, score, timeFinished) => {
     try {
@@ -163,8 +167,13 @@ const Index = () => {
     ) {
       setIsQuestionAnswered(true);
       setTotalScore(totalScore + 1);
+      setTimer((prevTimer) => {
+        const newTime = prevTimer + 3; // Add 3 seconds to the timer
+        return newTime <= 100 ? newTime : 100; // Ensure the timer does not exceed the original time
+      });
       correctSoundRef.current.play();
       correctSoundRef.current.currentTime = 0;
+      setTimeGained(3); // Update the time gained state
     } else if (
       choice !== quizQuestions[questionNumber]?.correct_option &&
       !isQuestionAnswered
