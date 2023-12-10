@@ -9,6 +9,7 @@ import Image from "next/image";
 import LoadingScreen from "../components/loading";
 import AvatarSelectionModal from "../components/AvatarSelectionModal";
 import ScreenAdjustment from "../components/screenadjustment";
+import Head from "next/head";
 
 const GameSettingsModal = lazy(() => import("../components/settings"));
 const Leaderboard = lazy(() => import("../components/summary"));
@@ -167,6 +168,10 @@ export default function Home({ useravatar, actv, userScore }) {
   if (status === "authenticated") {
     return (
       <>
+        <Head>
+          <title>Factually</title>
+          <link rel="icon" href="/path/to/your/icon.png" />
+        </Head>
         <audio ref={clickAudioRef} src="/sounds/click.wav"></audio>
         <audio
           ref={hoverAudioRef}

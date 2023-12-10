@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Cutscene from "../../../components/cutscene";
+import Head from "next/head";
 
 export default function Index() {
   const router = useRouter();
@@ -57,6 +58,10 @@ export default function Index() {
       className="flex h-screen w-screen flex-col items-center justify-center bg-gray-200 bg-[url('/assets/activity/l_bg.png')] bg-cover bg-center bg-no-repeat"
       style={{ backgroundSize: "100% 100%" }}
     >
+      <Head>
+        <title>Activity</title>
+        <link rel="icon" href="public\logo.png" />
+      </Head>
       {showCutscene && (
         <Cutscene
           isIntro={true}
