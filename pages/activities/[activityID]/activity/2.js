@@ -84,7 +84,7 @@ const CaptchaGame = () => {
 
   useEffect(() => {
     // Load and play background music when the component mounts
-    backgroundMusicRef.current = new Audio("/sounds/actC1_bgm.ogg");
+    backgroundMusicRef.current = new Audio("/sounds/actC2_bgm.ogg");
     backgroundMusicRef.current.volume = initialVolume; // Set the initial volume as needed
     backgroundMusicRef.current.loop = true;
     backgroundMusicRef.current.play();
@@ -404,7 +404,7 @@ const CaptchaGame = () => {
           {currentGameState?.images?.map((image) => (
             <div
               key={image.id}
-              className={`flex cursor-pointer justify-center ${
+              className={`flex cursor-pointer  justify-center hover:scale-105 ${
                 isImageSelected(image.url)
                   ? "border-4 border-green-500"
                   : "border-4 border-gray-300"
