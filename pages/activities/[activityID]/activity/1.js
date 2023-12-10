@@ -313,7 +313,7 @@ const Index = () => {
                       {quizQuestions[questionNumber]?.quiz_question}
                     </h1>
                   </div>
-                  <div className="text-with-stroke grid w-full grid-flow-row justify-items-center gap-x-0 gap-y-5 text-center font-ogoby text-4xl lg:grid-cols-2 ">
+                  <div className="text-with-stroke grid w-full grid-flow-row justify-items-center gap-x-0 gap-y-5 text-center font-ogoby text-3xl lg:grid-cols-2 ">
                     {/* options */}
                     <div
                       className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-white transition-transform hover:cursor-pointer 
