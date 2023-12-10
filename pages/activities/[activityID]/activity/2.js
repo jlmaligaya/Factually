@@ -19,7 +19,7 @@ const CaptchaGame = () => {
   const [currentGameStateIndex, setCurrentGameStateIndex] = useState(0); // Default to the first game state
   const maxSelections = 3;
   const [lives, setLives] = useState(5);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(100);
   const [gameDataLength, setGameDataLength] = useState(0);
   const [incorrectAttempts, setIncorrectAttempts] = useState(0);
   const [increment, setIncrement] = useState(1);
@@ -269,7 +269,7 @@ const CaptchaGame = () => {
         gameOver2Ref.current.play();
       }
       setGameCompleted(true);
-      postScore(userID, activityID, calculatedScore, 60 - timer);
+      postScore(userID, activityID, calculatedScore, 100 - timer);
     }
   };
 
@@ -298,7 +298,7 @@ const CaptchaGame = () => {
     setShowCountdown(true);
     setGameCompleted(false);
     setLives(5);
-    setTimer(60);
+    setTimer(100);
     setCurrentGameStateIndex(0);
     setSelectedImages([]);
     setTotalScore(0);
@@ -353,7 +353,7 @@ const CaptchaGame = () => {
       </div>
       <div
         className="absolute top-0 left-0 h-5 bg-red-500"
-        style={{ width: `${(timer / 60) * 100}%` }}
+        style={{ width: `${(timer / 100) * 100}%` }}
       ></div>
 
       <div className="text-with-stroke mt-20 flex h-[100px] w-1/2 items-center justify-center rounded-md border-4 border-gray-600 bg-slate-500 text-center font-ogoby text-4xl">
@@ -461,7 +461,7 @@ const CaptchaGame = () => {
         <CompletionPage
           activityID={activityID}
           calculatedScore={calculatedScore}
-          timeFinished={60 - timer}
+          timeFinished={100 - timer}
           resetGame={resetGame}
           stopGameOverMusic={() => stopGameOverMusic()}
         />

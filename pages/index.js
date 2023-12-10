@@ -297,8 +297,14 @@ export default function Home({ useravatar, actv, userScore }) {
                   className="fixed inset-0 bg-black opacity-50"
                   onClick={toggleLeaderboardModal}
                 ></div>
-                <div className="w-4xl z-10 rounded-md border-4 border-red-500 bg-white p-8 shadow-lg">
+                <div className="w-4xl z-10 flex flex-col items-center rounded-md border-4 border-red-500 bg-white p-8 shadow-lg">
                   <Leaderboard onClose={toggleLeaderboardModal} />
+                  <button
+                    className="w-1/2 rounded-lg border-2 border-black bg-red-500 px-4 py-2 text-center font-boom text-white hover:bg-red-600"
+                    onClick={toggleLeaderboardModal}
+                  >
+                    Close
+                  </button>
                 </div>
               </div>
             )}

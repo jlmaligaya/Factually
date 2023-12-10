@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-const AchievementsComponent = ({ userID }) => {
+const AchievementsComponent = ({ userID, onClose }) => {
   const [userScores, setUserScores] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -75,6 +75,7 @@ const AchievementsComponent = ({ userID }) => {
           100
         ) / 100,
     },
+
     // Add more achievements with progress properties as needed
   ];
 
@@ -115,6 +116,25 @@ const AchievementsComponent = ({ userID }) => {
 
   return (
     <div>
+      <button
+        className="justify-self-start text-gray-600 hover:text-gray-900"
+        onClick={onClose}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="h-6 w-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+          />
+        </svg>
+      </button>
       <div className="mb-4 flex items-center justify-center gap-4">
         <Image
           src="/assets/achievements_icon.svg"

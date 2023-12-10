@@ -11,7 +11,7 @@ const Index = () => {
   const [questionNumber, setQuestionNumber] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [lives, setLives] = useState(5);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(100);
   const [lostLives, setLostLives] = useState([]);
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [quizStarted, setQuizStarted] = useState(false);
@@ -202,7 +202,7 @@ const Index = () => {
       } else {
         gameOver2Ref.current.play();
       }
-      postScore(userID, activityID, calculatedScore, 60 - timer);
+      postScore(userID, activityID, calculatedScore, 100 - timer);
       setQuizEnded(true);
       // Only post the score when the quiz ends
     }
@@ -218,7 +218,7 @@ const Index = () => {
     setCountdown(5);
     setShowCountdown(true);
     setLives(5);
-    setTimer(60);
+    setTimer(100);
     setQuestionNumber(0);
     setQuizEnded(false);
     setIsQuestionAnswered(false);
@@ -301,7 +301,7 @@ const Index = () => {
                   {/* timer */}
                   <div
                     className="absolute top-0 left-0 h-5 bg-red-500"
-                    style={{ width: `${(timer / 60) * 100}%` }}
+                    style={{ width: `${(timer / 100) * 100}%` }}
                   ></div>
                 </div>
                 <div className="flex h-full w-full flex-col items-center justify-center gap-8">
@@ -446,7 +446,7 @@ const Index = () => {
           ) : (
             <CompletionPage
               calculatedScore={calculatedScore}
-              timeFinished={60 - timer}
+              timeFinished={100 - timer}
               activityID={activityID}
               resetGame={handleRestartQuiz}
               stopGameOverMusic={() => stopGameOverMusic()}

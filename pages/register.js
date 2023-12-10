@@ -273,15 +273,17 @@ export default function Register() {
                   className="m-4 inline-block w-48 place-self-center rounded-full border-2 border-white px-12 py-2 text-lg font-semibold text-white hover:bg-white hover:text-[#CE4044]"
                   onClick={handleSubmit}
                 >
-                  {loading ? (
-                    <img
-                      src="/assets/loading_icon.svg"
-                      alt="Loading"
-                      className="loading-image"
-                    />
-                  ) : (
-                    "SIGN UP"
-                  )}
+                  <div className="flex justify-center">
+                    {loading ? (
+                      <img
+                        src="/assets/loading_icon.svg"
+                        alt="Loading"
+                        className="loading-image"
+                      />
+                    ) : (
+                      "SIGN UP"
+                    )}
+                  </div>
                 </button>
               </form>
             </center>

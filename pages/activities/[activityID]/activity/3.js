@@ -28,7 +28,7 @@ const Home = () => {
   const [showCountdown, setShowCountdown] = useState(true);
   const [flashBackground, setFlashBackground] = useState(false);
   const [lives, setLives] = useState(5);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(110);
   const calculatedScore = Math.round((100 / gameLength) * score);
   const [loadingDone, setLoadingDone] = useState(false);
 
@@ -204,7 +204,7 @@ const Home = () => {
   // Handle end game conditions
   const handleEndGame = () => {
     if (lives === 0 || timer === 0 || isGameCompleted) {
-      postScore(userID, activityID, calculatedScore, 60 - timer);
+      postScore(userID, activityID, calculatedScore, 110 - timer);
       backgroundMusicRef.current.pause();
       if (calculatedScore > 34) {
         gameOverRef.current.play();
@@ -243,7 +243,7 @@ const Home = () => {
     backgroundMusicRef.current.currentTime = 0;
     setCountdown(5);
     setShowCountdown(true);
-    setTimer(60);
+    setTimer(110);
     setSwipeDirection(null);
     setScore(0);
     setLives(5);
@@ -320,7 +320,7 @@ const Home = () => {
               {/* Timer Section */}
               <div
                 className="absolute top-0 left-0 h-5 bg-red-500"
-                style={{ width: `${(timer / 60) * 100}%` }}
+                style={{ width: `${(timer / 110) * 100}%` }}
               ></div>
             </div>
           ) : null}
@@ -375,7 +375,7 @@ const Home = () => {
             <CompletionPage
               activityID={activityID}
               calculatedScore={calculatedScore}
-              timeFinished={60 - timer}
+              timeFinished={110 - timer}
               stopGameOverMusic={stopGameOverMusic}
               resetGame={handleRestart}
             />

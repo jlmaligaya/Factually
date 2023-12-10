@@ -45,19 +45,6 @@ export default function GameSettingsModal({
     onClose();
   };
 
-  const placeholderIcon = (
-    <Image
-      src={`/avatars/${localAvatar}.png`}
-      alt="User Icon"
-      width={500}
-      height={500}
-      className={`pointer-events-none h-40 w-40 border-4 ${
-        isAvatarHovered ? "border-red-500" : "border-gray-500"
-      }`}
-      draggable="false"
-    />
-  );
-
   return (
     <div
       className={`modal ${

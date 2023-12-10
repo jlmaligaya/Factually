@@ -21,13 +21,13 @@ const MainMenu = ({ handleMenuSelect }) => {
     <div className="mb-4 flex flex-col items-center justify-center gap-4 font-boom text-lg">
       <div>STATISTICS</div>
       <button
-        className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white"
+        className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
         onClick={() => handleMenuSelect("achievements")}
       >
         Achievements
       </button>
       <button
-        className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white"
+        className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
         onClick={() => handleMenuSelect("leaderboards")}
       >
         Leaderboards
@@ -287,7 +287,10 @@ const Main = ({ onClose }) => {
         ) : menuSelection === "achievements" ? (
           <div>
             {/* ... (achievements component) */}
-            <AchievementsComponent userID={session?.user?.uid} />
+            <AchievementsComponent
+              userID={session?.user?.uid}
+              onClose={handleClose}
+            />
           </div>
         ) : (
           <LeaderboardContent

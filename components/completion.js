@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Cutscene from "./cutscene";
 import LoadingScreen from "./loading";
+import LeaderboardModal from "./statisticsmodal";
+import { faK } from "@fortawesome/free-solid-svg-icons";
 
 const CompletionPage = ({
   calculatedScore,
@@ -15,6 +17,8 @@ const CompletionPage = ({
   const [cutsceneFinished, setCutsceneFinished] = useState(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [buttonClicked, setButtonClicked] = useState(false);
 
   const handleReturnToMainMenu = () => {
     stopGameOverMusic();
@@ -29,6 +33,11 @@ const CompletionPage = ({
     router.push("/");
   };
 
+  const handleLeaderboards = () => {
+    setShowLeaderboard(true);
+    setButtonClicked(true);
+  };
+
   useEffect(() => {
     // If the cutscene has finished, navigate to the main menu
     if (cutsceneFinished) {
@@ -41,6 +50,7 @@ const CompletionPage = ({
     <div className="h-1/8 flex w-1/2 flex-col items-center justify-center gap-8 rounded-xl border-8 bg-white p-8 font-medium shadow-lg">
       {isLoading && <LoadingScreen />}
       {/* Render loading screen when isLoading is true */}
+
       {showCutscene &&
         !isLoading && ( // Render Cutscene when not loading
           <Cutscene
@@ -49,6 +59,7 @@ const CompletionPage = ({
             onClose={handleCutsceneFinished}
           />
         )}
+
       <div className="w-full text-center">
         <h1 className="text-with-stroke mb-2 font-boom text-4xl text-red-700">
           Quiz Summary
@@ -142,6 +153,27 @@ const CompletionPage = ({
           </svg>
         </button>
         <button
+          className={`flex items-center justify-center rounded-md bg-red-500 p-3 font-boom text-white hover:bg-red-600 ${
+            buttonClicked ? "" : "animate-pulse"
+          }`}
+          onClick={handleLeaderboards}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-6 w-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+            />
+          </svg>
+        </button>
+        <button
           className="flex items-center justify-center rounded-md bg-red-500 p-3 font-boom text-white hover:bg-red-600"
           onClick={handleReturnToMainMenu}
         >
@@ -161,6 +193,12 @@ const CompletionPage = ({
           </svg>
         </button>
       </div>
+      {showLeaderboard && (
+        <LeaderboardModal
+          onClose={() => setShowLeaderboard(false)}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform"
+        />
+      )}
     </div>
   );
 };
