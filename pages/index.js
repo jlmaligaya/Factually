@@ -170,7 +170,7 @@ export default function Home({ useravatar, actv, userScore }) {
       <>
         <Head>
           <title>Factually</title>
-          <link rel="icon" href="/path/to/your/icon.png" />
+          <link rel="icon" href="/logo.png" />
         </Head>
         <audio ref={clickAudioRef} src="/sounds/click.wav"></audio>
         <audio

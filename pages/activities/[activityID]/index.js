@@ -60,7 +60,7 @@ export default function Index() {
     >
       <Head>
         <title>Activity</title>
-        <link rel="icon" href="public\logo.png" />
+        <link rel="icon" href="/logo.png" />
       </Head>
       {showCutscene && (
         <Cutscene
