@@ -342,17 +342,41 @@ const Home = () => {
                 </button>
                 <div className={`relative animate-${swipeDirection}`}>
                   <Swipeable onSwipe={handleSwipe}>
-                    <div className="flex h-[600px] w-[500px] select-none flex-col items-center justify-center bg-white shadow-md">
-                      <Image
-                        src={cards[0]?.imageUrl}
-                        alt={`Article Image: ${cards[0]?.id}`}
-                        height={200}
-                        width={200}
-                        className="text-with-stroke mb-10 h-4/5 w-4/5 select-none rounded-lg border-4 border-gray-500 bg-white font-ogoby text-6xl text-white"
-                        draggable="false"
-                        priority
-                        onClick={() => handleImageClick(cards[0]?.imageUrl)}
-                      />
+                    <div className=" flex h-[600px] w-[500px] select-none flex-col items-center justify-center bg-white shadow-md">
+                      <div className="group relative flex h-4/5 w-full select-none items-center justify-center">
+                        <Image
+                          src={cards[0]?.imageUrl}
+                          alt={`Article Image: ${cards[0]?.id}`}
+                          height={200}
+                          width={200}
+                          className="text-with-stroke h-4/5 w-4/5 transform select-none rounded-lg border-4 border-gray-500 bg-white font-ogoby text-white transition-transform group-hover:scale-105"
+                          draggable="false"
+                          priority
+                          onClick={() => handleImageClick(cards[0]?.imageUrl)}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                          <button
+                            className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                            onClick={() => handleImageClick(cards[0]?.imageUrl)}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="h-6 w-6"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
                       <h1 className="w-1/2 rounded-md bg-slate-300 p-3 text-center font-ogoby text-black">
                         {cards[0]?.description}
                       </h1>
