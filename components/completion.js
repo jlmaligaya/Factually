@@ -90,7 +90,7 @@ const CompletionPage = ({
           )}
           {calculatedScore >= 34 && calculatedScore < 60 && (
             <div className="font-retropix text-3xl text-black">
-              Nice! You can do better!
+              You can do better!
             </div>
           )}
           {calculatedScore < 34 && (

@@ -40,6 +40,25 @@ const CaptchaGame = () => {
     gameOver2Ref.current.pause();
   };
 
+  const shuffleArray = (array) => {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+    }
+    return shuffledArray;
+  };
+
+  const shuffleGameData = (data) => {
+    return shuffleArray(data).map((gameState) => ({
+      ...gameState,
+      images: shuffleArray(gameState.images), // Shuffle images
+    }));
+  };
+
   useEffect(() => {
     // Only start the countdown and music when loading is done
     if (loadingDone) {
@@ -109,8 +128,15 @@ const CaptchaGame = () => {
         if (result.ok) {
           const data = await result.json();
           console.log("Fetched game data:", data);
-          setGameData(data);
-          setGameDataLength(data.length);
+
+          // Shuffle the order of only images
+          const shuffledData = shuffleArray(data).map((gameState) => ({
+            ...gameState,
+            images: shuffleArray(gameState.images), // Shuffle images
+          }));
+
+          setGameData(shuffledData);
+          setGameDataLength(shuffledData.length);
           setLoadingDone(true);
         } else {
           console.error("Failed to fetch game data");
@@ -294,6 +320,9 @@ const CaptchaGame = () => {
     gameOverRef.current.currentTime = 0;
     gameOver2Ref.current.currentTime = 0;
     backgroundMusicRef.current.currentTime = 0;
+    const shuffledGameData = shuffleGameData(gameData);
+    setGameData(shuffledGameData);
+
     setCountdown(5);
     setShowCountdown(true);
     setGameCompleted(false);
@@ -371,7 +400,7 @@ const CaptchaGame = () => {
         <h2 className="text-with-stroke mb-4 rounded-full border-4 border-red-300 bg-red-100 p-5 text-center font-ogoby text-5xl text-black">
           {currentGameState?.title.toUpperCase()}
         </h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid select-none grid-cols-3 gap-4">
           {currentGameState?.images?.map((image) => (
             <div
               key={image.id}

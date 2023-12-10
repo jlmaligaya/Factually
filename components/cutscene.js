@@ -1,44 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
-const intro = [
-  {
-    image: "/chapters/1/cutscene/AID000001_intro_1.png",
-    text: "You find yourself standing at the entrance of a laboratory, a place shrouded in mystery. It's a culmination of your relentless pursuit of truth amidst a world filled with misinformation.",
-  },
-  {
-    image: "/chapters/1/cutscene/AID000001_intro_2.png",
-    text: "As you venture deeper into the lab, your eyes catch something extraordinary. Before you, a magnificent automaton stands, its intricate design hinting at a magical origin.",
-  },
-  {
-    image: "/chapters/1/cutscene/AID000001_intro_3.png",
-    text: "Approaching cautiously, you realize the automaton isn't humming with life. Instead, it rests in an eerie slumber, like a guardian frozen in time, awaiting a hero to rekindle its purpose.",
-  },
-  {
-    image: "/chapters/1/cutscene/AID000001_intro_4.png",
-    text: "Examining the robot closely, you notice something peculiar – it has three empty slots, like a puzzle missing vital pieces.",
-  },
-  {
-    image: "/chapters/1/cutscene/AID000001_intro_5.png",
-    text: "As you continue to explore, you uncover the path to acquiring the initial chip. To claim it, a test of knowledge has been given upon you. Are you up for this challenge?",
-  },
-];
-
-const end = [
-  {
-    image: "/chapters/1/cutscene/AID000001_end_1.png",
-    text: "With the test successfully completed, you stand within the enigmatic laboratory. This place, a realm of wonder and curiosity, now holds the initial chip you sought for the automaton. It represents the beginning of a journey filled with enigmas and revelations.",
-  },
-  {
-    image: "/chapters/1/cutscene/AID000001_end_2.png",
-    text: "Suddenly, as you contemplate your discovery, the entire laboratory erupts into chaos. Alarms pierce the air, equipment clatters to the ground, and a sense of disturbance fills the room. It's as though a long-dormant guardian has been awakened, and the mysteries of this place are about to unravel.",
-  },
-  {
-    image: "/chapters/1/cutscene/AID000001_end_3.png",
-    text: "Amidst the turmoil, your gaze returns to Robbie, the magnificent automaton that once stood in eerie slumber. Yet, now, there is a change. Its eyes flicker with newfound life, their digital glow illuminating the path to the next chapter of your quest. The guardian has stirred, and destiny awaits.",
-  },
-];
-
 const Cutscene = ({ activityID, isIntro, onClose }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCutsceneVisible, setIsCutsceneVisible] = useState(true);
@@ -199,7 +161,7 @@ const Cutscene = ({ activityID, isIntro, onClose }) => {
                             index === currentSlide ? "" : "hidden"
                           }`}
                         >
-                          <p className="select-none overflow-auto p-10 text-left font-retropix text-sm font-semibold leading-relaxed lg:text-2xl">
+                          <p className="select-none overflow-auto p-10 text-left font-retropix text-sm font-semibold leading-relaxed lg:text-3xl">
                             {displayedText}
                           </p>
                         </div>
