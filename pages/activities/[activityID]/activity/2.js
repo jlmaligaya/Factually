@@ -483,7 +483,7 @@ const CaptchaGame = () => {
       {!loadingDone ? (
         <LoadingScreen /> // Render loading screen while data is being fetched
       ) : showCountdown && loadingDone ? ( // Render the countdown overlay if showCountdown is true
-        <div className="flex h-screen w-full items-center justify-center font-ogoby text-9xl">
+        <div className="flex h-screen w-full items-center justify-center font-ogoby text-9xl text-white">
           {countdown === 0 ? <h1>GO!</h1> : <h1>{countdown}</h1>}
         </div>
       ) : gameCompleted ? (

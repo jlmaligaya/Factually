@@ -273,7 +273,7 @@ const Home = () => {
         <>
           {/* Countdown */}
           {showCountdown ? (
-            <div className="flex h-screen w-full items-center justify-center bg-black font-ogoby text-9xl">
+            <div className="flex h-screen w-full items-center justify-center bg-black font-ogoby text-9xl text-white">
               {countdown === 0 ? <h1>GO!</h1> : <h1>{countdown}</h1>}
             </div>
           ) : !isGameCompleted ? (
