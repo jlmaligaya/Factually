@@ -10,6 +10,11 @@ const Cutscene = ({ activityID, isIntro, onClose }) => {
   const [initialVolume, setInitialVolume] = useState(0.5);
   const [cutsceneSlides, setCutsceneSlides] = useState([]);
   const backgroundMusicRef = useRef(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+  };
 
   console.log("Is intro:", isIntro);
   // Make a GET request to your API route
@@ -144,14 +149,17 @@ const Cutscene = ({ activityID, isIntro, onClose }) => {
                   className={`h-screen w-full object-cover ${
                     index === currentSlide ? "" : "hidden"
                   }`}
-                  onClick={onTextBoxClick} // Add click event handler to the text box
+                  onClick={onTextBoxClick}
                 >
                   <Image
                     src={slide.url}
                     alt={`Slide ${index + 1}`}
                     fill
-                    className="pointer-events-none select-none px-20"
+                    className={`pointer-events-none select-none px-20 ${
+                      isImageLoaded ? "" : "opacity-0"
+                    }`}
                     draggable="false"
+                    onLoad={handleImageLoad}
                   />
                   <div className="flex justify-center">
                     <div className="absolute bottom-0 h-2/6 w-full cursor-pointer border-4 border-white  bg-black bg-opacity-50 py-4 text-white">

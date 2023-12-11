@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import * as Yup from "yup";
 import Link from "next/link";
+import Head from "next/head";
 
 export default function Register() {
   const router = useRouter();
@@ -106,6 +107,10 @@ export default function Register() {
 
   return (
     <>
+      <Head>
+        <title>Register</title>
+        <link rel="icon" href="/logo.png" />
+      </Head>
       {showModal && (
         <div className="fixed top-0 left-0 flex h-screen w-screen items-center justify-center bg-black bg-opacity-50">
           <div className="rounded-lg bg-white p-8">

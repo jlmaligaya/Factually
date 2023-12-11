@@ -153,9 +153,7 @@ const CompletionPage = ({
           </svg>
         </button>
         <button
-          className={`flex items-center justify-center rounded-md bg-red-500 p-3 font-boom text-white hover:bg-red-600 ${
-            buttonClicked ? "" : "animate-pulse"
-          }`}
+          className={`flex items-center justify-center rounded-md bg-red-500 p-3 font-boom text-white hover:bg-red-600`}
           onClick={handleLeaderboards}
         >
           <svg

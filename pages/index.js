@@ -384,7 +384,7 @@ export default function Home({ useravatar, actv, userScore }) {
                                   viewBox="0 0 24 24"
                                   stroke-width="1.5"
                                   stroke="currentColor"
-                                  className="h-6 w-6 text-white"
+                                  className="h-10 w-10 text-white"
                                 >
                                   <path
                                     stroke-linecap="round"

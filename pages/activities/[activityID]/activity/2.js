@@ -5,6 +5,7 @@ import axios from "axios";
 import LoadingScreen from "../../../../components/loading";
 import CompletionPage from "../../../../components/completion";
 import Image from "next/image";
+import Head from "next/head";
 
 const CaptchaGame = () => {
   const [gameCompleted, setGameCompleted] = useState(false);
@@ -436,7 +437,7 @@ const CaptchaGame = () => {
         </div>
         <button
           onClick={verifyImages}
-          className={`mt-4 flex justify-center px-4 py-2 ${
+          className={`mt-4 flex justify-center px-4 py-2 font-retropix text-xl uppercase ${
             verificationState === "correct"
               ? "bg-green-500 text-white"
               : verificationState === "incorrect"
@@ -451,24 +452,7 @@ const CaptchaGame = () => {
             verificationState === "incorrect" || verificationState === "correct"
           }
         >
-          {verificationState === "correct" ? (
-            "Verified"
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="h-6 w-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4.5 12.75l6 6 9-13.5"
-              />
-            </svg>
-          )}
+          {verificationState === "correct" ? "Correct!" : "Verify"}
         </button>
       </div>
     </div>
@@ -480,6 +464,10 @@ const CaptchaGame = () => {
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-4">
+      <Head>
+        <title>Image Match</title>
+        <link rel="icon" href="/logo.png" />
+      </Head>
       {!loadingDone ? (
         <LoadingScreen /> // Render loading screen while data is being fetched
       ) : showCountdown && loadingDone ? ( // Render the countdown overlay if showCountdown is true

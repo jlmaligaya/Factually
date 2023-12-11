@@ -107,7 +107,8 @@ const Index = () => {
             `../../../api/questions?activityId=${activityID}`
           );
           const data = await result.json();
-          setQuizQuestions(data);
+          // Shuffle questions and options
+          setQuizQuestions(shuffleArray(data));
           setQuestionLength(data.length);
           setQuizStarted(true);
           setLoadingDone(true);
@@ -199,6 +200,13 @@ const Index = () => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
+
+      // Update correct_option index if it exists
+      if (array[i].options && array[i].correct_option !== undefined) {
+        array[i].correct_option = array[i].options.indexOf(
+          array[i].correct_option
+        );
+      }
     }
     return array;
   };
