@@ -10,12 +10,6 @@ function LeaderboardModal({ onClose }) {
       ></div>
       <div className="w-4xl z-10 flex flex-col items-center justify-center rounded-md border-4 border-red-500 bg-white p-4 shadow-lg">
         <Main onClose={onClose} />
-        <button
-          className="w-1/2 rounded-lg border-2 border-black bg-red-500 px-4 py-2 text-center font-boom text-white hover:bg-red-600"
-          onClick={onClose}
-        >
-          Close
-        </button>
       </div>
     </div>
   );

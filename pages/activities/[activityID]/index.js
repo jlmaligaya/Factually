@@ -59,7 +59,7 @@ export default function Index() {
       style={{ backgroundSize: "100% 100%" }}
     >
       <Head>
-        <title>Activity</title>
+        <title>{topicName}</title>
         <link rel="icon" href="/logo.png" />
       </Head>
       {showCutscene && (
@@ -85,7 +85,7 @@ export default function Index() {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="2.5"
-                stroke="#FEE2E2"
+                stroke="black"
                 class="h-8 w-8"
               >
                 <path
@@ -106,6 +106,7 @@ export default function Index() {
               >
                 {/* Video player */}
                 <iframe
+                  allowFullScreen="0"
                   className="p-10"
                   width="100%"
                   height="435"
@@ -117,8 +118,8 @@ export default function Index() {
                 className="m-4 flex h-[400px] w-full items-center justify-center bg-[url('/assets/activity/l_title.png')] bg-contain bg-no-repeat"
                 style={{ backgroundSize: "100% 100%" }}
               >
-                <h1 className="text-with-stroke p-8 text-center font-ogoby text-5xl font-semibold text-white">
-                  {topicName.toUpperCase()}
+                <h1 className="text-with-stroke p-4 text-center font-ogoby font-semibold text-white md:text-xl 2xl:text-4xl">
+                  {topicName?.toUpperCase()}
                 </h1>
               </div>
             </div>
@@ -129,11 +130,13 @@ export default function Index() {
                 className="h-full rounded-lg bg-[url('/assets/activity/l_vertical.png')] bg-cover bg-no-repeat p-4 font-retropix text-black"
                 style={{ backgroundSize: "100% 100%" }}
               >
-                <div className="p-10">
-                  <h3 className="text-center text-3xl font-semibold text-white">
+                <div className="p-8 ">
+                  <h3 className="text-stroke md:text-md text-center font-ogoby text-4xl">
                     MISSION
                   </h3>
-                  <p className="mt-4 text-lg text-white">{description}</p>
+                  <p className="mt-4 text-justify font-retropix capitalize text-yellow-200 md:text-xs 2xl:text-xl  ">
+                    {description.toUpperCase()}
+                  </p>
                 </div>
               </div>
             </div>
@@ -152,7 +155,7 @@ export default function Index() {
                 className="rounded-tr-full rounded-bl-full border-4 border-red-500 bg-white py-5 px-20 font-boom text-red-500 opacity-100"
                 style={{ marginTop: "-20px" }}
               >
-                Start
+                Proceed
               </div>
             </Link>
           </div>

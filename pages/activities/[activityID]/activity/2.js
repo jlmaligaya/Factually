@@ -6,6 +6,7 @@ import LoadingScreen from "../../../../components/loading";
 import CompletionPage from "../../../../components/completion";
 import Image from "next/image";
 import Head from "next/head";
+import LightsQuestions from "../../../../components/QuestionLights";
 
 const CaptchaGame = () => {
   const [gameCompleted, setGameCompleted] = useState(false);
@@ -34,7 +35,48 @@ const CaptchaGame = () => {
   const [initialVolume, setInitialVolume] = useState(0.5);
   const [countdown, setCountdown] = useState(5); // Initial countdown duration in seconds
   const [showCountdown, setShowCountdown] = useState(true);
-  const [flashBackground, setFlashBackground] = useState(false);
+  const [flashWrongBackground, setFlashWrongBackground] = useState(false);
+  const [flashCorrectBackground, setFlashCorrectBackground] = useState(false);
+  const [alertTriggered, setAlertTriggered] = useState(false);
+  const [questionTimer, setQuestionTimer] = useState(40); // Initial timer value in seconds
+  const [correctAnswers, setCorrectAnswers] = useState(
+    Array(gameDataLength).fill(null)
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [wrongTopics, setWrongTopics] = useState([]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue =
+        "Are you sure you want to leave? Your progress will be lost."; // Customize the message here
+    };
+
+    const confirmExit = (event) => {
+      // Display confirmation prompt
+      event.returnValue =
+        "Are you sure you want to leave? Your progress will be lost."; // Customize the message here
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Display confirmation prompt before user leaves the page
+    window.addEventListener("unload", confirmExit);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("unload", confirmExit);
+    };
+  }, []);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Function to show the modal with custom content
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
 
   const stopGameOverMusic = () => {
     gameOverRef.current.pause();
@@ -85,7 +127,7 @@ const CaptchaGame = () => {
 
   useEffect(() => {
     // Load and play background music when the component mounts
-    backgroundMusicRef.current = new Audio("/sounds/actC2_bgm.ogg");
+    backgroundMusicRef.current = new Audio("/sounds/actC3_bgm.ogg");
     backgroundMusicRef.current.volume = initialVolume; // Set the initial volume as needed
     backgroundMusicRef.current.loop = true;
     backgroundMusicRef.current.play();
@@ -162,12 +204,16 @@ const CaptchaGame = () => {
         switchGameState();
         setVerificationState("idle");
       }, 1000);
+      setFlashCorrectBackground(true);
+      setTimeout(() => {
+        setFlashCorrectBackground(false);
+      }, 2000); // Adjust the duration to match the animation duration in CSS
     } else if (verificationState === "incorrect") {
       // If verification is incorrect, reset the state after a delay (e.g., 2 seconds)
-      setFlashBackground(true);
+      setFlashWrongBackground(true);
       setTimeout(() => {
-        setFlashBackground(false);
-      }, 500); // Adjust the duration to match the animation duration in CSS
+        setFlashWrongBackground(false);
+      }, 2000); // Adjust the duration to match the animation duration in CSS
       const timeoutId = setTimeout(() => {
         setSelectedImages([]);
         setVerificationState("idle");
@@ -205,6 +251,8 @@ const CaptchaGame = () => {
   };
 
   const switchGameState = () => {
+    setQuestionTimer(40);
+    setAlertTriggered(false);
     // Check if all game states have been completed
     if (currentGameStateIndex >= gameData?.length - 1) {
       // All game states have been completed
@@ -215,8 +263,29 @@ const CaptchaGame = () => {
     }
   };
 
+  useEffect(() => {
+    // Set a timer for each question
+    const questionInterval = setInterval(() => {
+      setQuestionTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+
+    // Handle the alert when the timer reaches 0
+    if (questionTimer === 0 && !alertTriggered) {
+      showModal();
+      setAlertTriggered(true);
+      switchGameState();
+    }
+
+    // Clear the interval when the component unmounts or the question changes
+    return () => {
+      clearInterval(questionInterval);
+    };
+  }, [questionTimer, alertTriggered, switchGameState]);
+
   const verifyImages = () => {
-    if (checkWinCondition()) {
+    const isCorrect = checkWinCondition();
+
+    if (isCorrect) {
       setVerificationState("correct");
       // Increment the score when verification is correct
       setTotalScore(totalScore + increment);
@@ -226,7 +295,7 @@ const CaptchaGame = () => {
       correctSoundRef.current.play();
       correctSoundRef.current.currentTime = 0;
     } else {
-      if (incorrectAttempts == 2) {
+      if (incorrectAttempts === 2) {
         // If the user has tried 3 times, proceed to the next set of pictures
         setVerificationState("incorrect");
         switchGameState();
@@ -244,7 +313,28 @@ const CaptchaGame = () => {
       }
       setLives(lives - 1);
     }
+
+    // Update correct answers
+    setCorrectAnswers((prevCorrectAnswers) => {
+      const updatedCorrectAnswers = [...prevCorrectAnswers];
+      updatedCorrectAnswers[currentGameStateIndex] = isCorrect;
+      return updatedCorrectAnswers;
+    });
   };
+
+  useEffect(() => {
+    if (verificationState === "incorrect") {
+      // If verification is incorrect, add the current topic to the list of incorrect topics
+      setWrongTopics((prevWrongTopics) => {
+        const updatedTopics = new Set([
+          ...prevWrongTopics,
+          gameData[currentGameStateIndex]?.title,
+        ]);
+        return [...updatedTopics];
+      });
+      console.log(wrongTopics);
+    }
+  }, [verificationState]);
 
   // const preloadNextGameStateImages = () => {
   //   const nextGameState =
@@ -321,8 +411,10 @@ const CaptchaGame = () => {
     gameOverRef.current.currentTime = 0;
     gameOver2Ref.current.currentTime = 0;
     backgroundMusicRef.current.currentTime = 0;
+    setWrongTopics(new Set());
     const shuffledGameData = shuffleGameData(gameData);
     setGameData(shuffledGameData);
+    setCorrectAnswers(Array(gameDataLength).fill(null));
 
     setCountdown(5);
     setShowCountdown(true);
@@ -337,16 +429,13 @@ const CaptchaGame = () => {
 
   const gameContent = (
     <div
-      className={`flex h-screen w-full flex-col items-center justify-center gap-4 ${
-        verificationState === "correct"
-          ? "bg-green-100"
-          : 'bg-[url("/chapters/1/actC1_bg.jpg")]'
-      }`}
+      className={`bg-[url("/chapters/1/actC1_bg.jpg")]' } flex h-screen w-full flex-col items-center justify-center
+      gap-4`}
       style={{ backgroundSize: "100% 100%" }}
     >
-      <div className="absolute top-10 flex w-full items-center gap-10 px-10">
+      <div className="absolute top-10 flex w-full animate-bounce items-center gap-4 px-10">
         {[...Array(lives)].map((_, i) => (
-          <div key={i} className="relative h-6 w-6">
+          <div key={i} className="relative h-10">
             {i < lives ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -354,7 +443,7 @@ const CaptchaGame = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="black"
-                className="h-6 w-6"
+                className="h-20 w-16"
               >
                 <path
                   strokeLinecap="round"
@@ -369,7 +458,7 @@ const CaptchaGame = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="black"
-                className="h-6 w-6"
+                className="h-16 w-20"
               >
                 <path
                   strokeLinecap="round"
@@ -381,13 +470,22 @@ const CaptchaGame = () => {
           </div>
         ))}
       </div>
+      <div className="absolute top-10 right-4">
+        {" "}
+        <LightsQuestions
+          questionCount={gameDataLength}
+          correctAnswers={correctAnswers}
+          currentQuestionIndex={currentGameStateIndex}
+        />
+      </div>
+
       <div
         className="absolute top-0 left-0 h-5 bg-red-500"
         style={{ width: `${(timer / 100) * 100}%` }}
       ></div>
 
       <div className="text-with-stroke mt-20 flex h-[100px] w-1/2 items-center justify-center rounded-md border-4 border-gray-600 bg-slate-500 text-center font-ogoby text-4xl">
-        Verify all the images based on the requirement.
+        Select 3 images that matches the current category.
       </div>
       <div
         className={`flex w-[600px] flex-col rounded-lg border-4 bg-white p-10 ${
@@ -463,15 +561,39 @@ const CaptchaGame = () => {
   }, [lives, timer, gameCompleted]);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-4">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-[url('/chapters/1/actC1_bg.jpg')]">
       <Head>
         <title>Image Match</title>
         <link rel="icon" href="/logo.png" />
       </Head>
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={closeModal}
+        >
+          <div className="h-30 flex w-80 flex-col items-center justify-center rounded-lg border-4 border-red-500 bg-white p-10 text-center font-ogoby text-xl text-black">
+            <p className="text-center">Are you still there?</p>
+            <div className="mt-4 flex justify-center">
+              <button
+                className="mr-2 rounded-lg bg-red-500 px-4 py-2 text-white"
+                onClick={closeModal}
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {!loadingDone ? (
         <LoadingScreen /> // Render loading screen while data is being fetched
       ) : showCountdown && loadingDone ? ( // Render the countdown overlay if showCountdown is true
-        <div className="flex h-screen w-full items-center justify-center font-ogoby text-9xl text-white">
+        <div
+          className="text-with-stroke flex h-screen w-full items-center justify-center font-ogoby text-9xl text-white"
+          style={{
+            background: 'url("/chapters/1/actC1_bg.jpg")',
+            backgroundSize: "cover",
+          }}
+        >
           {countdown === 0 ? <h1>GO!</h1> : <h1>{countdown}</h1>}
         </div>
       ) : gameCompleted ? (
@@ -481,15 +603,24 @@ const CaptchaGame = () => {
           timeFinished={100 - timer}
           resetGame={resetGame}
           stopGameOverMusic={() => stopGameOverMusic()}
+          wrongTopics={wrongTopics}
         />
       ) : (
         gameContent
       )}
-      {flashBackground && (
+      {flashWrongBackground && (
         <div
-          className="absolute top-0 left-0 h-full w-full bg-red-500 bg-opacity-50" /* Adjust the background color */
+          className="absolute top-0 left-0 h-full w-full bg-opacity-50" /* Adjust the background color */
           style={{
-            animation: "flash 0.5s ease 1",
+            animation: "flash-wrong 0.5s ease 1",
+          }} /* Adjust the animation duration */
+        ></div>
+      )}
+      {flashCorrectBackground && (
+        <div
+          className="absolute top-0 left-0 h-full w-full bg-opacity-50" /* Adjust the background color */
+          style={{
+            animation: "flash-correct 0.5s ease 1",
           }} /* Adjust the animation duration */
         ></div>
       )}

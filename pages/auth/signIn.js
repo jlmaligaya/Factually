@@ -1,8 +1,9 @@
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { useSession } from "next-auth/react";
 
 const SignIn = (props) => {
   const router = useRouter();
@@ -10,6 +11,18 @@ const SignIn = (props) => {
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
   const [error, setError] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false); // State for password visibility
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session) {
+      if (session.user.role === "instructor") {
+        router.push(`/instructor`);
+      } else {
+        router.push(`/`);
+      }
+      console.log("Role: ", session.user.role);
+    }
+  }, [session, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +45,6 @@ const SignIn = (props) => {
       setError("Account not found.");
       console.log("Account not found");
     } else {
-      router.push("/");
     }
 
     setIsLoading(false);
@@ -49,27 +61,31 @@ const SignIn = (props) => {
         <title>Login</title>
         <link rel="icon" href="/logo.png" />
       </Head>
-      <section className="flex min-h-screen items-center justify-center bg-[url('/background.png')] bg-cover">
-        <div className="flex justify-center rounded-xl font-retropix shadow-lg">
-          <div className="mt-16 flex items-center justify-center rounded-tl-2xl  rounded-bl-2xl bg-[#CE4044] py-10 px-12 md:w-2/4">
+      <section className="flex min-h-screen flex-col items-center justify-center bg-[url('/bg_login.png')] bg-cover">
+        <div className=" flex w-full flex-col items-center">
+          {" "}
+          {<img className="w-60 rounded-xl" src="/logo.png" alt="" />}
+          <h2 className=" text-with-stroke mt-3 animate-text bg-gradient-to-r from-rose-500 via-slate-100 to-blue-500 bg-clip-text text-center font-boom text-6xl text-transparent">
+            FACTUALLY
+          </h2>
+          <h2 className="text-with-stroke mt-5 text-center font-ogoby text-4xl">
+            Misinformed? Be fact-ed!
+          </h2>
+        </div>
+        <div className="flex justify-center rounded-xl font-retropix">
+          <div className="py-25 flex w-full items-center justify-center  rounded-2xl rounded-bl-2xl px-20">
             <center>
-              {<img className="w-20 rounded-xl" src="/logo.png" alt="" />}
-              <h2 className="mt-3 text-3xl font-bold text-white">SIGN IN</h2>
-              <p className="mt-3 text-xl text-white">
-                Connect and continue your progress.
-              </p>
-
               <form
                 method="post"
                 onSubmit={handleSubmit}
-                className="align-center flex w-72 flex-col gap-4"
+                className="align-center flex w-96 flex-col gap-4"
               >
                 <input
                   value={userInfo.identifier}
                   onChange={({ target }) =>
                     setUserInfo({ ...userInfo, identifier: target.value })
                   }
-                  className="mt-8 rounded-full border text-black invalid:text-pink-600 focus:border-[#1C3253] focus:outline-none focus:ring-1 focus:ring-[#1C3253] focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  className="mt-8 rounded-full border text-lg text-black invalid:text-pink-600 focus:border-[#1C3253] focus:outline-none focus:ring-1 focus:ring-[#1C3253] focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
                   type="text"
                   name="identifier"
                   placeholder="Email or Username"
@@ -81,7 +97,7 @@ const SignIn = (props) => {
                     onChange={({ target }) =>
                       setUserInfo({ ...userInfo, password: target.value })
                     }
-                    className="w-full rounded-full border pr-4 text-black focus:border-[#1C3253] focus:outline-none focus:ring-1 focus:ring-[#1C3253]"
+                    className="w-full rounded-full border pr-4 text-lg text-black focus:border-[#1C3253] focus:outline-none focus:ring-1 focus:ring-[#1C3253]"
                     type={passwordVisible ? "text" : "password"}
                     name="password"
                     placeholder="Password"
@@ -133,7 +149,7 @@ const SignIn = (props) => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`m-4 inline-block w-48 place-self-center rounded-full border-2 border-white px-12 py-2 text-lg font-semibold text-white hover:bg-white hover:text-[#CE4044] ${
+                  className={`hover:text-slate-800] m-4 inline-block w-48 place-self-center rounded-full border-2 border-red-800 bg-red-700 px-12 py-2 text-lg font-semibold text-white hover:bg-red-800 ${
                     isLoading ? "cursor-not-allowed opacity-50" : ""
                   } button-wrapper`}
                 >
@@ -154,7 +170,7 @@ const SignIn = (props) => {
           </div>
 
           {/* right side */}
-          <div className="mt-16 hidden w-2/4 rounded-tr-2xl rounded-br-2xl bg-white py-10 px-12 md:block">
+          {/* <div className="mt-16 hidden w-2/4 rounded-tr-2xl rounded-br-2xl bg-white py-10 px-12 md:block">
             <center>
               <h2 className="text-3xl font-bold text-[#CE4044]">
                 WELCOME BACK TO FACTUALLY.
@@ -178,7 +194,7 @@ const SignIn = (props) => {
               </button>
               <img src="/robbie hi.png" alt="" />
             </center>
-          </div>
+          </div> */}
         </div>
       </section>
     </>

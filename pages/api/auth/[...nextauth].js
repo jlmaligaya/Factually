@@ -32,6 +32,7 @@ const authOptions = {
 
         // If no matching user is found by email or username, return null.
         if (!userByEmail && !userByUsername) {
+          throw new Error("No matching user");
           return null;
         }
 
@@ -70,6 +71,7 @@ const authOptions = {
       session.user.level = user.level;
       session.user.username = user.username;
       session.user.avatar = user.avatar;
+      session.user.role = user.role;
       return session;
     },
   },

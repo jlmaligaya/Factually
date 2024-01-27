@@ -281,7 +281,7 @@ const Main = ({ onClose }) => {
 
   return (
     <div className="font-3xl mx-auto h-full w-full max-w-7xl bg-white py-6 font-retropix text-gray-800 sm:px-6 lg:px-8">
-      <div className="px-4 sm:px-0">
+      <div className="flex flex-col items-center justify-center px-4 sm:px-0">
         {showMenu ? (
           <MainMenu handleMenuSelect={handleMenuSelect} />
         ) : menuSelection === "achievements" ? (
@@ -302,6 +302,14 @@ const Main = ({ onClose }) => {
             userRank={userRank}
             onClose={handleClose}
           />
+        )}
+        {showMenu && (
+          <button
+            className=" w-1/2 rounded-lg border-2 border-red-600 bg-red-500  text-center font-boom text-xl text-white hover:bg-red-600"
+            onClick={onClose}
+          >
+            Exit
+          </button>
         )}
       </div>
     </div>

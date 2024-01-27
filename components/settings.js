@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import AvatarSelectionModal from "./AvatarSelectionModal";
@@ -20,6 +20,14 @@ export default function GameSettingsModal({
   const [localSfxVolume, setLocalSfxVolume] = useState(
     () => parseFloat(localStorage.getItem("sfxVolume")) || 0.5
   );
+
+  const logoutModalRef = useRef(null);
+
+  const handleLogoutKeyDown = (event) => {
+    if (event.key === "Enter") {
+      confirmLogout();
+    }
+  };
 
   useEffect(() => {
     setLocalBgmVolume(bgmVolume);
@@ -43,6 +51,21 @@ export default function GameSettingsModal({
     localStorage.setItem("bgmVolume", localBgmVolume.toString());
     localStorage.setItem("sfxVolume", localSfxVolume.toString());
     onClose();
+  };
+
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const handleLogout = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
+    setIsLogoutModalOpen(false);
+    signOut(); // Perform the logout action
+  };
+
+  const cancelLogout = () => {
+    setIsLogoutModalOpen(false);
   };
 
   return (
@@ -78,14 +101,13 @@ export default function GameSettingsModal({
               }`}
               draggable="false"
             />
-            {isAvatarHovered && (
-              <div
-                className="absolute inset-x-0 bottom-0 flex cursor-pointer items-center justify-center bg-black bg-opacity-50"
-                onClick={() => setIsAvatarSelectionModalOpen(true)}
-              >
-                Change Avatar
-              </div>
-            )}
+
+            <div
+              className="absolute inset-x-0 bottom-0 flex cursor-pointer items-center justify-center bg-black bg-opacity-50"
+              onClick={() => setIsAvatarSelectionModalOpen(true)}
+            >
+              Change Avatar
+            </div>
           </div>
         </div>
         <div className=" x-5 font-retropix text-2xl">
@@ -125,13 +147,39 @@ export default function GameSettingsModal({
           />
         </div>
         <div className="mt-4">
-          {/* Logout button */}
+          {/* Logout button with confirmation modal */}
           <button
             className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white"
-            onClick={signOut}
+            onClick={handleLogout}
           >
             Logout
           </button>
+
+          {/* Logout confirmation modal */}
+          {isLogoutModalOpen && (
+            <div
+              className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-50"
+              ref={logoutModalRef}
+            >
+              <div className="font rounded-lg border-4 border-red-500 bg-white p-4 text-center font-ogoby text-xl">
+                <p>Are you sure you want to log out?</p>
+                <div className="mt-4 flex justify-center">
+                  <button
+                    className="mr-2 rounded-lg bg-red-500 px-4 py-2 text-white"
+                    onClick={cancelLogout}
+                  >
+                    No
+                  </button>
+                  <button
+                    className="rounded-lg bg-gray-300 px-4 py-2 text-black"
+                    onClick={confirmLogout}
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         {isAvatarSelectionModalOpen && (
           <AvatarSelectionModal

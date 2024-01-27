@@ -7,17 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+model Section {
+  id        Int       @id @default(autoincrement())
+  sectionId      String    @unique
+  users     User[]    // One-to-many relationship with User
+  activities Activities[] // One-to-many relationship with Activities
+}
+
 model User {
   username  String  @unique
   firstName String
   lastName  String
   email     String  @unique
   password  String
-  level     Int     @default(1)
   uid       String  @unique @default(dbgenerated("('UID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
-  exp       Int     @default(0)
   id        Int     @id @default(autoincrement())
   avatar    String? @default("0")
+  role      String?
+  section   String?
+  sections   Section?  @relation(fields: [section], references: [sectionId])
+
   scores    Score[]
 }
 
@@ -30,6 +40,9 @@ model Activities {
   video      String
   id         Int            @id @default(autoincrement())
   type       Int            @default(0)
+  section    String?
+  sections   Section?  @relation(fields: [section], references: [sectionId])
+
   cutscenes  CutscenePics[]
   imagematch ImageMatch[]
   questions  QuizQuestion[]
@@ -57,6 +70,7 @@ model QuizQuestion {
   option_three   String
   option_two     String
   quiz_question  String
+  topic_name     String?
   activity       Activities @relation(fields: [activityId], references: [aid])
 }
 
@@ -64,6 +78,7 @@ model ImageMatch {
   id         Int              @id @default(autoincrement())
   title      String
   activityID String
+  topic_name String?
   activity   Activities       @relation(fields: [activityID], references: [aid])
   images     ImageMatchPics[]
 }
@@ -93,5 +108,6 @@ model Swiper {
   option_two     String
   imageUrl       String
   description    String?
+  topic_name     String?
   activity       Activities @relation(fields: [activityId], references: [aid])
 }

@@ -4,7 +4,8 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import LoadingScreen from "../../../../components/loading";
 import CompletionPage from "../../../../components/completion";
-
+import LightsQuestions from "../../../../components/QuestionLights";
+import Head from "next/head";
 const Index = () => {
   const [isQuestionAnswered, setIsQuestionAnswered] = useState(false);
   const [questionLength, setQuestionLength] = useState(0);
@@ -31,8 +32,49 @@ const Index = () => {
   const [initialVolume, setInitialVolume] = useState(0.5);
   const [countdown, setCountdown] = useState(5); // Initial countdown duration in seconds
   const [showCountdown, setShowCountdown] = useState(true);
-  const [flashBackground, setFlashBackground] = useState(false);
+  const [flashWrongBackground, setFlashWrongBackground] = useState(false);
+  const [flashCorrectBackground, setFlashCorrectBackground] = useState(false);
   const [timeGained, setTimeGained] = useState(0);
+  const [alertTriggered, setAlertTriggered] = useState(false);
+  const [questionTimer, setQuestionTimer] = useState(20); // Initial timer value in seconds
+  const [correctAnswers, setCorrectAnswers] = useState(
+    Array(questionLength).fill(null)
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [wrongTopics, setWrongTopics] = useState([]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue =
+        "Are you sure you want to leave? Your progress will be lost."; // Customize the message here
+    };
+
+    const confirmExit = (event) => {
+      // Display confirmation prompt
+      event.returnValue =
+        "Are you sure you want to leave? Your progress will be lost."; // Customize the message here
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Display confirmation prompt before user leaves the page
+    window.addEventListener("unload", confirmExit);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("unload", confirmExit);
+    };
+  }, []);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Function to show the modal with custom content
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
 
   const stopGameOverMusic = () => {
     gameOverRef.current.pause();
@@ -121,8 +163,8 @@ const Index = () => {
     fetchData();
   }, [activityID, quizQuestions]);
 
-  // Timer Effect
   useEffect(() => {
+    // Timer Effect
     if (!showCountdown) {
       // Start the timer when showCountdown becomes false (after "GO!" is displayed)
       const timerInterval = setInterval(() => {
@@ -134,6 +176,7 @@ const Index = () => {
             const newTime = prevTimer - 1;
             return newTime >= 0 ? newTime : 0;
           });
+          // Check if time is gained and trigger the green flash
         }
       }, 1000);
 
@@ -175,24 +218,42 @@ const Index = () => {
       correctSoundRef.current.play();
       correctSoundRef.current.currentTime = 0;
       setTimeGained(3); // Update the time gained state
+      // Trigger the flash animation
+      setFlashCorrectBackground(true);
+      setTimeout(() => {
+        setFlashCorrectBackground(false);
+      }, 500); // Adjust the duration to match the animation duration in CSS
     } else if (
       choice !== quizQuestions[questionNumber]?.correct_option &&
       !isQuestionAnswered
     ) {
       setIsQuestionAnswered(true);
+      // Add the topic to the wrongTopics list if it's not already present
+      if (!wrongTopics.includes(quizQuestions[questionNumber]?.topic_name)) {
+        setWrongTopics([
+          ...wrongTopics,
+          quizQuestions[questionNumber]?.topic_name,
+        ]);
+      }
       setLostLives([...lostLives, lives - 1]);
       setLives(lives - 1);
       wrongSoundRef.current.play();
       wrongSoundRef.current.currentTime = 0;
-
+      console.log(wrongTopics);
+      console.log(quizQuestions[questionNumber]);
       // Trigger the flash animation
-      setFlashBackground(true);
+      setFlashWrongBackground(true);
       setTimeout(() => {
-        setFlashBackground(false);
+        setFlashWrongBackground(false);
       }, 500); // Adjust the duration to match the animation duration in CSS
     } else {
       alert("You have already answered this question");
     }
+    const updatedCorrectAnswers = [...correctAnswers];
+    updatedCorrectAnswers[questionNumber] =
+      choice === quizQuestions[questionNumber]?.correct_option;
+    setCorrectAnswers(updatedCorrectAnswers);
+
     setChoice(choice);
   };
 
@@ -232,6 +293,9 @@ const Index = () => {
     gameOverRef.current.currentTime = 0;
     gameOver2Ref.current.currentTime = 0;
     backgroundMusicRef.current.currentTime = 0;
+
+    setCorrectAnswers(Array(questionLength).fill(null));
+    setWrongTopics([]);
     setCountdown(5);
     setShowCountdown(true);
     setLives(5);
@@ -250,6 +314,10 @@ const Index = () => {
   }, [lives, timer, quizEnded]);
 
   const moveToNextQuestion = () => {
+    // Reset the timer and alert flag
+    setQuestionTimer(30);
+    setAlertTriggered(false);
+
     // Check if there are more questions and proceed to the next question
     if (questionNumber + 1 < questionLength) {
       setQuestionNumber(questionNumber + 1);
@@ -262,14 +330,68 @@ const Index = () => {
     }
   };
 
+  useEffect(() => {
+    // Set a timer for each question
+    const questionInterval = setInterval(() => {
+      setQuestionTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+
+    // Handle the alert when the timer reaches 0
+    if (questionTimer === 0 && !alertTriggered) {
+      showModal();
+      setAlertTriggered(true);
+    }
+
+    // Clear the interval when the component unmounts or the question changes
+    return () => {
+      clearInterval(questionInterval);
+    };
+  }, [questionTimer, alertTriggered, moveToNextQuestion]);
+
   return (
     <>
+      <Head>
+        <title>MCQ</title>
+        <link rel="icon" href="/logo.png" />
+      </Head>
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={closeModal}
+        >
+          <div className="h-30 flex w-80 flex-col items-center justify-center rounded-lg border-4 border-red-500 bg-white p-10 text-center font-ogoby text-xl text-black">
+            <p className="text-center">Are you still there?</p>
+            <div className="mt-4 flex justify-center">
+              <button
+                className=" mr-2 rounded-lg bg-red-500 px-4 py-2 text-white"
+                onClick={closeModal}
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {flashCorrectBackground && (
+        <div className="fixed inset-0 flex h-full w-full items-center justify-center">
+          {" "}
+          <p className="text-with-stroke animate-ping-slow justify-end p-10 font-ogoby text-8xl text-yellow-400">
+            +3s
+          </p>
+        </div>
+      )}
       {showCountdown && loadingDone ? ( // Render the countdown overlay if showCountdown is true
-        <div className="flex h-screen w-full items-center justify-center font-ogoby text-9xl text-white">
+        <div
+          className="text-with-stroke flex h-screen w-full items-center justify-center font-ogoby text-9xl text-white"
+          style={{
+            background: 'url("/chapters/1/actC1_bg.jpg")',
+            backgroundSize: "cover",
+          }}
+        >
           {countdown === 0 ? <h1>GO!</h1> : <h1>{countdown}</h1>}
         </div>
       ) : quizQuestions?.length > 0 && loadingDone ? (
-        <div className="flex h-screen w-full items-center justify-center">
+        <div className="flex h-screen w-full items-center justify-center bg-[url('/chapters/1/actC1_bg.jpg')]">
           {!quizEnded ? (
             <div className="flex h-screen w-full items-center justify-center">
               <div
@@ -278,9 +400,9 @@ const Index = () => {
               >
                 <div className="absolute top-0 flex w-full justify-between px-10">
                   {/* lives */}
-                  <div className="mt-10 flex items-center gap-10">
+                  <div className="mt-10 flex animate-bounce items-center gap-4">
                     {[...Array(lives)].map((_, i) => (
-                      <div key={i} className="relative mr-2 h-6 w-6">
+                      <div key={i} className="relative mr-2 h-10">
                         {lostLives.includes(i) ? (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +410,7 @@ const Index = () => {
                             viewBox="0 0 24 24"
                             strokeWidth="1.5"
                             stroke="black"
-                            className="h-6 w-6"
+                            className="h-20 w-20"
                           >
                             <path
                               strokeLinecap="round"
@@ -303,7 +425,7 @@ const Index = () => {
                             viewBox="0 0 24 24"
                             strokeWidth="1.5"
                             stroke="black"
-                            className="h-6 w-6"
+                            className="h-20 w-16"
                           >
                             <path
                               strokeLinecap="round"
@@ -315,7 +437,17 @@ const Index = () => {
                       </div>
                     ))}
                   </div>
+
                   {/* timer */}
+                  <div className="absolute top-10 right-4">
+                    {" "}
+                    <LightsQuestions
+                      questionCount={questionLength}
+                      correctAnswers={correctAnswers}
+                      currentQuestionIndex={questionNumber}
+                    />
+                  </div>
+
                   <div
                     className="absolute top-0 left-0 h-5 bg-red-500"
                     style={{ width: `${(timer / 100) * 100}%` }}
@@ -330,10 +462,10 @@ const Index = () => {
                       {quizQuestions[questionNumber]?.quiz_question}
                     </h1>
                   </div>
-                  <div className="text-with-stroke grid w-full grid-flow-row justify-items-center gap-x-0 gap-y-5 text-center font-ogoby text-3xl lg:grid-cols-2 ">
+                  <div className="text-stroke-choice grid w-full grid-flow-row justify-items-center gap-x-0 gap-y-5 text-center font-ogoby text-3xl lg:grid-cols-2 ">
                     {/* options */}
                     <div
-                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-white transition-transform hover:cursor-pointer 
+                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-yellow-300 transition-transform hover:cursor-pointer 
                       active:scale-75 
                       ${!isQuestionAnswered ? "" : ""}
                       ${
@@ -361,7 +493,7 @@ const Index = () => {
                       </span>
                     </div>
                     <div
-                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-white transition-transform hover:cursor-pointer 
+                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-yellow-300 transition-transform hover:cursor-pointer 
                       active:scale-75 
                       ${!isQuestionAnswered ? "" : ""}
                       ${
@@ -389,7 +521,7 @@ const Index = () => {
                       </span>
                     </div>
                     <div
-                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-white transition-transform hover:cursor-pointer
+                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-yellow-300 transition-transform hover:cursor-pointer
                       active:scale-75 
                       ${!isQuestionAnswered ? "" : ""}
                       ${
@@ -419,7 +551,7 @@ const Index = () => {
                       </span>
                     </div>
                     <div
-                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-white transition-transform hover:cursor-pointer 
+                      className={`flex h-[165px] w-[500px] transform items-center justify-center rounded-md bg-[url('/chapters/1/actC1_gray.png')] bg-cover bg-center p-4 text-yellow-300 transition-transform hover:cursor-pointer 
                       active:scale-75 
                       ${!isQuestionAnswered ? "" : ""}
                       ${
@@ -451,22 +583,31 @@ const Index = () => {
                   </div>
                 </div>
               </div>
-              {flashBackground && (
+              {flashWrongBackground && (
                 <div
                   className="absolute top-0 left-0 h-full w-full bg-red-500 bg-opacity-50" /* Adjust the background color */
                   style={{
-                    animation: "flash 0.5s ease 1",
+                    animation: "flash-wrong 0.5s ease 1",
+                  }} /* Adjust the animation duration */
+                ></div>
+              )}
+              {flashCorrectBackground && (
+                <div
+                  className="absolute top-0 left-0 h-full w-full bg-green-500 bg-opacity-50" /* Adjust the background color */
+                  style={{
+                    animation: "flash-correct 0.5s ease 1",
                   }} /* Adjust the animation duration */
                 ></div>
               )}
             </div>
           ) : (
             <CompletionPage
+              activityID={activityID}
               calculatedScore={calculatedScore}
               timeFinished={100 - timer}
-              activityID={activityID}
               resetGame={handleRestartQuiz}
               stopGameOverMusic={() => stopGameOverMusic()}
+              wrongTopics={wrongTopics}
             />
           )}
         </div>

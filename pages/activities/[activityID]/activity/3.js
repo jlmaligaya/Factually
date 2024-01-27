@@ -7,10 +7,12 @@ import CompletionPage from "../../../../components/completion";
 import LoadingScreen from "../../../../components/loading";
 import Image from "next/image";
 import ImageOverlay from "../../../../components/imageoverlay";
+import LightsQuestions from "../../../../components/QuestionLights";
 
 const Home = () => {
   // State variables
   const [cards, setCards] = useState([]);
+
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [score, setScore] = useState(0);
   const [isGameCompleted, setIsGameCompleted] = useState(false);
@@ -26,11 +28,71 @@ const Home = () => {
   const activityID = router.query.activityID;
   const [countdown, setCountdown] = useState(5);
   const [showCountdown, setShowCountdown] = useState(true);
-  const [flashBackground, setFlashBackground] = useState(false);
+  const [flashWrongBackground, setFlashWrongBackground] = useState(false);
+  const [flashCorrectBackground, setFlashCorrectBackground] = useState(false);
   const [lives, setLives] = useState(5);
   const [timer, setTimer] = useState(110);
   const calculatedScore = Math.round((100 / gameLength) * score);
   const [loadingDone, setLoadingDone] = useState(false);
+  const [cardIndex, setCardIndex] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(
+    Array(gameLength).fill(null)
+  );
+  const [questionTimer, setQuestionTimer] = useState(10); // Initial timer value in seconds
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [wrongTopics, setWrongTopics] = useState([]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue =
+        "Are you sure you want to leave? Your progress will be lost."; // Customize the message here
+    };
+
+    const confirmExit = (event) => {
+      // Display confirmation prompt
+      event.returnValue =
+        "Are you sure you want to leave? Your progress will be lost."; // Customize the message here
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Display confirmation prompt before user leaves the page
+    window.addEventListener("unload", confirmExit);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("unload", confirmExit);
+    };
+  }, []);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Function to show the modal with custom content
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  useEffect(() => {
+    // Set a timer for each question only after the countdown
+    if (!showCountdown) {
+      const questionInterval = setInterval(() => {
+        setQuestionTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+
+      // Handle the alert when the timer reaches 0
+      if (questionTimer === 0) {
+        showModal();
+      }
+
+      // Clear the interval when the component unmounts or the question changes
+      return () => {
+        clearInterval(questionInterval);
+      };
+    }
+  }, [showCountdown, questionTimer]);
 
   // Audio references
   const backgroundMusicRef = useRef(null);
@@ -121,7 +183,7 @@ const Home = () => {
 
   // Load and play background music
   useEffect(() => {
-    backgroundMusicRef.current = new Audio("/sounds/actC1_bgm.ogg");
+    backgroundMusicRef.current = new Audio("/sounds/actC2_bgm.ogg");
     backgroundMusicRef.current.volume = initialVolume;
     backgroundMusicRef.current.loop = true;
     backgroundMusicRef.current.play();
@@ -172,16 +234,29 @@ const Home = () => {
       setScore((prevScore) => prevScore + 1);
       correctSoundRef.current.play();
       correctSoundRef.current.currentTime = 0;
-    } else {
-      setFlashBackground(true);
+      setFlashCorrectBackground(true);
       setTimeout(() => {
-        setFlashBackground(false);
+        setFlashCorrectBackground(false);
+      }, 500);
+    } else {
+      if (!wrongTopics.includes(currentCard.topic_name)) {
+        setWrongTopics([...wrongTopics, currentCard.topic_name]);
+      }
+      console.log("List: ", wrongTopics);
+      setFlashWrongBackground(true);
+      setTimeout(() => {
+        setFlashWrongBackground(false);
       }, 500);
       setLives((prevLives) => prevLives - 1);
       wrongSoundRef.current.play();
       wrongSoundRef.current.currentTime = 0;
     }
-
+    const updatedCorrectAnswers = [...correctAnswers];
+    updatedCorrectAnswers[cardIndex] =
+      optionToCompare === currentCard.correct_option;
+    setCorrectAnswers(updatedCorrectAnswers);
+    setCardIndex(cardIndex + 1);
+    setQuestionTimer(40);
     remove();
 
     if (cards.length === 1) {
@@ -241,6 +316,10 @@ const Home = () => {
     gameOverRef.current.currentTime = 0;
     gameOver2Ref.current.currentTime = 0;
     backgroundMusicRef.current.currentTime = 0;
+    setWrongTopics([]);
+    setQuestionTimer(40);
+    setCardIndex(0);
+    setCorrectAnswers(Array(gameLength).fill(null));
     setCountdown(5);
     setShowCountdown(true);
     setTimer(110);
@@ -261,6 +340,24 @@ const Home = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[url('/chapters/1/actC1_bg.jpg')]">
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={closeModal}
+        >
+          <div className="h-30 flex w-80 flex-col items-center justify-center rounded-lg border-4 border-red-500 bg-white p-10 text-center font-ogoby text-xl text-black">
+            <p className="text-center">Are you still there?</p>
+            <div className="mt-4 flex justify-center">
+              <button
+                className="mr-2 rounded-lg bg-red-500 px-4 py-2 text-white"
+                onClick={closeModal}
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Loading Screen */}
       {!loadingDone && (
         <div className="flex h-screen w-full items-center justify-center bg-black font-ogoby text-4xl text-white">
@@ -273,14 +370,20 @@ const Home = () => {
         <>
           {/* Countdown */}
           {showCountdown ? (
-            <div className="flex h-screen w-full items-center justify-center bg-black font-ogoby text-9xl text-white">
+            <div
+              className="text-with-stroke flex h-screen w-full items-center justify-center font-ogoby text-9xl text-white"
+              style={{
+                background: 'url("/chapters/1/actC1_bg.jpg")',
+                backgroundSize: "cover",
+              }}
+            >
               {countdown === 0 ? <h1>GO!</h1> : <h1>{countdown}</h1>}
             </div>
           ) : !isGameCompleted ? (
             // Lives and Timer
             <div className="w-full">
               {/* Lives Section */}
-              <div className="absolute top-10 flex w-full items-center gap-10 px-10">
+              <div className="absolute top-10 flex w-full animate-bounce items-center gap-10 px-10">
                 {[...Array(lives)].map((_, i) => (
                   <div key={i} className="relative h-6 w-6">
                     {i < lives ? (
@@ -290,7 +393,7 @@ const Home = () => {
                         viewBox="0 0 24 24"
                         strokeWidth="1.5"
                         stroke="black"
-                        className="h-6 w-6"
+                        className="h-16 w-16"
                       >
                         <path
                           strokeLinecap="round"
@@ -305,7 +408,7 @@ const Home = () => {
                         viewBox="0 0 24 24"
                         strokeWidth="1.5"
                         stroke="black"
-                        className="h-6 w-6"
+                        className="h-16 w-16"
                       >
                         <path
                           strokeLinecap="round"
@@ -317,6 +420,15 @@ const Home = () => {
                   </div>
                 ))}
               </div>
+              <div className="absolute top-10 right-4">
+                {" "}
+                <LightsQuestions
+                  questionCount={gameLength}
+                  correctAnswers={correctAnswers}
+                  currentQuestionIndex={cardIndex}
+                />
+              </div>
+
               {/* Timer Section */}
               <div
                 className="absolute top-0 left-0 h-5 bg-red-500"
@@ -329,13 +441,13 @@ const Home = () => {
           {!isGameCompleted && (
             <div>
               <div className="text-with-stroke mb-4 flex h-[150px] w-[815px] items-center justify-center rounded-md border-4 border-gray-600 bg-slate-500 text-center font-ogoby text-4xl shadow-md">
-                Swipe the card left if it&apos;s {cards[0]?.option_one}{" "}
-                otherwise swipe right if {cards[0]?.option_two}.
+                Drag the card left if it&apos;s {cards[0]?.option_one} otherwise
+                swipe right if {cards[0]?.option_two}.
               </div>
               <div className="flex flex-row">
                 <button
                   onClick={handleReject}
-                  className="text-with-stroke mr-2 h-[600px] w-[150px] select-none rounded-lg bg-red-500 px-4 py-2 font-ogoby text-4xl text-white shadow-md"
+                  className="text-with-stroke mr-2 h-[600px] w-[150px] select-none rounded-tr-xl rounded-bl-xl border-4 border-red-600  bg-red-500 px-4 py-2 font-ogoby text-4xl text-white opacity-90 shadow-md"
                 >
                   {cards[0]?.option_one} <br />
                   &lt;&lt;
@@ -385,7 +497,7 @@ const Home = () => {
                 </div>
                 <button
                   onClick={handleAccept}
-                  className="text-with-stroke ml-2 h-[600px] w-[150px] select-none rounded-lg bg-green-500 px-4 py-2 font-ogoby text-4xl text-white shadow-md"
+                  className="text-with-stroke ml-2 h-[600px] w-[150px] select-none rounded-tl-xl rounded-br-xl border-4 border-green-600 bg-green-500 px-4 py-2 font-ogoby text-4xl text-white opacity-90 shadow-md"
                 >
                   {cards[0]?.option_two} <br />
                   &gt;&gt;
@@ -401,6 +513,7 @@ const Home = () => {
               calculatedScore={calculatedScore}
               timeFinished={110 - timer}
               stopGameOverMusic={stopGameOverMusic}
+              wrongTopics={wrongTopics}
               resetGame={handleRestart}
             />
           )}
@@ -414,10 +527,16 @@ const Home = () => {
           )}
 
           {/* Flash Background */}
-          {flashBackground && (
+          {flashWrongBackground && (
             <div
               className="absolute top-0 left-0 h-full w-full bg-red-500 bg-opacity-50"
-              style={{ animation: "flash 0.5s ease 1" }}
+              style={{ animation: "flash-wrong 0.5s ease 1" }}
+            ></div>
+          )}
+          {flashCorrectBackground && (
+            <div
+              className="absolute top-0 left-0 h-full w-full bg-green-500 bg-opacity-50"
+              style={{ animation: "flash-correct 0.5s ease 1" }}
             ></div>
           )}
         </>

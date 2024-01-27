@@ -304,12 +304,12 @@ export default function Home({ useravatar, actv, userScore }) {
                 ></div>
                 <div className="w-4xl z-10 flex flex-col items-center rounded-md border-4 border-red-500 bg-white p-8 shadow-lg">
                   <Leaderboard onClose={toggleLeaderboardModal} />
-                  <button
+                  {/* <button
                     className="w-1/2 rounded-lg border-2 border-black bg-red-500 px-4 py-2 text-center font-boom text-white hover:bg-red-600"
                     onClick={toggleLeaderboardModal}
                   >
                     Close
-                  </button>
+                  </button> */}
                 </div>
               </div>
             )}
@@ -436,11 +436,12 @@ export default function Home({ useravatar, actv, userScore }) {
                         </div>
                         {/* Stars section */}
                         <div className="m-5 grid grid-flow-col gap-3">
-                          {Array.from({ length: numberOfStars }).map((_, i) => (
+                          {Array.from({ length: 3 }).map((_, i) => (
                             <svg
                               key={i}
                               xmlns="http://www.w3.org/2000/svg"
-                              fill="#FFD700"
+                              fill={i < numberOfStars ? "#FFD700" : "gray"}
+                              stroke="black"
                               viewBox="0 0 24 24"
                               className="h-8 w-8"
                             >

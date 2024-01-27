@@ -7,7 +7,7 @@ export default function Layout({ children }) {
   const router = useRouter();
   const [showNav, setShowNav] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isFading, setIsFading] = useState(false); 
+  const [isFading, setIsFading] = useState(false);
 
   function handleResize() {
     if (window.innerWidth <= 640) {
@@ -37,7 +37,7 @@ export default function Layout({ children }) {
   return (
     <>
       <main
-        className={`h-screen overflow-x-hidden transition-all duration-[400ms] ${
+        className={`h-screen transition-all duration-[400ms] overflow-x-hidden ${
           showNav && !isMobile ? "pl-56" : ""
         } ${isFading ? "fade-out" : ""}`}
       >
@@ -46,4 +46,3 @@ export default function Layout({ children }) {
     </>
   );
 }
-
