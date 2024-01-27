@@ -7,7 +7,7 @@ import CompletionPage from "../../../../components/completion";
 import LoadingScreen from "../../../../components/loading";
 import Image from "next/image";
 import ImageOverlay from "../../../../components/imageoverlay";
-import LightsQuestions from "../../../../components/QuestionLights";
+import LightsQuestions from "../../../../components/questionlights";
 
 const Home = () => {
   // State variables

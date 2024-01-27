@@ -6,7 +6,7 @@ import LoadingScreen from "../../../../components/loading";
 import CompletionPage from "../../../../components/completion";
 import Image from "next/image";
 import Head from "next/head";
-import LightsQuestions from "../../../../components/QuestionLights";
+import LightsQuestions from "../../../../components/questionlights";
 
 const CaptchaGame = () => {
   const [gameCompleted, setGameCompleted] = useState(false);
