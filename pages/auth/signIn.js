@@ -45,6 +45,7 @@ const SignIn = (props) => {
       setError("Account not found.");
       console.log("Account not found");
     } else {
+      router.push(`/`);
     }
 
     setIsLoading(false);
