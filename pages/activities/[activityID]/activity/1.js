@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import LoadingScreen from "../../../../components/loading";
 import CompletionPage from "../../../../components/completion";
-import LightsQuestions from "../../../../components/QuestionLights";
+import LightsQuestions from "../../../../components/questionlights";
 import Head from "next/head";
 const Index = () => {
   const [isQuestionAnswered, setIsQuestionAnswered] = useState(false);
