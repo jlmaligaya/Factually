@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 export default function ChangeUsernameModal({
   onClose,
@@ -9,15 +10,17 @@ export default function ChangeUsernameModal({
   const [newUsername, setNewUsername] = useState("");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession();
 
   const handleChangeUsername = async () => {
     setError("");
-    if (!newUsername.trim()) {
+    const trimmedUsername = newUsername.trim(); // Trim the new username
+    if (!trimmedUsername) {
       setError("Please enter a new username.");
       return;
     }
 
-    if (newUsername === username) {
+    if (trimmedUsername === username) {
       setError("New username must be different from the current username.");
       return;
     }
@@ -25,15 +28,22 @@ export default function ChangeUsernameModal({
     setIsLoading(true);
     try {
       const response = await axios.post("/api/changeUsername", {
-        newUsername,
+        newUsername: trimmedUsername, // Use trimmedUsername here
         username,
       });
       console.log("Username updated successfully:", response.data);
-      onChangeUsername(newUsername);
-      onClose(); // Close the modal after successful update
+      session.user.username = trimmedUsername; // Update the username in the session
+      onChangeUsername(trimmedUsername); // Call the onChangeUsername function
+      onClose();
     } catch (error) {
-      setError(error.response?.data?.message || "Failed to update username");
+      if (error.response?.data?.error === "Username already exists") {
+        setError("Username already exists, please choose another one");
+      } else {
+        setError(error.response?.data?.message || "Failed to update username");
+      }
     }
+    session.user.username = trimmedUsername; // Update the username in the session
+    onClose();
     setIsLoading(false);
   };
 
@@ -44,7 +54,9 @@ export default function ChangeUsernameModal({
         <input
           type="text"
           value={newUsername}
-          onChange={(e) => setNewUsername(e.target.value)}
+          onChange={(e) => {
+            setNewUsername(e.target.value), setError(null);
+          }}
           className="mt-2 border-2 border-gray-300 p-2"
         />
         {error && <p className="text-red-500">{error}</p>}

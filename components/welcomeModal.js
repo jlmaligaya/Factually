@@ -65,17 +65,17 @@ export default function UsernameSelectionModal({
                 placeholder="Enter your username"
                 className=" w-64 rounded-lg border border-white px-4 py-2 font-retropix text-lg text-black focus:outline-none"
               />
-              {error && (
-                <p className="text-stroke mb-4 font-ogoby text-2xl text-red-500 ">
-                  {error}
-                </p>
-              )}
               <button
                 onClick={handleChangeUsername}
-                className="w-64 rounded-lg bg-red-500 px-6 py-2 font-ogoby text-white transition duration-300 hover:bg-red-600  hover:text-slate-200 xl:text-xl 2xl:text-2xl"
+                className="mt-2 w-64 rounded-lg bg-red-500 px-6 py-2 font-ogoby text-white transition duration-300 hover:bg-red-600  hover:text-slate-200 xl:text-xl 2xl:text-2xl"
               >
                 Get Started
               </button>
+              {error && (
+                <p className="text-stroke mt-4 bg-black font-ogoby text-2xl text-red-500 ">
+                  {error}
+                </p>
+              )}
             </div>
           </div>
           <div className="relative flex w-1/2 items-center justify-center bg-black">
