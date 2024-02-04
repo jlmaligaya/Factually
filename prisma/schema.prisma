@@ -3,51 +3,60 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = "postgres://postgres.bpfzmwxcibqsyzrpgyeg:417Gg98CVC18FKL8@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?pgbouncer=true"
 }
 
-
 model Section {
-  id        Int       @id @default(autoincrement())
-  sectionId      String    @unique
-  users     User[]    // One-to-many relationship with User
-  activities Activities[] // One-to-many relationship with Activities
+  id         Int          @id @default(autoincrement())
+  sectionId  String       @unique
+  activities Activities[]
+  users      User[]
 }
 
 model User {
-  username  String  @unique
-  firstName String
-  lastName  String
-  email     String  @unique
-  password  String
-  uid       String  @unique @default(dbgenerated("('UID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
-  id        Int     @id @default(autoincrement())
-  avatar    String? @default("0")
-  role      String?
-  section   String?
-  sections   Section?  @relation(fields: [section], references: [sectionId])
-
-  scores    Score[]
+  username        String   @unique @default(dbgenerated("gen_random_uuid()"))
+  firstName       String
+  lastName        String
+  email           String   @unique
+  password        String
+  uid             String   @unique @default(dbgenerated("('UID'::text || lpad((nextval('user_id_seq'::regclass))::text, 6, '0'::text))"))
+  id              Int      @id @default(autoincrement())
+  avatar          String?  @default("0")
+  role            String?
+  section         String?
+  section_handled String[]
+  scores          Score[]
+  sections        Section? @relation(fields: [section], references: [sectionId])
 }
 
 model Activities {
   topic      String
   activity   String
   desc       String
-  aid        String         @unique @default(dbgenerated("('AID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
-  img        String         @default("https://edukasyon-production.s3.amazonaws.com/uploads/facility/image/5321/j4d6loBhPR2zRk4gtnAB75GWqmq2ZXkr.jpg")
+  aid        String            @unique @default(dbgenerated("('AID'::text || lpad((nextval('activities_id_seq'::regclass))::text, 6, '0'::text))"))
+  img        String            @default("https://edukasyon-production.s3.amazonaws.com/uploads/facility/image/5321/j4d6loBhPR2zRk4gtnAB75GWqmq2ZXkr.jpg")
   video      String
-  id         Int            @id @default(autoincrement())
-  type       Int            @default(0)
+  id         Int               @id @default(autoincrement())
+  type       Int               @default(0)
   section    String?
-  sections   Section?  @relation(fields: [section], references: [sectionId])
-
+  sections   Section?          @relation(fields: [section], references: [sectionId])
+  videos     CustomizedVideo[]
   cutscenes  CutscenePics[]
   imagematch ImageMatch[]
   questions  QuizQuestion[]
   scores     Score[]
   swipegame  Swiper[]
+}
+
+model CustomizedVideo {
+  id         Int        @id @default(autoincrement())
+  videoId    String     @unique @default(dbgenerated("gen_random_uuid()"))
+  activityId String
+  sections   String[]
+  videoFile  String
+  activity   Activities @relation(fields: [activityId], references: [aid])
 }
 
 model Score {
@@ -71,24 +80,26 @@ model QuizQuestion {
   option_two     String
   quiz_question  String
   topic_name     String?
+  section        String?
   activity       Activities @relation(fields: [activityId], references: [aid])
 }
 
 model ImageMatch {
   id         Int              @id @default(autoincrement())
-  title      String
+  title      String @unique @default(dbgenerated("gen_random_uuid()"))
   activityID String
   topic_name String?
   activity   Activities       @relation(fields: [activityID], references: [aid])
+    section String?
   images     ImageMatchPics[]
 }
 
 model ImageMatchPics {
   id     Int        @id @default(autoincrement())
   url    String
-  value  Boolean
-  gameID Int
-  game   ImageMatch @relation(fields: [gameID], references: [id])
+  value  String
+  gameID String
+  game   ImageMatch @relation(fields: [gameID], references: [title])
 }
 
 model CutscenePics {
@@ -109,5 +120,6 @@ model Swiper {
   imageUrl       String
   description    String?
   topic_name     String?
+  section        String?
   activity       Activities @relation(fields: [activityId], references: [aid])
 }

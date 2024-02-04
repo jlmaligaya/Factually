@@ -16,7 +16,7 @@ const SignIn = (props) => {
   useEffect(() => {
     if (session) {
       if (session.user.role === "instructor") {
-        router.push(`/instructor`);
+        router.push(`/instructor/students`);
       } else {
         router.push(`/`);
       }
@@ -45,7 +45,6 @@ const SignIn = (props) => {
       setError("Account not found.");
       console.log("Account not found");
     } else {
-      router.push(`/`);
     }
 
     setIsLoading(false);
@@ -168,6 +167,15 @@ const SignIn = (props) => {
               {/* Display error message */}
               {error && <p className="mt-2 text-lg text-white">{error}</p>}
             </center>
+            {/* Bottom left photo */}
+            <div className="pointer-events-none absolute top-0 left-0 flex w-48 select-none">
+              {" "}
+              <img
+                src="https://mcl.edu.ph/wp-content/uploads/2022/04/MMCL_Logo-258x300-1.webp"
+                alt=""
+                className="mb-4 w-full p-8"
+              />
+            </div>
           </div>
 
           {/* right side */}

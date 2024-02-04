@@ -16,6 +16,8 @@ export default async function handler(req, res) {
           select: {
             username: true, // Include the username field
             avatar: true,
+            firstName: true,
+            lastName: true,
           },
         },
       },

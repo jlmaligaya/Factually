@@ -19,7 +19,7 @@ const AvatarSelectionModal = ({ onClose, onSelectAvatar, uname }) => {
       const response = await axios.post(
         "/api/updateAvatar",
         {
-          username: session.user.username,
+          uid: session.user.uid,
           avatar: selectedAvatar.toString(),
         },
         { withCredentials: true }
@@ -30,7 +30,7 @@ const AvatarSelectionModal = ({ onClose, onSelectAvatar, uname }) => {
 
         // Update the avatar immediately
         onSelectAvatar(updatedUser.avatar);
-
+        session.user.avatar = selectedAvatar.toString();
         onClose();
       } else {
         console.error("Error updating avatar:", response.statusText);
@@ -49,13 +49,15 @@ const AvatarSelectionModal = ({ onClose, onSelectAvatar, uname }) => {
           Select Your Avatar
         </h2>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-10">
           {/* Add your avatar images and customize the UI based on your design */}
           {[1, 2, 3, 4, 5, 6].map((avatarIndex) => (
             <div
               key={avatarIndex}
-              className={`h-30 w-30 cursor-pointer rounded-full ${
-                selectedAvatar === avatarIndex ? "border-4 border-red-500" : ""
+              className={`h-30 w-30 cursor-pointer rounded-full  ${
+                selectedAvatar === avatarIndex
+                  ? "animate-pulse border-4 border-red-500"
+                  : "border-4 border-gray-500 hover:border-yellow-400"
               }`}
               onClick={() => handleAvatarClick(avatarIndex)}
             >

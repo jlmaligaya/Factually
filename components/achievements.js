@@ -97,15 +97,15 @@ const AchievementsComponent = ({ userID, onClose }) => {
       },
       progress: 0,
     },
-    {
-      id: 8,
-      name: "Master Speedster",
-      description: "Finish all activities within 20 seconds each",
-      condition: (userScores) => {
-        return userScores.every((score) => score.timeFinished < 20);
-      },
-      progress: 0,
-    },
+    // {
+    //   id: 8,
+    //   name: "Master Speedster",
+    //   description: "Finish all activities within 20 seconds each",
+    //   condition: (userScores) => {
+    //     return userScores.every((score) => score.timeFinished < 20);
+    //   },
+    //   progress: 0,
+    // },
     {
       id: 9,
       name: "Perfectionist",
@@ -279,14 +279,14 @@ const AchievementsComponent = ({ userID, onClose }) => {
                     consecutiveCount = 0;
                   }
                 }
-              } else if (achievement.id === 8) {
-                const allWithinTwentySeconds = userScores.every(
-                  (score) => score.timeFinished <= 20
-                );
-                additionalInfo = `All activities finished within 20 seconds: ${
-                  allWithinTwentySeconds ? "Yes" : "No"
-                }`;
-                progressValue = allWithinTwentySeconds ? "1" : "0";
+                // } else if (achievement.id === 8) {
+                //   const allWithinTwentySeconds = userScores.every(
+                //     (score) => score.timeFinished <= 20
+                //   );
+                //   additionalInfo = `All activities finished within 20 seconds: ${
+                //     allWithinTwentySeconds ? "Yes" : "No"
+                //   }`;
+                //   progressValue = allWithinTwentySeconds ? "1" : "0";
               } else if (achievement.id === 9) {
                 const perfectScoredActivities = userScores.filter(
                   (score) => score.score === 100

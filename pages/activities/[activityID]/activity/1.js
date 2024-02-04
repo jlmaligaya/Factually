@@ -21,6 +21,7 @@ const Index = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const userID = session ? session.user.uid : null;
+  const sectionName = session?.user.section;
   const activityID = router.query.activityID;
   const [loadingDone, setLoadingDone] = useState(false);
   const calculatedScore = Math.round((100 / questionLength) * totalScore);
@@ -144,9 +145,9 @@ const Index = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (quizQuestions.length === 0) {
+        if (quizQuestions.length === 0 && sectionName !== null) {
           const result = await fetch(
-            `../../../api/questions?activityId=${activityID}`
+            `../../../api/questions?activityId=${activityID}&sectionName=${sectionName}`
           );
           const data = await result.json();
           // Shuffle questions and options
@@ -154,7 +155,7 @@ const Index = () => {
           setQuestionLength(data.length);
           setQuizStarted(true);
           setLoadingDone(true);
-          console.log("Data: ", data);
+          console.log("Data: ", sectionName);
         }
       } catch (error) {
         console.error(error);

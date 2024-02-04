@@ -10,6 +10,7 @@ import LoadingScreen from "../components/loading";
 import AvatarSelectionModal from "../components/AvatarSelectionModal";
 import ScreenAdjustment from "../components/screenadjustment";
 import Head from "next/head";
+import UsernameSelectionModal from "../components/welcomeModal";
 
 const GameSettingsModal = lazy(() => import("../components/settings"));
 const Leaderboard = lazy(() => import("../components/summary"));
@@ -31,6 +32,9 @@ export default function Home({ useravatar, actv, userScore }) {
   const [showAvatarModal, setShowAvatarModal] = useState(isFirstTime);
   const [adjustmentCompleted, setAdjustmentCompleted] = useState(false);
   const [showAdjustment, setShowAdjustment] = useState(false);
+  const [showUsernameSelection, setShowUsernameSelection] =
+    useState(isFirstTime);
+  const username = session ? session.user.section : null;
 
   const handleFinishAdjustment = () => {
     setAdjustmentCompleted(true);
@@ -107,8 +111,22 @@ export default function Home({ useravatar, actv, userScore }) {
     return Math.floor(stars);
   };
 
-  // Function to determine if an activity is locked
   const isActivityLocked = (activityIndex) => {
+    // Check if the user has a score in chapter 10
+    const hasScoreInChapter10 = userScore.some((score) =>
+      score.activityId.startsWith("AID000010")
+    );
+
+    // If the user has a score in chapter 10, disable activities with 3 stars
+    if (hasScoreInChapter10) {
+      const previousActivityStars = calculateStars(
+        userScore.find((score) => score.activityId === actv[activityIndex].aid)
+          ?.score || 0
+      );
+      return previousActivityStars >= 3;
+    }
+
+    // Check if any previous activity is locked
     for (let i = 0; i < activityIndex; i++) {
       const previousActivityStars = calculateStars(
         userScore.find((score) => score.activityId === actv[i].aid)?.score || 0
@@ -188,11 +206,17 @@ export default function Home({ useravatar, actv, userScore }) {
           {showAdjustment && !adjustmentCompleted && (
             <ScreenAdjustment onFinishAdjustment={handleFinishAdjustment} />
           )}
-          {showAvatarModal && (
+          {showAvatarModal && !showUsernameSelection && (
             <AvatarSelectionModal
               onClose={handleCloseAvatarModal}
               onSelectAvatar={handleAvatarSelection}
               avatar={useravatar.avatar}
+            />
+          )}
+          {showUsernameSelection && isFirstTime && (
+            <UsernameSelectionModal
+              onClose={() => setShowUsernameSelection(false)}
+              username={session.user.username}
             />
           )}
           <div className="w-full bg-[url('/bground_menu.png')] bg-blend-darken">
@@ -211,6 +235,7 @@ export default function Home({ useravatar, actv, userScore }) {
                 onSfxVolumeChange={onSfxVolumeChange}
                 userFirstName={session.user.username} // Pass the user's first name as a prop
                 userAvatar={session.user.avatar}
+                userRole={session.user.role}
               />
             )}
             {console.log(session.user.avatar)}

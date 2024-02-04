@@ -191,7 +191,10 @@ const LeaderboardContent = ({
                         className="rounded-full"
                       />
                     </div>
-                    <div>{score.user.username.toUpperCase()}</div>
+                    <div>
+                      {score.user.firstName.toUpperCase()}&nbsp;
+                      {score.user.lastName.toUpperCase()}
+                    </div>
                   </td>
                   <td className="border border-gray-200 px-4 py-2">
                     {score.score}

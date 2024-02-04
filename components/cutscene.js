@@ -13,6 +13,21 @@ const Cutscene = ({ activityID, isIntro, onClose }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isSkipVisible, setIsSkipVisible] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
+  const [textSpoken, setTextSpoken] = useState([]);
+
+  useEffect(() => {
+    // Initialize textSpoken state based on the number of slides
+    setTextSpoken(Array(cutsceneSlides.length).fill(false));
+  }, [cutsceneSlides]);
+
+  // Function to speak the text
+  // const speakText = (text) => {
+  //   const utterance = new SpeechSynthesisUtterance(text);
+  //   let voicesArray = speechSynthesis.getVoices();
+  //   utterance.voice = voicesArray[1];
+  //   utterance.rate = 0.8; // Adjust the rate as needed to match typing speed
+  //   speechSynthesis.speak(utterance);
+  // };
 
   const handleSkip = () => {
     // Skip to the last slide
@@ -109,12 +124,21 @@ const Cutscene = ({ activityID, isIntro, onClose }) => {
           0,
           textIndex + 1
         );
+        // speakText(cutsceneSlides[currentSlide]?.caption);
         setDisplayedText(newText);
         setTextIndex(textIndex + 1);
 
         // Check if text is fully typed
         if (textIndex === cutsceneSlides[currentSlide]?.caption.length - 1) {
           setIsTextFullyTyped(true);
+          // if (!textSpoken[currentSlide]) {
+          //   speakText(newText);
+          //   setTextSpoken((prev) => {
+          //     const newFlags = [...prev];
+          //     newFlags[currentSlide] = true;
+          //     return newFlags;
+          //   });
+          // }
         }
       }, 50); // Adjust typing speed as needed
 

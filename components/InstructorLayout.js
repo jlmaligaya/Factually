@@ -3,9 +3,9 @@ import Sidebar from "./sidebar";
 
 const Layout = ({ children }) => {
   return (
-    <div className="flex h-screen flex-row justify-start">
+    <div className="flex h-screen flex-row justify-start bg-gray-400">
       <Sidebar />
-      <div className="flex-1 bg-primary ">{children}</div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 };

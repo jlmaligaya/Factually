@@ -38,9 +38,10 @@ const Home = () => {
   const [correctAnswers, setCorrectAnswers] = useState(
     Array(gameLength).fill(null)
   );
-  const [questionTimer, setQuestionTimer] = useState(10); // Initial timer value in seconds
+  const [questionTimer, setQuestionTimer] = useState(20); // Initial timer value in seconds
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [wrongTopics, setWrongTopics] = useState([]);
+  const sectionName = session?.user.section;
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -122,7 +123,7 @@ const Home = () => {
       try {
         if (gameLength === 0 || isGameCompleted) {
           const result = await fetch(
-            `../../../api/swiper?activityId=${activityID}`
+            `../../../api/swiper?activityId=${activityID}&sectionName=${sectionName}`
           );
           const data = await result.json();
           const shuffledData = shuffleArray(data); // Shuffle the data

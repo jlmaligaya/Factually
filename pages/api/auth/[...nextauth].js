@@ -72,6 +72,8 @@ const authOptions = {
       session.user.username = user.username;
       session.user.avatar = user.avatar;
       session.user.role = user.role;
+      session.user.section = user.section;
+      session.user.section_handled = user.section_handled;
       return session;
     },
   },

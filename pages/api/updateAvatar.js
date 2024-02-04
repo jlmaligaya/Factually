@@ -5,12 +5,12 @@ import { prisma } from "../../db";
 export default async function handler(req, res) {
   const session = await getSession({ req });
 
-  const { username, avatar } = req.body;
+  const { uid, avatar } = req.body;
 
   try {
     const updatedUser = await prisma.user.update({
       where: {
-        username,
+        uid,
       },
       data: {
         avatar,

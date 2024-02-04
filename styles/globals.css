@@ -119,9 +119,7 @@ body {
 }
 
 .text-stroke {
-  -webkit-text-stroke: 0.75px #333333; /* WebKit-based browsers like Chrome and Safari */
-
-  color: #e1daae; /* Fill color of the text */
+  -webkit-text-stroke: 0.75px #333333; /* WebKit-based browsers like Chrome and Safari */ /* Fill color of the text */
 }
 
 .text-stroke-achv {

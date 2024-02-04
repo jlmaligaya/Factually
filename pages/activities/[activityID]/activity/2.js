@@ -243,7 +243,7 @@ const CaptchaGame = () => {
   const checkWinCondition = () => {
     const correctSelections = selectedImages.filter((image) =>
       currentGameState?.images
-        ?.filter((img) => img.value === true)
+        ?.filter((img) => img.value === currentGameState?.title)
         .map((img) => img.url)
         .includes(image)
     );
@@ -515,7 +515,7 @@ const CaptchaGame = () => {
               } ${
                 verificationState === "incorrect" &&
                 currentGameState?.images
-                  ?.filter((img) => img.value === true)
+                  ?.filter((img) => img.value === currentGameState?.title)
                   .map((img) => img.url)
                   .includes(image.url)
                   ? "border border-red-500"

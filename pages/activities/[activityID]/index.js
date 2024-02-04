@@ -4,9 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Cutscene from "../../../components/cutscene";
 import Head from "next/head";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 export default function Index() {
   const router = useRouter();
+  const { data: session } = useSession();
+  const sectionName = session ? session.user.section : null;
   const activityID = router.query.activityID;
   const [videoURL, setVideoURL] = useState(null);
   const [topicName, setTopicName] = useState(null);
@@ -14,6 +18,7 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState(true);
   const [showCutscene, setShowCutscene] = useState(true);
   const [gameType, setGameType] = useState(0);
+  const [videoEnded, setVideoEnded] = useState(false);
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -28,8 +33,11 @@ export default function Index() {
         );
 
         const activity = await res.json();
-
-        setVideoURL(activity.video);
+        const response = await axios.get(
+          `/api/checkCustomizedVideo?sectionName=${sectionName}&activityID=${activityID}`
+        );
+        const { videoURL } = response.data;
+        setVideoURL(videoURL);
         setTopicName(activity.topic);
         setDesc(activity.desc);
         setGameType(activity.type);
@@ -43,6 +51,11 @@ export default function Index() {
 
     fetchVideo();
   }, [activityID, router]);
+
+  // Function to handle the end of the video
+  const handleVideoEnd = () => {
+    setVideoEnded(true);
+  };
 
   // Conditional rendering based on isLoading
   if (isLoading) {
@@ -104,15 +117,19 @@ export default function Index() {
                 className="bg-[url('/assets/activity/l_horizontal.png')] bg-contain bg-no-repeat"
                 style={{ backgroundSize: "100% 100%" }}
               >
-                {/* Video player */}
-                <iframe
-                  allowFullScreen="0"
-                  className="p-10"
-                  width="100%"
-                  height="435"
-                  src={`${videoURL}?rel=0`}
-                  title="Video Player"
-                ></iframe>
+                {!showCutscene && (
+                  <video
+                    autoPlay
+                    onEnded={handleVideoEnd}
+                    className=" p-10"
+                    width="100%"
+                    height="435"
+                    controls
+                  >
+                    <source src={videoURL} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
               </div>
               <div
                 className="m-4 flex h-[400px] w-full items-center justify-center bg-[url('/assets/activity/l_title.png')] bg-contain bg-no-repeat"
@@ -131,11 +148,11 @@ export default function Index() {
                 style={{ backgroundSize: "100% 100%" }}
               >
                 <div className="p-8 ">
-                  <h3 className="text-stroke md:text-md text-center font-ogoby text-4xl">
+                  <h3 className="text-stroke md:text-md text-center font-ogoby text-4xl text-yellow-200">
                     MISSION
                   </h3>
                   <p className="mt-4 text-justify font-retropix capitalize text-yellow-200 md:text-xs 2xl:text-xl  ">
-                    {description.toUpperCase()}
+                    {description?.toUpperCase()}
                   </p>
                 </div>
               </div>
@@ -147,15 +164,21 @@ export default function Index() {
             <Link
               href={{
                 pathname: "/activities/[activityID]/activity",
-                query: { activityID },
+                query: { activityID, sectionName },
               }}
               as={`/activities/${activityID}/activity/${gameType}`}
             >
               <div
-                className="rounded-tr-full rounded-bl-full border-4 border-red-500 bg-white py-5 px-20 font-boom text-red-500 opacity-100"
-                style={{ marginTop: "-20px" }}
+                className={`rounded-tr-full rounded-bl-full border-4 bg-white py-5 px-20 font-boom text-red-500 ${
+                  videoEnded ? "opacity-100" : "opacity-50"
+                }`}
+                style={{
+                  marginTop: "-20px",
+                  cursor: videoEnded ? "pointer" : "not-allowed",
+                }}
+                onClick={videoEnded ? null : (e) => e.preventDefault()} // Prevent click event when disabled
               >
-                Proceed
+                {!videoEnded ? "Enabled after Video" : "Proceed to Activity"}
               </div>
             </Link>
           </div>

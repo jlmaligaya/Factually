@@ -9,6 +9,7 @@ const nextConfig = {
       "conversations.marketing-partners.com",
       "edukasyon-production.s3.amazonaws.com",
       "cdn3.vectorstock.com",
+      "i.postimg.cc",
     ], // Add your hostname here
   },
 };
