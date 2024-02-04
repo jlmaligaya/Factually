@@ -332,7 +332,7 @@ const UsersPage = () => {
               )} */}
               <h1>
                 2. Rename the file with the section name and upload the filled
-                template with students' data
+                template with students&apos; data
               </h1>
               <input
                 type="file"
