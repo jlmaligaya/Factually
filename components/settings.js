@@ -153,7 +153,7 @@ export default function GameSettingsModal({
                 className="text-stroke mb-5 w-full  rounded-md bg-gray-500 px-4 py-2 font-ogoby text-xl uppercase text-white hover:bg-gray-600"
                 onClick={() => router.push("/instructor/students")}
               >
-                Instructor's Page
+                Instructor&apos;s Page
               </button>
             )}
           </div>
