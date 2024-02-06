@@ -80,8 +80,8 @@ const UploadVideoModal = ({ activityId, onClose }) => {
         <h2 className="mb-4 text-xl font-bold">Upload Video</h2>
         <input type="file" onChange={handleFileChange} accept="video/*" />
         <p className="mt-2 text-sm text-gray-500">
-          Please upload MP4 video less than 50MB. <br />
-          Other formats or larger sizes require conversion/compression.
+          For optimized loading times and compatibility,
+          <br /> use MP4 video format with less than 50MB file size.
         </p>
         <div className="grid w-96  grid-flow-row">
           {" "}

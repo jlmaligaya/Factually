@@ -31,14 +31,18 @@ export default function ChangePasswordModal({ onClose, username }) {
         <input
           type="password"
           value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
+          onChange={(e) => {
+            setOldPassword(e.target.value), setError(null);
+          }}
           className="mt-2 border-2 border-gray-300 p-2"
         />
         <p>Enter your new password:</p>
         <input
           type="password"
           value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
+          onChange={(e) => {
+            setNewPassword(e.target.value), setError(null);
+          }}
           className="mt-2 border-2 border-gray-300 p-2"
         />
         {error && <p className="text-red-500">{error}</p>}

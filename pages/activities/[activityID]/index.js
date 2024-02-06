@@ -160,7 +160,7 @@ export default function Index() {
           </div>
 
           {/* Relative div in the middle-bottom */}
-          <div className="absolute bottom-12">
+          <div className="absolute bottom-12 ">
             <Link
               href={{
                 pathname: "/activities/[activityID]/activity",
@@ -169,7 +169,7 @@ export default function Index() {
               as={`/activities/${activityID}/activity/${gameType}`}
             >
               <div
-                className={`rounded-tr-full rounded-bl-full border-4 bg-white py-5 px-20 font-boom text-red-500 ${
+                className={`2xl:text-md rounded-tr-full rounded-bl-full border-4 bg-white py-5 px-20 font-boom text-red-500 xl:text-sm ${
                   videoEnded ? "opacity-100" : "opacity-50"
                 }`}
                 style={{

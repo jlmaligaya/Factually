@@ -496,7 +496,7 @@ const CaptchaGame = () => {
             : "border-slate-500"
         }`}
       >
-        <h2 className="text-with-stroke mb-4 rounded-full border-4 border-red-300 bg-red-100 p-5 text-center font-ogoby text-5xl text-black">
+        <h2 className="text-with-stroke mb-4 rounded-full border-4 border-red-300 bg-red-100 p-5 text-center font-ogoby text-5xl text-white">
           {currentGameState?.title.toUpperCase()}
         </h2>
         <div className="grid select-none grid-cols-3 gap-4">
@@ -524,7 +524,7 @@ const CaptchaGame = () => {
               onClick={() => handleImageClick(image.url)}
             >
               <Image
-                src={`${image.url}.jpg`}
+                src={`${image.url}`}
                 height={150}
                 width={150}
                 alt={`Captcha ${image.id}`}

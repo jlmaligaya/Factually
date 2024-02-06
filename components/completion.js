@@ -62,7 +62,7 @@ const CompletionPage = ({
         )}
       <div className="w-4/5">
         <div className="w-full text-center">
-          <h1 className="text-with-stroke mb-2 font-boom text-4xl text-red-700">
+          <h1 className="text-with-stroke mb-2 font-boom text-4xl text-white">
             Quiz Summary
           </h1>
           <hr className="mx-auto w-16 border-red-500" />
@@ -206,7 +206,7 @@ const CompletionPage = ({
       {wrongTopics.length > 0 && (
         <div className="flex flex-col items-center gap-4">
           <div className="bg-red w-full text-center">
-            <h2 className="text-with-stroke mb-4 font-ogoby text-4xl uppercase  text-red-700">
+            <h2 className="text-with-stroke mb-4 font-ogoby text-4xl uppercase  text-white">
               Whoops! Consider going back to these topics:
             </h2>
           </div>
