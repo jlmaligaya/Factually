@@ -1,5 +1,6 @@
 // pages/api/users/saveStudents.js
 import { prisma } from "../../../db";
+import bcrypt from "bcrypt";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -36,12 +37,13 @@ export default async function handler(req, res) {
 
         // If user does not exist, create a new user
         if (!existingUser) {
+          const hashedPassword = await bcrypt.hash("changeme", 10);
           await prisma.user.create({
             data: {
               firstName: student[0],
               lastName: student[1],
               email: student[2],
-              password: "changeme",
+              password: hashedPassword,
               role: "student",
               section: sectionId,
             },

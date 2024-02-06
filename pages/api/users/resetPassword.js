@@ -1,4 +1,5 @@
 // pages/api/users/resetPassword.js
+import bcrypt from "bcrypt";
 
 import { prisma } from "../../../db";
 
@@ -8,10 +9,10 @@ export default async function handler(req, res) {
 
     try {
       // Implement logic to reset the user's password
-      // For example, update the password in the database
+      const hashedPassword = await bcrypt.hash("changeme", 10);
       await prisma.user.update({
         where: { id: userId },
-        data: { password: "changeme" }, // Update with the new password
+        data: { password: hashedPassword }, // Update with the new password
       });
 
       res.status(200).json({ message: "Password reset successfully" });

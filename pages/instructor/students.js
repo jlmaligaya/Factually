@@ -17,6 +17,7 @@ const UsersPage = () => {
   const [searchColumn, setSearchColumn] = useState("username");
   const { data: session, status } = useSession();
   const uid = session?.user.uid;
+  const section_handled = session?.user.section_handled;
   const [loading, setLoading] = useState(true);
 
   const handleSearch = (e) => {
@@ -46,10 +47,14 @@ const UsersPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sectionsResponse = await axios.get(`/api/sections`);
+        const sectionsResponse = await axios.get(`/api/sections?userId=${uid}`);
         setSections(sectionsResponse.data);
 
-        const usersResponse = await axios.get(`/api/students`);
+        const usersResponse = await axios.get(
+          `/api/students/`,
+          session.user.section_handled
+        );
+
         setUsers(usersResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -57,6 +62,7 @@ const UsersPage = () => {
         setLoading(false); // Set loading to false when data fetching is done
       }
     };
+    console.log(section_handled);
     fetchData();
   }, []);
 
@@ -237,43 +243,46 @@ const UsersPage = () => {
                 Loading...
               </div>
             ) : users.length > 0 ? (
-              <table className="w-full table-auto border border-gray-300 bg-white shadow-md">
-                <thead className="bg-gray-900 text-white">
-                  <tr>
-                    <th className="border-b py-2 px-4">Username</th>
-                    <th className="border-b py-2 px-4">First Name</th>
-                    <th className="border-b py-2 px-4">Last Name</th>
-                    <th className="border-b py-2 px-4">Email</th>
-                    <th className="border-b py-2 px-4">Section</th>
-                    <th className="border-b py-2 px-4">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredUsers.map((user) => (
-                    <tr key={user.id}>
-                      <td className="border-b py-2 px-4">{user.username}</td>
-                      <td className="border-b py-2 px-4">{user.firstName}</td>
-                      <td className="border-b py-2 px-4">{user.lastName}</td>
-                      <td className="border-b py-2 px-4">{user.email}</td>
-                      <td className="border-b py-2 px-4">{user.section}</td>
-                      <td className=" flex border-b py-2 px-4 text-sm ">
-                        <button
-                          onClick={() => handleResetPassword(user.id)}
-                          className=" mr-2 rounded-3xl bg-blue-600 p-2 font-semibold uppercase text-white hover:bg-blue-700 hover:text-slate-200"
-                        >
-                          Reset
-                        </button>
-                        <button
-                          onClick={() => handleRemoveUser(user.id, user.uid)}
-                          className="rounded-3xl bg-red-600 p-2 font-semibold uppercase text-white hover:bg-red-700 hover:text-slate-200"
-                        >
-                          Remove
-                        </button>
-                      </td>
+              <div className="max-h-80 overflow-y-auto">
+                {" "}
+                <table className="w-full table-auto border border-gray-300 bg-white shadow-md">
+                  <thead className="bg-gray-900 text-white">
+                    <tr>
+                      <th className="border-b py-2 px-4">Username</th>
+                      <th className="border-b py-2 px-4">First Name</th>
+                      <th className="border-b py-2 px-4">Last Name</th>
+                      <th className="border-b py-2 px-4">Email</th>
+                      <th className="border-b py-2 px-4">Section</th>
+                      <th className="border-b py-2 px-4">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.map((user) => (
+                      <tr key={user.id}>
+                        <td className="border-b py-2 px-4">{user.username}</td>
+                        <td className="border-b py-2 px-4">{user.firstName}</td>
+                        <td className="border-b py-2 px-4">{user.lastName}</td>
+                        <td className="border-b py-2 px-4">{user.email}</td>
+                        <td className="border-b py-2 px-4">{user.section}</td>
+                        <td className=" flex border-b py-2 px-4 text-sm ">
+                          <button
+                            onClick={() => handleResetPassword(user.id)}
+                            className=" mr-2 rounded-3xl bg-blue-600 p-2 font-semibold uppercase text-white hover:bg-blue-700 hover:text-slate-200"
+                          >
+                            Reset
+                          </button>
+                          <button
+                            onClick={() => handleRemoveUser(user.id, user.uid)}
+                            className="rounded-3xl bg-red-600 p-2 font-semibold uppercase text-white hover:bg-red-700 hover:text-slate-200"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             ) : (
               <p className="mt-4 text-center">No students yet</p>
             )}

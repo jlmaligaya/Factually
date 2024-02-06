@@ -221,6 +221,7 @@ const Main = ({ onClose }) => {
   const [userRank, setUserRank] = useState(null);
   const { data: session, status } = useSession();
   const avatar = session.user.avatar;
+  const sectionId = session.user.section;
   const getActivityIdForLevel = (level) => {
     // Define the prefix for activity IDs
     const activityIdPrefix = "AID";
@@ -256,7 +257,9 @@ const Main = ({ onClose }) => {
 
       const newActivityId = getActivityIdForLevel(selectedLevel);
       // Fetch leaderboard data based on the new activityId
-      const res = await fetch(`/api/leaderboards?activityID=${newActivityId}`);
+      const res = await fetch(
+        `/api/leaderboards?activityID=${newActivityId}&sectionId=${sectionId}`
+      );
       const data = await res.json();
       setLeaderboardData(data);
       setLoading(false); // Set loading to false when data is fetched
@@ -265,6 +268,7 @@ const Main = ({ onClose }) => {
       );
       setUserRank(userIndex !== -1 ? userIndex + 1 : null);
     } catch (error) {
+      setLeaderboardData([]);
       console.error(error);
     }
   };

@@ -1,6 +1,5 @@
-// pages/api/changePassword.js
-
 import { prisma } from "../../db";
+import bcrypt from "bcrypt";
 
 export default async function handler(req, res) {
   const { currentPassword, newPassword, userId } = req.body;
@@ -16,14 +15,21 @@ export default async function handler(req, res) {
     }
 
     // Compare the current password with the one stored in the database
-    if (user.password !== currentPassword) {
+    const isValidPassword = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!isValidPassword) {
       return res.status(400).json({ message: "Current password is incorrect" });
     }
 
-    // Update the user's password with the new one
+    // Hash the new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password with the new hashed one
     await prisma.user.update({
       where: { username: userId },
-      data: { password: newPassword },
+      data: { password: hashedNewPassword },
     });
 
     return res.status(200).json({ message: "Password updated successfully" });

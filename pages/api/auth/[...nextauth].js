@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "../../../db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import bcrypt from "bcrypt";
 
 const authOptions = {
   secret: "73618696c457e815d8851a8d4190be3e",
@@ -37,15 +38,32 @@ const authOptions = {
         }
 
         // Verify credentials
-        if (
-          (userByEmail && userByEmail.password !== password) || // Invalid email/password
-          (userByUsername && userByUsername.password !== password) // Invalid username/password
-        ) {
+        // Verify hashed password
+        let user = null;
+        if (userByEmail) {
+          const isValidPassword = await bcrypt.compare(
+            password,
+            userByEmail.password
+          );
+          if (isValidPassword) {
+            user = userByEmail;
+          }
+        } else if (userByUsername) {
+          const isValidPassword = await bcrypt.compare(
+            password,
+            userByUsername.password
+          );
+          if (isValidPassword) {
+            user = userByUsername;
+          }
+        }
+
+        if (!user) {
           throw new Error("Invalid credentials");
         }
 
         // Return the user based on either email or username
-        return userByEmail || userByUsername;
+        return user;
       },
     }),
   ],

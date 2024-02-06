@@ -33,7 +33,10 @@ export default function UsernameSelectionModal({
       session.user.username = trimmedUsername; // Update the username in the session
       onClose();
     } catch (error) {
-      setError(error.response?.data?.message || "Failed to update username");
+      setError(
+        error.response?.data?.message ||
+          "Failed to update username. Please try again."
+      );
     }
     setIsLoading(false);
   };
@@ -61,18 +64,26 @@ export default function UsernameSelectionModal({
               <input
                 type="text"
                 value={newUsername}
-                onChange={(e) => setNewUsername(e.target.value)}
+                onChange={(e) => {
+                  setNewUsername(e.target.value), setError(null);
+                }}
                 placeholder="Enter your username"
                 className=" w-64 rounded-lg border border-white px-4 py-2 font-retropix text-lg text-black focus:outline-none"
               />
               <button
                 onClick={handleChangeUsername}
-                className="mt-2 w-64 rounded-lg bg-red-500 px-6 py-2 font-ogoby text-white transition duration-300 hover:bg-red-600  hover:text-slate-200 xl:text-xl 2xl:text-2xl"
+                disabled={isLoading} // Disable the button when isLoading is true
+                className={`mt-2 w-64 rounded-lg bg-red-500 px-6 py-2 font-ogoby text-white transition duration-300 ${
+                  isLoading
+                    ? "cursor-not-allowed"
+                    : "hover:bg-red-600 hover:text-slate-200"
+                } xl:text-xl 2xl:text-2xl`}
               >
-                Get Started
+                {isLoading ? "Applying" : "Get Started"}{" "}
+                {/* Change button text based on isLoading */}
               </button>
               {error && (
-                <p className="text-stroke mt-4 bg-black font-ogoby text-2xl text-red-500 ">
+                <p className="text-stroke mt-4 font-ogoby text-2xl text-red-500 ">
                   {error}
                 </p>
               )}

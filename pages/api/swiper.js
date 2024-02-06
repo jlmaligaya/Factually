@@ -9,30 +9,29 @@ export default async function handler(req, res) {
 
       let swiperQuestions;
 
+      // swiperQuestions = await prisma.swiper.findMany({
+      //   where: {
+      //     activityId: activityId,
+      //     section: "default",
+      //   },
+      // });
+
+      // If sectionName is provided, fetch swiper questions for that section
       swiperQuestions = await prisma.swiper.findMany({
         where: {
           activityId: activityId,
-          section: "default",
+          section: sectionName,
         },
       });
-
-      // if (sectionName) {
-      //   // If sectionName is provided, fetch swiper questions for that section
-      //   swiperQuestions = await prisma.swiper.findMany({
-      //     where: {
-      //       activityId: activityId,
-      //       section: sectionName,
-      //     },
-      //   });
-      // } else {
-      //   // If sectionName is not provided, fetch swiper questions without filtering by section
-      //   swiperQuestions = await prisma.swiper.findMany({
-      //     where: {
-      //       activityId: activityId,
-      //       section: "default",
-      //     },
-      //   });
-      // }
+      if (swiperQuestions.length === 0) {
+        // If sectionName is not provided, fetch swiper questions without filtering by section
+        swiperQuestions = await prisma.swiper.findMany({
+          where: {
+            activityId: activityId,
+            section: "default",
+          },
+        });
+      }
 
       // Return response
       res.status(200).json(swiperQuestions);

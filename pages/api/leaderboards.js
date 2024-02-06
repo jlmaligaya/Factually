@@ -3,8 +3,14 @@ import { prisma } from "../../db";
 export default async function handler(req, res) {
   try {
     const activityID = req.query.activityID;
+    const sectionId = req.query.sectionId;
     const scoresWithUsername = await prisma.score.findMany({
-      where: { activityId: activityID },
+      where: {
+        activityId: activityID,
+        user: {
+          section: "S1206",
+        },
+      },
       orderBy: [
         { score: "desc" }, // Order by score in descending order
         { timeFinished: "asc" }, // Then order by timeFinished in ascending order

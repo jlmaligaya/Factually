@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
+import { useSession } from "next-auth/react";
 
 const EditMCQModal = ({ activityId, onClose }) => {
   const [questions, setQuestions] = useState([]);
@@ -11,11 +12,14 @@ const EditMCQModal = ({ activityId, onClose }) => {
   const [changesSaved, setChangesSaved] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const fetchSections = async () => {
       try {
-        const response = await axios.get("/api/sections");
+        const response = await axios.get(
+          `/api/sections?userId=${session.user?.uid}`
+        );
         setSections(response.data);
         // Set the default selected section ID if available
         if (response.data.length > 0) {

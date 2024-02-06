@@ -200,12 +200,6 @@ const Sidebar = () => {
                 <span className="text-lg font-thin capitalize">
                   {session.user.role}
                 </span>
-                <button
-                  className="text-md mt-2 flex items-center border-t-2 pt-2 font-thin capitalize hover:text-gray-400"
-                  onClick={() => setShowModal(true)}
-                >
-                  Handled Sections <LinkIcon />
-                </button>
               </div>
             </div>
           )}

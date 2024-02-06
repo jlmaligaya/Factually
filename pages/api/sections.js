@@ -4,8 +4,36 @@ import { prisma } from "../../db";
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    const sections = await prisma.section.findMany();
-    res.status(200).json(sections);
+    const userId = req.query.userId;
+    try {
+      // Find the user by userId
+      const user = await prisma.user.findUnique({
+        where: {
+          uid: userId,
+        },
+        select: {
+          section_handled: true,
+        },
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Get the sections that the user is handling
+      const sections = await prisma.section.findMany({
+        where: {
+          sectionId: {
+            in: user.section_handled,
+          },
+        },
+      });
+
+      res.status(200).json(sections);
+    } catch (error) {
+      console.error("Error fetching sections:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   } else if (req.method === "POST") {
     const { sectionId } = req.body;
     const newSection = await prisma.section.create({
