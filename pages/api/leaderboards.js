@@ -8,7 +8,7 @@ export default async function handler(req, res) {
       where: {
         activityId: activityID,
         user: {
-          section: "S1206",
+          section: sectionId,
         },
       },
       orderBy: [
