@@ -10,6 +10,7 @@ import EditImageMatchModal from "../../components/editImageMatch";
 const ManageActivitiesPage = () => {
   const [activities, setActivities] = useState([]);
   const [selectedActivityId, setSelectedActivityId] = useState(null);
+  const [selectedActivityName, setSelectedActivityName] = useState(null);
   const [isMCQModalOpen, setIsMCQModalOpen] = useState(false);
   const [isIDragModalOpen, setIsIDragModalOpen] = useState(false);
   const [isIMatchModalOpen, setIsImatchModalOpen] = useState(false);
@@ -48,18 +49,20 @@ const ManageActivitiesPage = () => {
   };
 
   const editActivity = (activity) => {
+    setSelectedActivityId(activity.aid);
+    setSelectedActivityName(activity.topic);
+    console.log("Activity name: ", selectedActivityName);
     if (activity.type === 3) {
       // Open editSwiperModal
-      setSelectedActivityId(activity.aid);
       setIsIDragModalOpen(true);
     }
     if (activity.type === 2) {
       // Open editSwiperModal
-      setSelectedActivityId(activity.aid);
+
       setIsImatchModalOpen(true);
     } else if (activity.type === 1) {
       // Open EditMCQModal for Multiple-Choice Questions
-      setSelectedActivityId(activity.aid);
+
       setIsMCQModalOpen(true);
     }
   };
@@ -99,7 +102,9 @@ const ManageActivitiesPage = () => {
                     </td>
                     <td className="flex gap-2 border-b py-2 px-4">
                       <button
-                        onClick={() => editActivity(activity)} // Open modal for editing MCQs
+                        onClick={() => {
+                          editActivity(activity);
+                        }} // Open modal for editing MCQs
                         className="rounded-3xl bg-blue-600 p-2 text-sm font-semibold uppercase text-white hover:bg-blue-700 hover:text-slate-200"
                       >
                         Questions
@@ -119,23 +124,30 @@ const ManageActivitiesPage = () => {
         </div>
         {/* Render the EditMCQModal component */}
         {isMCQModalOpen && (
-          <EditMCQModal activityId={selectedActivityId} onClose={closeModal} />
+          <EditMCQModal
+            activityId={selectedActivityId}
+            activityName={selectedActivityName}
+            onClose={closeModal}
+          />
         )}
         {isIDragModalOpen && (
           <EditSwiperModal
             activityId={selectedActivityId}
+            activityName={selectedActivityName}
             onClose={closeModal}
           />
         )}
         {isUploadModalOpen && (
           <UploadVideoModal
             activityId={selectedActivityId}
+            activityName={selectedActivityName}
             onClose={() => setIsUploadModalOpen(false)} // Pass a function reference
           />
         )}
         {isIMatchModalOpen && (
           <EditImageMatchModal
             activityId={selectedActivityId}
+            activityName={selectedActivityName}
             onClose={closeModal} // Pass a function reference
           />
         )}

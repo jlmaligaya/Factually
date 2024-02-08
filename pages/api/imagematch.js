@@ -6,14 +6,23 @@ export default async function handler(req, res) {
     if (req.method === "GET") {
       // Access query parameter from req object directly
       const activityId = req.query.activityId;
+      const sectionId = req.query.sectionId;
 
-      const imageMatchData = await prisma.ImageMatch.findMany({
-        where: { activityID: activityId }, // Adjust the filter conditions as needed
+      let imageMatchData = await prisma.ImageMatch.findMany({
+        where: { activityID: activityId, section: sectionId }, // Adjust the filter conditions as needed
         include: {
           images: true,
         },
       });
 
+      if (imageMatchData.length === 0) {
+        imageMatchData = await prisma.ImageMatch.findMany({
+          where: { activityID: activityId, section: "default" }, // Adjust the filter conditions as needed
+          include: {
+            images: true,
+          },
+        });
+      }
       // Return response
       console.log("API Reached");
       res.status(200).json(imageMatchData);

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
+import { useSession } from "next-auth/react";
 
-const EditImageMatchModal = ({ onClose, activityId }) => {
+const EditImageMatchModal = ({ onClose, activityName, activityId }) => {
   const [tableData, setTableData] = useState([
     { title: "", image1: "", image2: "", image3: "" },
     { title: "", image1: "", image2: "", image3: "" },
@@ -15,22 +16,67 @@ const EditImageMatchModal = ({ onClose, activityId }) => {
   const [selectedSections, setSelectedSections] = useState([]);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
+  const [existingQuestions, setExistingQuestions] = useState([]); // State to store existing questions
 
+  const { data: session, status } = useSession();
   useEffect(() => {
     const fetchSections = async () => {
+      setLoading(true);
       try {
-        const response = await axios.get("/api/sections");
+        const response = await axios.get(
+          `/api/sections?userId=${session.user?.uid}`
+        );
         setSections(response.data);
         // Set the default selected section ID if available
         if (response.data.length > 0) {
           setSelectedSectionId(response.data[0].id);
+          setLoading(false);
         }
       } catch (error) {
         console.error("Error fetching sections:", error);
+        setLoading(false);
       }
     };
     fetchSections();
-  }, []);
+  }, [session]); // Add session as a dependency so useEffect runs when session changes
+
+  // Fetch existing questions when selected section changes
+  useEffect(() => {
+    const fetchExistingQuestions = async () => {
+      setLoading(true);
+      try {
+        if (selectedSectionId) {
+          const response = await axios.get(
+            `/api/editImageMatch?activityId=${activityId}&sectionId=${selectedSectionId}`
+          );
+          setExistingQuestions(response.data);
+          setLoading(false);
+
+          console.log(existingQuestions);
+        }
+      } catch (error) {
+        console.error("Error fetching existing questions:", error);
+        setLoading(false);
+      }
+    };
+    fetchExistingQuestions();
+  }, [selectedSectionId]); // Fetch when selected section ID changes
+
+  // Function to handle populating input boxes with existing question data
+  const populateInputBoxes = () => {
+    const newData = existingQuestions.map((question) => ({
+      title: question.quiz_question,
+      image1: question.option_one,
+      image2: question.option_two,
+      image3: question.option_three,
+    }));
+    setTableData(newData);
+  };
+
+  // Handle change event when selecting a section
+  const handleSectionChange = (selectedOption) => {
+    setSelectedSectionId(selectedOption.value);
+  };
 
   const handleChange = (index, field, value) => {
     const updatedData = [...tableData];
@@ -111,7 +157,9 @@ const EditImageMatchModal = ({ onClose, activityId }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 text-black">
       <div className="rounded-lg bg-white p-8">
-        <h2 className="mb-4 text-2xl font-bold">Edit Image Match</h2>
+        <h2 className="mb-4 text-2xl font-bold">
+          Edit Image Match for {activityName}
+        </h2>
         {/* Dropdown for selecting section */}
         <div className="flex gap-2">
           <h1 className="mt-1 text-lg font-bold">View Questions for:</h1>{" "}
@@ -120,7 +168,7 @@ const EditImageMatchModal = ({ onClose, activityId }) => {
             onChange={(e) => setSelectedSectionId(e.target.value)}
             className="mb-4 rounded-md border p-2"
           >
-            <option value="">Select Section</option>
+            {/* <option value="">Select Section</option> */}
             {sections.map((section) => (
               <option key={section.id} value={section.sectionId}>
                 {section.sectionId}
@@ -129,62 +177,92 @@ const EditImageMatchModal = ({ onClose, activityId }) => {
             {/* Add new section option */}
           </select>
         </div>
-        <table className="border border-gray-300 bg-white">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">Title</th>
-              <th className="px-4 py-2">Image 1</th>
-              <th className="px-4 py-2">Image 2</th>
-              <th className="px-4 py-2">Image 3</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((row, index) => (
-              <tr key={index}>
-                <td className="border-b py-2 px-4">
-                  <input
-                    type="text"
-                    value={row.title}
-                    onChange={(e) =>
-                      handleChange(index, "title", e.target.value)
-                    }
-                    className="w-full"
-                  />
-                </td>
-                <td className="border-b py-2 px-4">
-                  <input
-                    type="text"
-                    value={row.image1}
-                    onChange={(e) =>
-                      handleChange(index, "image1", e.target.value)
-                    }
-                    className="w-full"
-                  />
-                </td>
-                <td className="border-b py-2 px-4">
-                  <input
-                    type="text"
-                    value={row.image2}
-                    onChange={(e) =>
-                      handleChange(index, "image2", e.target.value)
-                    }
-                    className="w-full"
-                  />
-                </td>
-                <td className="border-b py-2 px-4">
-                  <input
-                    type="text"
-                    value={row.image3}
-                    onChange={(e) =>
-                      handleChange(index, "image3", e.target.value)
-                    }
-                    className="w-full"
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {loading ? ( // Show loading indicator for table if loading state is true
+          <p>Loading table...</p>
+        ) : (
+          <div className="overflow-y-auto">
+            {" "}
+            <p className="mt-1 mb-1 text-xs text-gray-500">
+              <span>For the Image URL, please follow these steps: </span>.
+              <br />
+              <span>Note: </span> You do not have to create an account to
+              upload.
+              <br />
+              <span>Step 1: </span> Click this link:{" "}
+              <a
+                href="https://postimages.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                Postimages
+              </a>
+              .<br />
+              <span>Step 2: </span> Click choose images and upload your photo.
+              <br />
+              <span>Step 3: </span> Copy the direct link of the uploaded photo
+              and paste under image url.
+              <br />
+            </p>
+            <table className="border border-gray-300 bg-white">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2">Title</th>
+                  <th className="px-4 py-2">Image 1</th>
+                  <th className="px-4 py-2">Image 2</th>
+                  <th className="px-4 py-2">Image 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableData.map((row, index) => (
+                  <tr key={index}>
+                    <td className="border-b py-2 px-4">
+                      <input
+                        type="text"
+                        value={row.title}
+                        onChange={(e) =>
+                          handleChange(index, "title", e.target.value)
+                        }
+                        className="w-full"
+                      />
+                    </td>
+                    <td className="border-b py-2 px-4">
+                      <input
+                        type="text"
+                        value={row.image1}
+                        onChange={(e) =>
+                          handleChange(index, "image1", e.target.value)
+                        }
+                        className="w-full"
+                      />
+                    </td>
+                    <td className="border-b py-2 px-4">
+                      <input
+                        type="text"
+                        value={row.image2}
+                        onChange={(e) =>
+                          handleChange(index, "image2", e.target.value)
+                        }
+                        className="w-full"
+                      />
+                    </td>
+                    <td className="border-b py-2 px-4">
+                      <input
+                        type="text"
+                        value={row.image3}
+                        onChange={(e) =>
+                          handleChange(index, "image3", e.target.value)
+                        }
+                        className="w-full"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         <div className="mt-4 flex justify-end">
           <button
             onClick={onClose}

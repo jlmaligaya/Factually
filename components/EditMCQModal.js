@@ -3,16 +3,17 @@ import axios from "axios";
 import Select from "react-select";
 import { useSession } from "next-auth/react";
 
-const EditMCQModal = ({ activityId, onClose }) => {
+const EditMCQModal = ({ activityId, activityName, onClose }) => {
   const [questions, setQuestions] = useState([]);
   const [sections, setSections] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedSections, setSelectedSections] = useState([]);
   const [changesSaved, setChangesSaved] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
   const { data: session, status } = useSession();
+  console.log("Activity name in modal: ", activityName);
 
   useEffect(() => {
     const fetchSections = async () => {
@@ -135,7 +136,7 @@ const EditMCQModal = ({ activityId, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 text-black">
       <div className="w-4/5 rounded-md bg-white p-8 shadow-md">
         <h2 className="mb-4 text-lg font-semibold">
-          Edit Multiple-Choice Questions for {activityId}
+          Edit Multiple-Choice Questions for {activityName}
         </h2>
         {/* Dropdown for selecting section */}
         <div className="flex gap-2">
@@ -145,7 +146,6 @@ const EditMCQModal = ({ activityId, onClose }) => {
             onChange={(e) => setSelectedSectionId(e.target.value)}
             className="mb-4 p-2"
           >
-            <option value="">Select Section</option>
             {sections.map((section) => (
               <option key={section.id} value={section.sectionId}>
                 {section.sectionId}

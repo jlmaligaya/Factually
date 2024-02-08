@@ -14,6 +14,7 @@ const CaptchaGame = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const userID = session ? session.user.uid : null;
+  const sectionId = session ? session.user.section : null;
   const activityID = router.query.activityID;
   const [gameData, setGameData] = useState(null);
   const [selectedImages, setSelectedImages] = useState([]);
@@ -44,6 +45,7 @@ const CaptchaGame = () => {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [wrongTopics, setWrongTopics] = useState([]);
+  const sectionName = sectionId;
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -165,24 +167,27 @@ const CaptchaGame = () => {
   useEffect(() => {
     const fetchGameData = async () => {
       try {
-        const result = await fetch(
-          `../../../api/imagematch?activityId=${activityID}`
-        );
-        if (result.ok) {
-          const data = await result.json();
-          console.log("Fetched game data:", data);
+        const sectionName = sectionId;
+        if (gameDataLength === 0 || gameCompleted) {
+          const result = await fetch(
+            `../../../api/imagematch?activityId=${activityID}&sectionId=${sectionName}`
+          );
+          if (result.ok) {
+            const data = await result.json();
+            console.log("Fetched game data:", data);
 
-          // Shuffle the order of only images
-          const shuffledData = shuffleArray(data).map((gameState) => ({
-            ...gameState,
-            images: shuffleArray(gameState.images), // Shuffle images
-          }));
+            // Shuffle the order of only images
+            const shuffledData = shuffleArray(data).map((gameState) => ({
+              ...gameState,
+              images: shuffleArray(gameState.images), // Shuffle images
+            }));
 
-          setGameData(shuffledData);
-          setGameDataLength(shuffledData.length);
-          setLoadingDone(true);
-        } else {
-          console.error("Failed to fetch game data");
+            setGameData(shuffledData);
+            setGameDataLength(shuffledData.length);
+            setLoadingDone(true);
+          } else {
+            console.error("Failed to fetch game data");
+          }
         }
       } catch (error) {
         console.error(error);
@@ -192,7 +197,7 @@ const CaptchaGame = () => {
     if (activityID) {
       fetchGameData();
     }
-  }, [activityID]);
+  }, [sectionId]);
 
   // Your existing useEffect for managing verification state
   useEffect(() => {

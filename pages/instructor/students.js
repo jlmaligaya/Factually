@@ -19,6 +19,7 @@ const UsersPage = () => {
   const uid = session?.user.uid;
   const section_handled = session?.user.section_handled;
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -50,9 +51,9 @@ const UsersPage = () => {
         const sectionsResponse = await axios.get(`/api/sections?userId=${uid}`);
         setSections(sectionsResponse.data);
 
+        // Pass section_handled as a query parameter to the GET request
         const usersResponse = await axios.get(
-          `/api/students/`,
-          session.user.section_handled
+          `/api/students?sections=${JSON.stringify(section_handled)}`
         );
 
         setUsers(usersResponse.data);
@@ -62,7 +63,8 @@ const UsersPage = () => {
         setLoading(false); // Set loading to false when data fetching is done
       }
     };
-    console.log(section_handled);
+
+    console.log("Section handled: ", section_handled);
     fetchData();
   }, []);
 
@@ -92,6 +94,7 @@ const UsersPage = () => {
   };
   const handleUploadFile = async (file) => {
     try {
+      setUploading(true);
       const reader = new FileReader();
       reader.onload = async (event) => {
         const data = event.target.result;
@@ -121,6 +124,7 @@ const UsersPage = () => {
         setParsedData(jsonData);
         setSectionId(sectionId);
         setShowModal(true);
+        setUploading(false);
       };
       reader.readAsBinaryString(file);
     } catch (error) {
@@ -136,8 +140,8 @@ const UsersPage = () => {
       // Make an API call to save the parsed data to the database
       const response = await axios.post("/api/users/saveStudents", {
         data: parsedData.slice(1),
-        sectionId,
-        uid, // Include the sectionId in the request payload
+        sectionId: sectionId,
+        uid: uid, // Include the sectionId in the request payload
       });
       console.log("Data saved successfully:", response.data);
       // Clear the parsed data after saving
@@ -148,9 +152,10 @@ const UsersPage = () => {
       );
       setUsers(updatedResponse.data); // Update the users state with the new data
       setShowModal(false);
+      setUploading(false);
     } catch (error) {
       console.error("Error saving data:", error);
-      // Show error prompt
+      setUploading(false);
       alert("Failed to save data. Please try again.");
     }
   };
@@ -390,7 +395,7 @@ const UsersPage = () => {
                 onClick={handleSaveData}
                 className="rounded-full bg-green-500 py-2 px-4 font-bold text-white hover:bg-green-700"
               >
-                Save Data
+                {uploading ? "Saving..." : "Upload students data"}
               </button>
             </div>
           </div>

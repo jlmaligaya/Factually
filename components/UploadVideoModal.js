@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
-const UploadVideoModal = ({ activityId, onClose }) => {
+const UploadVideoModal = ({ activityId, onClose, activityName }) => {
   const [video, setvideo] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
   const supabaseUrl = "https://bpfzmwxcibqsyzrpgyeg.supabase.co";
@@ -66,7 +66,7 @@ const UploadVideoModal = ({ activityId, onClose }) => {
       setUploadStatus("Upload failed. Please try again.");
     }
     // Set the selected video file
-    setVideo(selectedFile);
+    setVideo(video);
   };
 
   // Function to handle displaying the video preview
@@ -98,7 +98,8 @@ const UploadVideoModal = ({ activityId, onClose }) => {
             <video
               ref={videoRef}
               controls
-              className="mt-4"
+              autoPlay
+              className="mt-4 w-full"
               style={{ display: "block", maxWidth: "100%" }}
             />
           )}

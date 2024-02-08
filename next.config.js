@@ -10,6 +10,7 @@ const nextConfig = {
       "edukasyon-production.s3.amazonaws.com",
       "cdn3.vectorstock.com",
       "i.postimg.cc",
+      "cdn-icons-png.flaticon.com",
     ], // Add your hostname here
   },
 };

@@ -27,6 +27,9 @@ export default async function handler(req, res) {
             in: user.section_handled,
           },
         },
+        orderBy: {
+          sectionId: "asc",
+        },
       });
 
       res.status(200).json(sections);

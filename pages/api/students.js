@@ -5,13 +5,15 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       // Get the session to determine the role of the user making the request
-      const section_handled = req.query.section_handled;
+      const { sections } = req.query;
+      const sectionsArray = JSON.parse(sections);
+      console.log("Student API Reached");
       // Find users who are students and have sections within the instructor's section_handled
       const users = await prisma.user.findMany({
         where: {
           role: "student",
           section: {
-            in: section_handled,
+            in: sectionsArray,
           },
         },
         select: {
@@ -21,6 +23,9 @@ export default async function handler(req, res) {
           lastName: true,
           email: true,
           section: true,
+        },
+        orderBy: {
+          section: "asc",
         },
       });
 

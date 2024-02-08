@@ -86,11 +86,11 @@ model QuizQuestion {
 
 model ImageMatch {
   id         Int              @id @default(autoincrement())
-  title      String @unique @default(dbgenerated("gen_random_uuid()"))
+  title      String
   activityID String
   topic_name String?
+  section    String?
   activity   Activities       @relation(fields: [activityID], references: [aid])
-    section String?
   images     ImageMatchPics[]
 }
 
@@ -98,8 +98,8 @@ model ImageMatchPics {
   id     Int        @id @default(autoincrement())
   url    String
   value  String
-  gameID String
-  game   ImageMatch @relation(fields: [gameID], references: [title])
+  gameID Int
+  game   ImageMatch @relation(fields: [gameID], references: [id], onDelete: Cascade)
 }
 
 model CutscenePics {

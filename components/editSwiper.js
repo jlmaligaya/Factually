@@ -1,21 +1,25 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
+import { useSession } from "next-auth/react";
 
 const EditSwiperModal = ({ activityId, onClose }) => {
   const [swipers, setSwipers] = useState([]);
   const [sections, setSections] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedSections, setSelectedSections] = useState([]);
   const [changesSaved, setChangesSaved] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const fetchSections = async () => {
       try {
-        const response = await axios.get("/api/sections");
+        const response = await axios.get(
+          `/api/sections?userId=${session.user?.uid}`
+        );
         setSections(response.data);
         // Set the default selected section ID if available
         if (response.data.length > 0) {
@@ -133,7 +137,7 @@ const EditSwiperModal = ({ activityId, onClose }) => {
             onChange={(e) => setSelectedSectionId(e.target.value)}
             className="mb-4 p-2"
           >
-            <option value="">Select Section</option>
+            {/* <option value="">Select Section</option> */}
             {sections.map((section) => (
               <option key={section.id} value={section.sectionId}>
                 {section.sectionId}
