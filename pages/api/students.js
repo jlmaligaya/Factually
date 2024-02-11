@@ -18,6 +18,7 @@ export default async function handler(req, res) {
         },
         select: {
           id: true,
+          uid: true,
           username: true,
           firstName: true,
           lastName: true,

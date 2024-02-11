@@ -66,7 +66,7 @@ const UsersPage = () => {
 
     console.log("Section handled: ", section_handled);
     fetchData();
-  }, []);
+  }, [uploading]);
 
   // Function to handle adding a new section
   const handleAddNewSection = async () => {
@@ -93,8 +93,8 @@ const UsersPage = () => {
     XLSX.writeFile(wb, "SectionName.xlsx");
   };
   const handleUploadFile = async (file) => {
+    setUploading(true);
     try {
-      setUploading(true);
       const reader = new FileReader();
       reader.onload = async (event) => {
         const data = event.target.result;
@@ -136,6 +136,7 @@ const UsersPage = () => {
 
   const handleSaveData = async () => {
     console.log("Section selected: ", sectionId);
+    setUploading(true);
     try {
       // Make an API call to save the parsed data to the database
       const response = await axios.post("/api/users/saveStudents", {
@@ -150,21 +151,22 @@ const UsersPage = () => {
       const updatedResponse = await axios.get(
         `/api/students?sectionId=${sectionId}`
       );
-      setUsers(updatedResponse.data); // Update the users state with the new data
       setShowModal(false);
       setUploading(false);
+      setUsers(updatedResponse.data); // Update the users state with the new data
     } catch (error) {
       console.error("Error saving data:", error);
       setUploading(false);
-      alert("Failed to save data. Please try again.");
+      setShowModal(false);
+      console.error("Failed to save data. Please try again.");
     }
   };
 
-  const handleRemoveUser = async (userId) => {
+  const handleRemoveUser = async (userId, uid) => {
     // Show a confirmation dialog before removing the user
     if (window.confirm("Are you sure you want to remove this user?")) {
       try {
-        await axios.delete(`/api/users/removeUser?userId=${userId}`);
+        await axios.delete(`/api/users/removeUser?userId=${userId}&uid=${uid}`);
         console.log(`User with ID ${userId} removed`);
         // Remove the user from the local state
         setUsers(users.filter((user) => user.id !== userId));
@@ -253,6 +255,7 @@ const UsersPage = () => {
                 <table className="w-full table-auto border border-gray-300 bg-white shadow-md">
                   <thead className="bg-gray-900 text-white">
                     <tr>
+                      <th className="border-b py-2 px-4">User Id</th>
                       <th className="border-b py-2 px-4">Username</th>
                       <th className="border-b py-2 px-4">First Name</th>
                       <th className="border-b py-2 px-4">Last Name</th>
@@ -264,6 +267,7 @@ const UsersPage = () => {
                   <tbody>
                     {filteredUsers.map((user) => (
                       <tr key={user.id}>
+                        <td className="border-b py-2 px-4">{user.uid}</td>
                         <td className="border-b py-2 px-4">{user.username}</td>
                         <td className="border-b py-2 px-4">{user.firstName}</td>
                         <td className="border-b py-2 px-4">{user.lastName}</td>
@@ -386,7 +390,9 @@ const UsersPage = () => {
 
             <div className="mt-4 flex justify-end gap-2">
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setShowModal(false), setParsedData([]);
+                }}
                 className="rounded-full bg-red-500 py-2 px-4 font-bold text-white hover:bg-red-700"
               >
                 Cancel
