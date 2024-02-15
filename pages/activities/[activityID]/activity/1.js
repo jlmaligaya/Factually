@@ -37,7 +37,7 @@ const Index = () => {
   const [flashCorrectBackground, setFlashCorrectBackground] = useState(false);
   const [timeGained, setTimeGained] = useState(0);
   const [alertTriggered, setAlertTriggered] = useState(false);
-  const [questionTimer, setQuestionTimer] = useState(20); // Initial timer value in seconds
+  const [questionTimer, setQuestionTimer] = useState(40); // Initial timer value in seconds
   const [correctAnswers, setCorrectAnswers] = useState(
     Array(questionLength).fill(null)
   );

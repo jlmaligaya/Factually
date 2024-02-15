@@ -7,9 +7,9 @@ export default async function handler(req, res) {
     const scoresWithUsername = await prisma.score.findMany({
       where: {
         activityId: activityID,
-        user: {
-          section: sectionId,
-        },
+        // user: {
+        //   section: sectionId,
+        // },
       },
       orderBy: [
         { score: "desc" }, // Order by score in descending order

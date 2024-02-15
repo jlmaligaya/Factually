@@ -68,7 +68,7 @@ const SignIn = (props) => {
           <h2 className=" text-with-stroke mt-3 animate-text bg-gradient-to-r from-rose-500 via-slate-100 to-blue-500 bg-clip-text text-center font-boom text-6xl text-transparent">
             FACTUALLY
           </h2>
-          <h2 className="text-with-stroke mt-5 text-center font-ogoby text-4xl">
+          <h2 className="text-with-stroke mt-5 text-center font-ogoby text-4xl text-white">
             Misinformed? Be fact-ed!
           </h2>
         </div>

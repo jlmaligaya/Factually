@@ -38,7 +38,7 @@ const Home = () => {
   const [correctAnswers, setCorrectAnswers] = useState(
     Array(gameLength).fill(null)
   );
-  const [questionTimer, setQuestionTimer] = useState(20); // Initial timer value in seconds
+  const [questionTimer, setQuestionTimer] = useState(40); // Initial timer value in seconds
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [wrongTopics, setWrongTopics] = useState([]);
   const sectionName = session?.user.section;

@@ -3,7 +3,7 @@ import axios from "axios";
 import Select from "react-select";
 import { useSession } from "next-auth/react";
 
-const EditSwiperModal = ({ activityId, onClose }) => {
+const EditSwiperModal = ({ activityId, activityName, onClose }) => {
   const [swipers, setSwipers] = useState([]);
   const [sections, setSections] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState("");
@@ -128,7 +128,7 @@ const EditSwiperModal = ({ activityId, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 text-black">
       <div className="w-4/5 rounded-md bg-white p-8 shadow-md">
         <h2 className="mb-4 text-lg font-semibold">
-          Edit Swipers for Activity: {activityId}
+          Edit Swipers for Activity: {activityName}
         </h2>
         <div className="flex gap-2">
           <h1 className="mt-1 text-lg font-bold">View Swipers for:</h1>{" "}
