@@ -40,14 +40,14 @@ const SignIn = (props) => {
       // Handle invalid credentials
       setError("Invalid credentials. Please try again.");
       console.log("Invalid credentials");
+      setIsLoading(false);
     } else if (res.status === 404) {
       // Handle account not found
       setError("Account not found.");
       console.log("Account not found");
+      setIsLoading(false);
     } else {
     }
-
-    setIsLoading(false);
   };
 
   // Function to toggle password visibility
