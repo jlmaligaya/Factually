@@ -194,8 +194,9 @@ const LeaderboardContent = ({
                       />
                     </div>
                     <div>
-                      {score.user.firstName.toUpperCase()}&nbsp;
-                      {score.user.lastName.toUpperCase()}
+                      {score.user.username}
+                      {/* {score.user.firstName.toUpperCase()}&nbsp;
+                      {score.user.lastName.toUpperCase()} */}
                     </div>
                   </td>
                   <td className="border border-gray-200 px-4 py-2">
