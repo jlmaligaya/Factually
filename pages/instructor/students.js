@@ -93,7 +93,7 @@ const UsersPage = () => {
     XLSX.writeFile(wb, "SectionName.xlsx");
   };
   const handleUploadFile = async (file) => {
-    setUploading(true);
+    setParsedData;
     try {
       const reader = new FileReader();
       reader.onload = async (event) => {
@@ -113,6 +113,8 @@ const UsersPage = () => {
           alert(
             "Invalid file format. Please upload a file with headers: 'First Name', 'Last Name', 'Email'."
           );
+          setUploading(false);
+          setParsedData([]);
           return;
         }
 
@@ -145,6 +147,21 @@ const UsersPage = () => {
         uid: uid, // Include the sectionId in the request payload
       });
       console.log("Data saved successfully:", response.data);
+
+      if (
+        response.data.studentsNotSaved &&
+        response.data.studentsNotSaved.length > 0
+      ) {
+        const notSavedStudentsMessage = response.data.studentsNotSaved
+          .map((student) => `${student[0]} ${student[1]} (${student[2]})`)
+          .join(", ");
+        alert(
+          `Students saved successfully! Except for the following existing accounts: ${notSavedStudentsMessage}`
+        );
+      } else {
+        alert("Students saved successfully!");
+      }
+
       // Clear the parsed data after saving
       setParsedData([]);
       // Fetch the updated data after saving
@@ -200,18 +217,16 @@ const UsersPage = () => {
 
   return (
     <Layout>
-      <div className="mt-24 h-4/5 w-full bg-gray-300 shadow-md">
-        <div className="w-full">
-          <h1 className="mt-10 p-4 text-center text-xl font-extrabold uppercase text-gray-700 2xl:text-3xl">
-            Manage Students
-          </h1>
-        </div>
-        <div className="container mx-auto flex  flex-col  text-black">
+      <div className="mt-24 h-4/5 w-full bg-white font-medium text-gray-500 shadow-sm">
+        <h1 className="mt-10 p-8 text-center text-xl font-extrabold uppercase text-gray-700 2xl:text-3xl">
+          Manage Students
+        </h1>
+        <div className="container mx-auto flex flex-col ">
           <div className="my-8 flex w-full flex-row items-center justify-between font-bold  2xl:w-4/5">
             <div>
               <button
                 onClick={() => setShowModal(true)}
-                className="rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+                className="rounded-md bg-green-500 py-2 px-4 text-left font-medium text-white hover:bg-green-600"
               >
                 Upload students data
               </button>
@@ -234,7 +249,6 @@ const UsersPage = () => {
                   onChange={handleColumnChange}
                   className="rounded-md border border-gray-300 p-2"
                 >
-                  <option value="username">Username</option>
                   <option value="firstName">First Name</option>
                   <option value="lastName">Last Name</option>
                   <option value="email">Email</option>
@@ -246,51 +260,58 @@ const UsersPage = () => {
           <div className="h-4/5 w-full 2xl:w-4/5">
             {/* Search input and dropdown */}
             {loading ? (
-              <div className="absolute inset-0 flex items-center justify-center text-center">
-                Loading...
-              </div>
+              <div className="text-center">Loading...</div>
             ) : users.length > 0 ? (
-              <div className="max-h-80 overflow-y-auto">
+              <div className="max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-red-500">
                 {" "}
-                <table className="w-full table-auto border border-gray-300 bg-white shadow-md">
-                  <thead className="bg-gray-900 text-white">
-                    <tr>
-                      <th className="border-b py-2 px-4">User Id</th>
-                      <th className="border-b py-2 px-4">Username</th>
-                      <th className="border-b py-2 px-4">First Name</th>
-                      <th className="border-b py-2 px-4">Last Name</th>
-                      <th className="border-b py-2 px-4">Email</th>
-                      <th className="border-b py-2 px-4">Section</th>
-                      <th className="border-b py-2 px-4">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredUsers.map((user) => (
-                      <tr key={user.id}>
-                        <td className="border-b py-2 px-4">{user.uid}</td>
-                        <td className="border-b py-2 px-4">{user.username}</td>
-                        <td className="border-b py-2 px-4">{user.firstName}</td>
-                        <td className="border-b py-2 px-4">{user.lastName}</td>
-                        <td className="border-b py-2 px-4">{user.email}</td>
-                        <td className="border-b py-2 px-4">{user.section}</td>
-                        <td className=" flex border-b py-2 px-4 text-sm ">
-                          <button
-                            onClick={() => handleResetPassword(user.id)}
-                            className=" mr-2 rounded-3xl bg-blue-600 p-2 font-semibold uppercase text-white hover:bg-blue-700 hover:text-slate-200"
-                          >
-                            Reset
-                          </button>
-                          <button
-                            onClick={() => handleRemoveUser(user.id, user.uid)}
-                            className="rounded-3xl bg-red-600 p-2 font-semibold uppercase text-white hover:bg-red-700 hover:text-slate-200"
-                          >
-                            Remove
-                          </button>
-                        </td>
+                {filteredUsers.length === 0 && searchTerm ? (
+                  <h1 className="text-center">
+                    {" "}
+                    No results found for &quot;{searchTerm}&quot;.
+                  </h1>
+                ) : (
+                  <table className="w-full table-auto border-gray-300  bg-white text-center shadow-md">
+                    <thead className="sticky top-[-1px] bg-white  text-gray-600">
+                      <tr>
+                        <th className="border-b py-2 px-4">First Name</th>
+                        <th className="border-b py-2 px-4">Last Name</th>
+                        <th className="border-b py-2 px-4">Email</th>
+                        <th className="border-b py-2 px-4">Section</th>
+                        <th className="border-b py-2 px-4">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {filteredUsers.map((user) => (
+                        <tr key={user.id}>
+                          <td className=" py-2 px-4 capitalize">
+                            {user.firstName.toLowerCase()}
+                          </td>
+                          <td className=" py-2 px-4 capitalize">
+                            {user.lastName.toLowerCase()}
+                          </td>
+                          <td className=" py-2 px-4">{user.email}</td>
+                          <td className=" py-2 px-4">{user.section}</td>
+                          <td className=" flex justify-center gap-2  py-2 px-4 text-sm font-light">
+                            <button
+                              onClick={() => handleResetPassword(user.id)}
+                              className="rounded-md bg-blue-600 p-2 text-sm uppercase text-white hover:bg-blue-700 hover:text-slate-200"
+                            >
+                              Reset Password
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleRemoveUser(user.id, user.uid)
+                              }
+                              className="rounded-md bg-red-600 p-2 text-sm uppercase text-white hover:bg-red-700 hover:text-slate-200"
+                            >
+                              Remove
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             ) : (
               <p className="mt-4 text-center">No students yet</p>
@@ -312,7 +333,7 @@ const UsersPage = () => {
               </h1>
               <button
                 onClick={handleDownloadTemplate}
-                className="mr-2 bg-blue-500 p-2 text-sm font-bold text-white hover:bg-blue-700"
+                className="mr-2 rounded-md bg-blue-500 p-2 font-medium text-white hover:bg-blue-700"
               >
                 Download Template
               </button>
@@ -356,7 +377,7 @@ const UsersPage = () => {
                 type="file"
                 onChange={(e) => handleUploadFile(e.target.files[0])}
                 accept=".xlsx,.xls,.csv"
-                className=" p-2"
+                className="rounded-md p-2"
               />
             </div>
 
@@ -393,13 +414,13 @@ const UsersPage = () => {
                 onClick={() => {
                   setShowModal(false), setParsedData([]);
                 }}
-                className="rounded-full bg-red-500 py-2 px-4 font-bold text-white hover:bg-red-700"
+                className="rounded-md bg-red-500 py-2 px-4 font-medium text-white hover:bg-red-700"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveData}
-                className="rounded-full bg-green-500 py-2 px-4 font-bold text-white hover:bg-green-700"
+                className="rounded-md bg-green-500 py-2 px-4 font-medium text-white hover:bg-green-700"
               >
                 {uploading ? "Saving..." : "Upload students data"}
               </button>

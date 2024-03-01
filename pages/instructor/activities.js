@@ -76,15 +76,15 @@ const ManageActivitiesPage = () => {
 
   return (
     <Layout>
-      <div className="mt-24 h-4/5 bg-gray-300">
+      <div className="mt-24 h-4/5 bg-white">
         {" "}
         <h1 className="mt-10 p-4 text-center text-xl font-extrabold uppercase text-gray-700 2xl:text-3xl">
           Manage Activities
         </h1>
         <div className="container mx-auto flex flex-col text-black">
           <div className="mb-32 h-4/5 w-full 2xl:w-4/5">
-            <table className="min-w-full border border-gray-300 bg-white">
-              <thead className="bg-gray-900 text-white">
+            <table className="min-w-full border border-gray-300 bg-white text-center">
+              <thead className="bg-white text-gray-600">
                 <tr>
                   <th className="border-b py-2 px-4">Activity ID</th>
                   <th className="border-b py-2 px-4">Topic</th>
@@ -92,7 +92,7 @@ const ManageActivitiesPage = () => {
                   <th className="border-b py-2 px-4">Customize</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="text-gray-500">
                 {activities.map((activity) => (
                   <tr key={activity.id}>
                     <td className="border-b py-2 px-4">{activity.aid}</td>
@@ -100,18 +100,18 @@ const ManageActivitiesPage = () => {
                     <td className="border-b py-2 px-4">
                       {getActivityType(activity.type)}
                     </td>
-                    <td className="flex gap-2 border-b py-2 px-4">
+                    <td className="flex justify-center gap-2 border-b py-2 px-4">
                       <button
                         onClick={() => {
                           editActivity(activity);
                         }} // Open modal for editing MCQs
-                        className="rounded-3xl bg-blue-600 p-2 text-sm font-semibold uppercase text-white hover:bg-blue-700 hover:text-slate-200"
+                        className=" rounded-md bg-blue-600 p-2 text-sm font-medium uppercase text-white hover:bg-blue-700 hover:text-slate-200"
                       >
                         Questions
                       </button>
                       <button
                         onClick={() => uploadVideo(activity)} // Open modal for editing MCQs
-                        className="rounded-3xl bg-blue-600 p-2 text-sm font-semibold uppercase text-white hover:bg-blue-700 hover:text-slate-200"
+                        className=" rounded-md bg-blue-600 p-2 text-sm font-medium uppercase text-white hover:bg-blue-700 hover:text-slate-200"
                       >
                         Video
                       </button>

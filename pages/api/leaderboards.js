@@ -4,12 +4,27 @@ export default async function handler(req, res) {
   try {
     const activityID = req.query.activityID;
     const sectionId = req.query.sectionId;
+    const uid = req.query.uid;
 
     let scoresWithUsername;
     if (sectionId === "faculty") {
+      const user = await prisma.user.findUnique({
+        where: {
+          uid,
+        },
+        select: {
+          section_handled: true,
+        },
+      });
+
       scoresWithUsername = await prisma.score.findMany({
         where: {
           activityId: activityID,
+          user: {
+            section: {
+              in: user.section_handled,
+            },
+          },
           NOT: { user: { role: "instructor" } },
           // Omitted the user.section condition to fetch scores without section
         },
@@ -25,6 +40,7 @@ export default async function handler(req, res) {
               avatar: true,
               firstName: true,
               lastName: true,
+              section: true,
             },
           },
         },
@@ -33,9 +49,9 @@ export default async function handler(req, res) {
       scoresWithUsername = await prisma.score.findMany({
         where: {
           activityId: activityID,
-          user: {
-            section: sectionId,
-          },
+          // user: {
+          //   section: sectionId,
+          // },
         },
         orderBy: [
           { score: "desc" }, // Order by score in descending order
@@ -50,6 +66,7 @@ export default async function handler(req, res) {
               avatar: true,
               firstName: true,
               lastName: true,
+              section: true,
             },
           },
         },

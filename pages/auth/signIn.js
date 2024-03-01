@@ -168,44 +168,22 @@ const SignIn = (props) => {
               {error && <p className="mt-2 text-lg text-white">{error}</p>}
             </center>
             {/* Bottom left photo */}
-            <div className="pointer-events-none absolute top-0 left-0 flex w-48 select-none">
+            <div className="pointer-events-none absolute top-0 right-0 flex w-52 select-none">
               {" "}
               <img
-                src="https://mcl.edu.ph/wp-content/uploads/2022/04/MMCL_Logo-258x300-1.webp"
-                alt=""
+                src="https://i.postimg.cc/5tfmTLQy/MMCL-Logo-258x300-1-WHITE-2.png"
+                alt="MCL Logo"
                 className="mb-4 w-full p-8"
               />
             </div>
           </div>
-
-          {/* right side */}
-          {/* <div className="mt-16 hidden w-2/4 rounded-tr-2xl rounded-br-2xl bg-white py-10 px-12 md:block">
-            <center>
-              <h2 className="text-3xl font-bold text-[#CE4044]">
-                WELCOME BACK TO FACTUALLY.
-              </h2>
-              <div className="inline-block w-20 border-2 border-[#CE4044]">
-                {" "}
-              </div>
-              <p className="mt-2 text-xl text-[#CE4044]">
-                Never been here before? We&apos;d love for you to join us below!
-              </p>
-              <img
-                className="robot-image w-[300px]"
-                src="/robbie/r_welcome.png"
-                alt=""
-              />
-              <button
-                className="inline-block w-72 rounded-full border-2 border-[#CE4044] px-12 py-2 text-lg font-semibold text-[#CE4044] hover:bg-[#CE4044] hover:text-white"
-                onClick={() => router.push("/register")}
-              >
-                SIGN UP
-              </button>
-              <img src="/robbie hi.png" alt="" />
-            </center>
-          </div> */}
         </div>
+        <footer className="text-md mt-4 text-center font-ogoby text-white ">
+          &copy; {new Date().getFullYear()} Mapúa Malayan Colleges Laguna. All
+          rights reserved.
+        </footer>
       </section>
+      {/* Copyright notice */}
     </>
   );
 };

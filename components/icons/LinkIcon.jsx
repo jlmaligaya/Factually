@@ -7,7 +7,7 @@ function LinkIcon({ fill = "#3B81F6", ...rest }) {
       fill="none"
       viewBox="0 0 24 24"
       stroke-width="1.5"
-      stroke="currentColor"
+      stroke="white"
       class="h-6 w-6"
     >
       <path

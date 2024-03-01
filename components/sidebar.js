@@ -12,6 +12,7 @@ import {
   UsersIcon,
   GamesIcon,
   LinkIcon,
+  ProgressionIcon,
 } from "./icons";
 import { signOut } from "next-auth/react";
 import Select from "react-select";
@@ -59,7 +60,13 @@ const Sidebar = () => {
     },
     {
       id: 4,
-      label: "Go to Game Page",
+      label: "View Progress",
+      icon: ProgressionIcon,
+      link: `/instructor/progression`,
+    },
+    {
+      id: 5,
+      label: "Preview Game Page",
       icon: GamesIcon,
       link: `/`,
     },
@@ -121,7 +128,7 @@ const Sidebar = () => {
   };
 
   const wrapperClasses = classNames(
-    "h-screen px-4 pt-8 pb-4 bg-light flex bg-slate-700 justify-between flex-col",
+    "h-screen px-4 pt-8 pb-4 bg-light flex bg-gray-800 justify-between flex-col",
     {
       ["w-80"]: !toggleCollapse,
       ["w-20"]: toggleCollapse,
@@ -137,9 +144,9 @@ const Sidebar = () => {
 
   const getNavItemClasses = (menu) => {
     return classNames(
-      "flex items-center cursor-pointer hover:bg-opacity-100 rounded w-full overflow-hidden hover:text-red-800 whitespace-nowrap",
+      "flex items-center cursor-pointer hover:bg-opacity-100 rounded w-full overflow-hidden hover:bg-gray-400 whitespace-nowrap",
       {
-        ["text-red-500"]: activeMenu?.id === menu.id,
+        ["bg-gray-500 border-l-4"]: activeMenu?.id === menu.id,
       }
     );
   };
@@ -181,14 +188,14 @@ const Sidebar = () => {
             </button>
           )}
         </div>
-        <div className="divide-y divide-slate-400">
+        <div>
           {!toggleCollapse && session && status === "authenticated" && (
-            <div className="mt-8 flex items-center gap-4 bg-red-500 p-4 ">
+            <div className="mt-8 flex flex-col items-center gap-4 p-4 text-center ">
               {session.user.avatar && (
                 <img
                   src={`/avatars/${session.user.avatar}.png`}
                   alt={session.user.name}
-                  className="mr-2 w-20 rounded-full border-2 border-red-500 bg-white"
+                  className="mr-2 w-32 rounded-full border-2 border-red-500 bg-white"
                 />
               )}
               <div className="flex flex-col">
@@ -203,7 +210,7 @@ const Sidebar = () => {
               </div>
             </div>
           )}
-          <div className="mt-4 flex flex-col items-start text-lg">
+          <div className="text-md mt-4 flex flex-col gap-2">
             {menuItems.map(({ icon: Icon, ...menu }) => {
               const classes = getNavItemClasses(menu);
               return (
@@ -214,11 +221,7 @@ const Sidebar = () => {
                         <Icon />
                       </div>
                       {!toggleCollapse && (
-                        <span
-                          className={classNames("text-text-light font text-xl")}
-                        >
-                          {menu.label}
-                        </span>
+                        <span className={classNames("")}>{menu.label}</span>
                       )}
                     </a>
                   </div>
@@ -245,62 +248,6 @@ const Sidebar = () => {
           )}
         </div>
       </div>
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 text-black">
-          <div className="rounded-md bg-white p-8 shadow-md">
-            <h2 className="mb-4 text-lg font-semibold">
-              Select handled sections:
-            </h2>
-            <Select
-              options={sections.map((section) => ({
-                value: section.sectionId,
-                label: section.sectionId,
-              }))}
-              onChange={(selectedOptions) =>
-                setSelectedSections(
-                  selectedOptions.map((option) => option.value)
-                )
-              }
-              closeMenuOnSelect={false}
-              className="mb-4"
-              isSearchable
-              isMulti
-              placeholder="Select sections..."
-            />
-            <div className="mt-2">
-              <input
-                type="text"
-                value={newSectionName}
-                onChange={(e) => setNewSectionName(e.target.value)}
-                placeholder="New Section Name"
-                className="mr-2 rounded-md border border-gray-300 p-2"
-              />
-              <button
-                onClick={handleAddNewSection}
-                className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
-              >
-                Add New Section
-              </button>
-            </div>
-            <div className="mt-4 flex justify-end">
-              {/* Your modal content */}
-              <button
-                onClick={handleCloseModal}
-                className="mr-2 rounded-full bg-red-500 py-2 px-4 font-bold text-white hover:bg-red-700"
-              >
-                Cancel
-              </button>
-              {/* Your modal content */}
-              <button
-                className="rounded-full bg-green-500 py-2 px-4 font-bold text-white hover:bg-green-700"
-                onClick={handleSaveSectionHandled}
-              >
-                Apply Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

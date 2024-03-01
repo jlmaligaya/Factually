@@ -8,6 +8,7 @@ export default async function handler(req, res) {
   }
 
   const { data, sectionId, uid } = req.body;
+  const studentsNotSaved = [];
 
   try {
     // Check if the section exists, if not, create it
@@ -35,24 +36,36 @@ export default async function handler(req, res) {
           where: { email: student[2] },
         });
 
-        // If user does not exist, create a new user
-        if (!existingUser) {
-          const hashedPassword = await bcrypt.hash("changeme", 10);
-          await prisma.user.create({
-            data: {
-              firstName: student[0],
-              lastName: student[1],
-              email: student[2],
-              password: hashedPassword,
-              role: "student",
-              section: sectionId,
-            },
-          });
+        // If user already exists, skip saving and add to studentsNotSaved list
+        if (existingUser) {
+          console.log(`User with email ${student[2]} already exists.`);
+          studentsNotSaved.push(student);
+          return;
         }
+
+        // If user does not exist, create a new user
+        const hashedPassword = await bcrypt.hash("changeme", 10);
+        await prisma.user.create({
+          data: {
+            firstName: student[0],
+            lastName: student[1],
+            email: student[2],
+            password: hashedPassword,
+            role: "student",
+            section: sectionId,
+          },
+        });
       })
     );
 
-    return res.status(200).json({ message: "Students saved successfully" });
+    if (studentsNotSaved.length > 0) {
+      return res.status(200).json({
+        message: "Students saved successfully! Except for the following:",
+        studentsNotSaved: studentsNotSaved,
+      });
+    } else {
+      return res.status(200).json({ message: "Students saved successfully!" });
+    }
   } catch (error) {
     console.error("Error saving students:", error);
     return res.status(500).json({ message: "Internal Server Error" });

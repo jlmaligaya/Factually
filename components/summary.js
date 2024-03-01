@@ -46,9 +46,27 @@ const LeaderboardContent = ({
 
   onClose,
 }) => {
+  const { data: session, status } = useSession();
+  const isInstructor = session && session.user.role === "instructor";
+  const perPage = 10;
+  const totalPages = Math.ceil(leaderboardData.length / perPage);
+  const [currentPage, setCurrentPage] = useState(1);
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  // Calculate the index range of the data to display for the current page
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = Math.min(startIndex + perPage, leaderboardData.length);
+  const calculateRank = (index) => {
+    return index + 1 + (currentPage - 1) * perPage;
+  };
+
+  // Slice the leaderboardData array based on the current page
+  const leaderboardDataForPage = leaderboardData.slice(startIndex, endIndex);
+
   return (
     <div>
-      <div className="mb-4 flex flex-col justify-center gap-5">
+      <div className="h-84 mb-4 flex flex-col justify-center gap-5">
         <button
           onClick={onClose}
           className="justify-self-start text-gray-600 hover:text-gray-900"
@@ -148,13 +166,14 @@ const LeaderboardContent = ({
               <tr>
                 <th className="px-4 py-2">Rank</th>
                 <th className="px-4 py-2">Name</th>
+                <th className="px-4 py-2">Section</th>
                 <th className="px-4 py-2">Score</th>
                 <th className="px-4 py-2">Time</th>
                 {/* Add more table headers as needed */}
               </tr>
             </thead>
             <tbody>
-              {leaderboardData.map((score, index) => (
+              {leaderboardDataForPage.map((score, index) => (
                 <tr
                   key={score.id}
                   className={
@@ -180,7 +199,7 @@ const LeaderboardContent = ({
                     : {})}
                 >
                   <td className="border border-gray-200 px-4 py-2">
-                    {index + 1}
+                    {calculateRank(index)}
                   </td>
                   <td className="flex items-center gap-4 border border-gray-200 px-4 py-2">
                     <div>
@@ -200,6 +219,9 @@ const LeaderboardContent = ({
                     </div>
                   </td>
                   <td className="border border-gray-200 px-4 py-2">
+                    {score.user.section}
+                  </td>
+                  <td className="border border-gray-200 px-4 py-2">
                     {score.score}
                   </td>
                   <td className="border border-gray-200 px-4 py-2">
@@ -210,7 +232,39 @@ const LeaderboardContent = ({
               ))}
             </tbody>
           </table>
-          <div className="mt-4">Current Rank: #{userRank}</div>
+          {leaderboardData.length > 10 && (
+            <div className="mt-2 flex items-center justify-between">
+              <div>
+                {currentPage > 1 && (
+                  <button
+                    className="mr-2"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                  >
+                    Previous
+                  </button>
+                )}
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(index + 1)}
+                    className={
+                      currentPage === index + 1 ? "mx-1 font-bold" : "mx-1"
+                    }
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                {currentPage < totalPages && (
+                  <button onClick={() => handlePageChange(currentPage + 1)}>
+                    Next
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+          {!isInstructor && (
+            <div className="mt-4">Current Rank: #{userRank}</div>
+          )}
         </div>
       )}
     </div>
@@ -224,7 +278,10 @@ const Main = ({ onClose }) => {
   const [userRank, setUserRank] = useState(null);
   const { data: session, status } = useSession();
   const avatar = session.user.avatar;
+  const userId = session.user.uid;
+
   const sectionId = session.user.section;
+
   const getActivityIdForLevel = (level) => {
     // Define the prefix for activity IDs
     const activityIdPrefix = "AID";
@@ -261,10 +318,11 @@ const Main = ({ onClose }) => {
       const newActivityId = getActivityIdForLevel(selectedLevel);
       // Fetch leaderboard data based on the new activityId
       const res = await fetch(
-        `/api/leaderboards?activityID=${newActivityId}&sectionId=${sectionId}`
+        `/api/leaderboards?activityID=${newActivityId}&sectionId=${sectionId}&uid=${userId}`
       );
       const data = await res.json();
       setLeaderboardData(data);
+      console.log("Leaderboards: ", leaderboardData);
       setLoading(false); // Set loading to false when data is fetched
       const userIndex = data.findIndex(
         (score) => score.user.username === session?.user?.username
@@ -274,6 +332,7 @@ const Main = ({ onClose }) => {
       setLeaderboardData([]);
       console.error(error);
     }
+    console.log("UID: ", userId);
   };
 
   const handleLevelChange = (e) => {
@@ -315,10 +374,10 @@ const Main = ({ onClose }) => {
         )}
         {showMenu && (
           <button
-            className=" w-1/2 rounded-lg border-2 border-red-600 bg-red-500  text-center font-boom text-xl text-white hover:bg-red-600"
+            className=" w-1/2 rounded-lg border-2 border-red-600 bg-red-500 p-2 text-center  font-boom text-sm  text-white hover:bg-red-600"
             onClick={onClose}
           >
-            Exit
+            Close
           </button>
         )}
       </div>

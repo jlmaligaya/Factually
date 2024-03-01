@@ -158,38 +158,42 @@ export default function GameSettingsModal({
             )}
           </div>
         </div>
+        <h1 className="mb-2 text-center">Audio Settings</h1>
+        <div className="w-full border-4 border-red-400 p-4">
+          {" "}
+          <div className="flex w-full items-center justify-between gap-2">
+            <label className="text-sm">Music</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={localBgmVolume}
+              onChange={(e) => {
+                const volume = parseFloat(e.target.value);
+                setLocalBgmVolume(volume);
+                onBgmVolumeChange(volume);
+              }}
+            />
+          </div>
+          <div className="mt-4 flex w-full items-center justify-between gap-2">
+            <label className="mr-2 text-sm">Sound Effects</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={localSfxVolume}
+              onChange={(e) => {
+                const volume = parseFloat(e.target.value);
+                setLocalSfxVolume(volume);
+                onSfxVolumeChange(volume);
+              }}
+            />
+          </div>
+        </div>
 
-        <div className="mt-2 flex items-center p-4">
-          <label className=" mr-2">BGM Volume</label>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={localBgmVolume}
-            onChange={(e) => {
-              const volume = parseFloat(e.target.value);
-              setLocalBgmVolume(volume);
-              onBgmVolumeChange(volume);
-            }}
-          />
-        </div>
-        <div className="mt-2 flex items-center">
-          <label className=" mr-2">SFX Volume</label>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={localSfxVolume}
-            onChange={(e) => {
-              const volume = parseFloat(e.target.value);
-              setLocalSfxVolume(volume);
-              onSfxVolumeChange(volume);
-            }}
-          />
-        </div>
-        <div className="mt-4">
+        <div className="">
           {/* Logout button with confirmation modal */}
           <button
             className="my-4 rounded-lg bg-red-500 px-4 py-2 text-white"

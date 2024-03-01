@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { useSession } from "next-auth/react";
+import TextareaAutosize from "react-textarea-autosize";
 
 const EditMCQModal = ({ activityId, activityName, onClose }) => {
   const [questions, setQuestions] = useState([]);
@@ -96,7 +97,7 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
       setSaveStatus("error");
       alert("Please do not leave empty fields.");
       // Highlight empty fields in red
-      const inputs = document.querySelectorAll("input");
+      const inputs = document.querySelectorAll("textarea");
       inputs.forEach((input) => {
         if (input.value === "") {
           input.classList.add("border-red-500");
@@ -134,7 +135,7 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 text-black">
-      <div className="w-4/5 rounded-md bg-white p-8 shadow-md">
+      <div className="w-full rounded-md bg-white p-8 shadow-md">
         <h2 className="mb-4 text-lg font-semibold">
           Edit Multiple-Choice Questions for {activityName}
         </h2>
@@ -163,11 +164,11 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
             questionnaire for this activity.
           </p>
         ) : (
-          <div className="max-h-80 overflow-y-auto">
-            <table className=" border border-gray-300 bg-white ">
-              <thead>
+          <div className="max-h-80 w-full overflow-y-auto">
+            <table className="bg-white">
+              <thead className="sticky top-[-1px] h-full bg-white text-gray-600">
                 <tr>
-                  <th className="border-b py-2 px-4">Question</th>
+                  <th className="w-1/5 border-b py-2 px-4">Question</th>
                   <th className="border-b py-2 px-4">Option 1</th>
                   <th className="border-b py-2 px-4">Option 2</th>
                   <th className="border-b py-2 px-4">Option 3</th>
@@ -177,11 +178,11 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
                   <th className="border-b py-2 px-4">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="items-end text-gray-500">
                 {questions.map((question, index) => (
                   <tr key={index}>
                     <td className="border-b py-2 px-4">
-                      <input
+                      <TextareaAutosize
                         type="text"
                         value={question.quiz_question}
                         onChange={(e) =>
@@ -191,31 +192,32 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
                             e.target.value
                           )
                         }
-                        className="w-full"
+                        rows={1}
+                        className="h-auto w-full resize-none"
                       />
                     </td>
                     <td className="border-b py-2 px-4">
-                      <input
+                      <TextareaAutosize
                         type="text"
                         value={question.option_one}
                         onChange={(e) =>
                           handleInputChange(index, "option_one", e.target.value)
                         }
-                        className="w-full"
+                        className="w-full resize-none"
                       />
                     </td>
                     <td className="border-b py-2 px-4">
-                      <input
+                      <TextareaAutosize
                         type="text"
                         value={question.option_two}
                         onChange={(e) =>
                           handleInputChange(index, "option_two", e.target.value)
                         }
-                        className="w-full"
+                        className="w-full resize-none"
                       />
                     </td>
                     <td className="border-b py-2 px-4">
-                      <input
+                      <TextareaAutosize
                         type="text"
                         value={question.option_three}
                         onChange={(e) =>
@@ -225,11 +227,11 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
                             e.target.value
                           )
                         }
-                        className="w-full"
+                        className="w-full resize-none"
                       />
                     </td>
                     <td className="border-b py-2 px-4">
-                      <input
+                      <TextareaAutosize
                         type="text"
                         value={question.option_four}
                         onChange={(e) =>
@@ -239,11 +241,11 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
                             e.target.value
                           )
                         }
-                        className="w-full"
+                        className="w-full resize-none"
                       />
                     </td>
                     <td className="border-b py-2 px-4">
-                      <input
+                      <TextareaAutosize
                         type="text"
                         value={question.correct_option}
                         onChange={(e) =>
@@ -253,17 +255,17 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
                             e.target.value
                           )
                         }
-                        className="w-full"
+                        className="w-full resize-none"
                       />
                     </td>
                     <td className="border-b py-2 px-4">
-                      <input
+                      <TextareaAutosize
                         type="text"
                         value={question.topic_name}
                         onChange={(e) =>
                           handleInputChange(index, "topic_name", e.target.value)
                         }
-                        className="w-full"
+                        className="w-full resize-none"
                       />
                     </td>
                     <td className="border-b py-2 px-4">
