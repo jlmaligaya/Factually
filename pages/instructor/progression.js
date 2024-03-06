@@ -115,7 +115,7 @@ export default function StudentProgression() {
 
   return (
     <Layout>
-      <div className="mt-24 flex h-4/5 flex-col bg-white">
+      <div className="mt-24 flex h-4/5 flex-col bg-white p-8">
         <h1 className="p-4 text-center text-xl font-extrabold uppercase text-gray-700 2xl:text-3xl">
           CHAPTER PROGRESSION
         </h1>

@@ -217,8 +217,8 @@ const UsersPage = () => {
 
   return (
     <Layout>
-      <div className="mt-24 h-4/5 w-full bg-white font-medium text-gray-500 shadow-sm">
-        <h1 className="mt-10 p-8 text-center text-xl font-extrabold uppercase text-gray-700 2xl:text-3xl">
+      <div className="mt-24 h-4/5 w-full bg-white p-4 font-medium text-gray-500 shadow-md">
+        <h1 className="p-8 text-center text-xl font-extrabold uppercase text-gray-700 2xl:text-3xl">
           Manage Students
         </h1>
         <div className="container mx-auto flex flex-col ">

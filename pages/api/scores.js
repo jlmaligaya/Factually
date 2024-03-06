@@ -28,8 +28,8 @@ export default async function handler(req, res) {
                   userId_activityId: `${uid}_${aid}`,
                 },
                 data: {
-                  score,
-                  timeFinished,
+                  score: parseInt(score),
+                  timeFinished: parseInt(timeFinished),
                 },
               });
               res.status(200).json(updatedScore);
@@ -40,8 +40,8 @@ export default async function handler(req, res) {
                 userId_activityId: `${uid}_${aid}`,
               },
               data: {
-                score,
-                timeFinished,
+                score: parseInt(score),
+                timeFinished: parseInt(timeFinished),
               },
             });
             res.status(200).json(updatedScore);
@@ -55,8 +55,8 @@ export default async function handler(req, res) {
           data: {
             userId: uid,
             activityId: aid,
-            score,
-            timeFinished,
+            score: parseInt(score),
+            timeFinished: parseInt(timeFinished),
             userId_activityId: `${uid}_${aid}`,
           },
         });

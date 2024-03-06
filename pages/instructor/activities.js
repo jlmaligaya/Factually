@@ -76,7 +76,7 @@ const ManageActivitiesPage = () => {
 
   return (
     <Layout>
-      <div className="mt-24 h-4/5 bg-white">
+      <div className="mt-24 h-4/5 bg-white shadow-md">
         {" "}
         <h1 className="mt-10 p-4 text-center text-xl font-extrabold uppercase text-gray-700 2xl:text-3xl">
           Manage Activities
@@ -86,7 +86,6 @@ const ManageActivitiesPage = () => {
             <table className="min-w-full border border-gray-300 bg-white text-center">
               <thead className="bg-white text-gray-600">
                 <tr>
-                  <th className="border-b py-2 px-4">Activity ID</th>
                   <th className="border-b py-2 px-4">Topic</th>
                   <th className="border-b py-2 px-4">Activity Type</th>
                   <th className="border-b py-2 px-4">Customize</th>
@@ -95,7 +94,6 @@ const ManageActivitiesPage = () => {
               <tbody className="text-gray-500">
                 {activities.map((activity) => (
                   <tr key={activity.id}>
-                    <td className="border-b py-2 px-4">{activity.aid}</td>
                     <td className="border-b py-2 px-4">{activity.topic}</td>
                     <td className="border-b py-2 px-4">
                       {getActivityType(activity.type)}

@@ -252,12 +252,20 @@ export default function Home({ useravatar, actv, userScore }) {
             >
               {/* Leaderboards icon */}
               <a
-                onClick={() => {
-                  toggleLeaderboardModal();
-                  playSoundEffect(clickAudioRef, sfxVolume);
-                }}
+                onClick={
+                  !isInstructor
+                    ? () => {
+                        toggleLeaderboardModal();
+                        playSoundEffect(clickAudioRef, sfxVolume);
+                      }
+                    : undefined
+                }
               >
-                <div className="mb-4 ml-20 flex h-20 w-20 items-center justify-center rounded-full border-4 bg-amber-400">
+                <div
+                  className={`mb-4 ml-20 flex h-20 w-20 items-center justify-center rounded-full border-4 bg-amber-400 ${
+                    isInstructor ? "pointer-events-none opacity-0" : ""
+                  }`}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
