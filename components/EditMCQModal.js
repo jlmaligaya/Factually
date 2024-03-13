@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { useSession } from "next-auth/react";
@@ -14,7 +14,10 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
   const { data: session, status } = useSession();
+  const [editIndices, setEditIndices] = useState([]); // State to track which questions are in edit mode
+  const [isEditing, setIsEditing] = useState(false); // State to track editing
   console.log("Activity name in modal: ", activityName);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   useEffect(() => {
     const fetchSections = async () => {
@@ -46,11 +49,12 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
         console.error("Error fetching questions:", error);
       }
       setLoading(false);
+      setChangesSaved(true);
     };
 
     if (selectedSectionId) {
+      setEditIndices([]);
       fetchQuestions();
-      console.log(sections);
     }
   }, [activityId, selectedSectionId]);
 
@@ -60,10 +64,22 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
     // Also update the section ID
     updatedQuestions[index]["sectionId"] = selectedSectionId;
     setQuestions(updatedQuestions);
+    setUnsavedChanges(true);
+  };
+
+  const toggleEdit = (index) => {
+    if (editIndices.includes(index)) {
+      setEditIndices(editIndices.filter((i) => i !== index));
+    } else {
+      setEditIndices([...editIndices, index]);
+    }
+    setChangesSaved(false);
   };
 
   const addQuestion = () => {
     // Add a new question row to the table
+    setEditIndices([...editIndices, questions.length]);
+    setIsEditing(true);
     setQuestions([
       ...questions,
       {
@@ -73,9 +89,10 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
         option_three: "",
         option_four: "",
         correct_option: "",
-        topic_name: "", // Add an empty topic name for the new question
+        topic_name: "",
       },
     ]);
+    setUnsavedChanges(true);
   };
 
   const removeQuestion = (index) => {
@@ -83,6 +100,7 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
       const updatedQuestions = [...questions];
       updatedQuestions.splice(index, 1);
       setQuestions(updatedQuestions);
+      setUnsavedChanges(true);
     }
   };
 
@@ -124,6 +142,7 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
       }
       setChangesSaved(true);
       setShowSaveModal(false);
+      setUnsavedChanges(false);
     } catch (error) {
       console.error("Error saving questions:", error);
     }
@@ -131,6 +150,20 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
 
   const handleModalClose = () => {
     setShowSaveModal(false);
+  };
+
+  const handleSectionChange = (e) => {
+    if (unsavedChanges) {
+      const confirmChange = window.confirm(
+        "There are unsaved changes. Do you want to continue?"
+      );
+      if (!confirmChange) {
+        e.preventDefault();
+        return;
+      }
+    }
+    setSelectedSectionId(e.target.value);
+    setUnsavedChanges(false);
   };
 
   return (
@@ -144,7 +177,7 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
           <h1 className="mt-1 text-lg font-bold">View Questions for:</h1>{" "}
           <select
             value={selectedSectionId || ""}
-            onChange={(e) => setSelectedSectionId(e.target.value)}
+            onChange={handleSectionChange}
             className="mb-4 p-2"
           >
             {sections.map((section) => (
@@ -165,22 +198,66 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
           </p>
         ) : (
           <div className="max-h-80 w-full overflow-y-auto">
-            <table className="bg-white">
+            <table className="w-full bg-white">
               <thead className="sticky top-[-1px] h-full bg-white text-gray-600">
                 <tr>
+                  <th className="border-b py-2 px-4">Actions</th>
                   <th className="w-1/5 border-b py-2 px-4">Question</th>
+                  <th className="border-b py-2 px-4">Topic Name</th>
+                  <th className="border-b py-2 px-4">Correct Answer</th>
                   <th className="border-b py-2 px-4">Option 1</th>
                   <th className="border-b py-2 px-4">Option 2</th>
                   <th className="border-b py-2 px-4">Option 3</th>
-                  <th className="border-b py-2 px-4">Option 4</th>
-                  <th className="border-b py-2 px-4">Correct Option</th>
-                  <th className="border-b py-2 px-4">Topic Name</th>
-                  <th className="border-b py-2 px-4">Actions</th>
                 </tr>
               </thead>
-              <tbody className="items-end text-gray-500">
+              <tbody className="items-center text-gray-500">
                 {questions.map((question, index) => (
                   <tr key={index}>
+                    <td className="border-b py-2 px-4">
+                      <div className="flex justify-center">
+                        {" "}
+                        <button
+                          onClick={() => removeQuestion(index)} // Bind removeQuestion function
+                          className="rounded bg-red-500 p-2 font-bold text-white hover:bg-red-600"
+                        >
+                          <svg
+                            class="h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => toggleEdit(index)} // Bind toggleEdit function
+                          className="ml-2 rounded bg-blue-500 p-2 font-bold text-white hover:bg-blue-600"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="h-6 w-6"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                    {/*Topic Name*/}
                     <td className="border-b py-2 px-4">
                       <TextareaAutosize
                         type="text"
@@ -192,10 +269,57 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
                             e.target.value
                           )
                         }
-                        rows={1}
-                        className="h-auto w-full resize-none"
+                        className={`w-full resize-none ${
+                          editIndices.includes(index)
+                            ? ""
+                            : "readonly bg-yellow-100"
+                        }`}
+                        readOnly={!editIndices.includes(index)} // Set readOnly based on editIndices state
                       />
                     </td>
+                    {/*Question*/}
+                    <td className="border-b py-2 px-4">
+                      <TextareaAutosize
+                        type="text"
+                        value={question.topic_name}
+                        onChange={(e) =>
+                          handleInputChange(index, "topic_name", e.target.value)
+                        }
+                        rows={1}
+                        className={`h-auto w-full resize-none ${
+                          editIndices.includes(index)
+                            ? ""
+                            : "readonly bg-yellow-100"
+                        }`}
+                        readOnly={!editIndices.includes(index)} // Set readOnly based on editIndices state
+                      />
+                    </td>
+                    {/*Correct Option*/}
+                    <td className="border-b py-2 px-4">
+                      <TextareaAutosize
+                        type="text"
+                        value={question.correct_option}
+                        onChange={(e) => {
+                          handleInputChange(
+                            index,
+                            "correct_option",
+                            e.target.value
+                          ),
+                            handleInputChange(
+                              index,
+                              "option_four",
+                              e.target.value
+                            );
+                        }}
+                        className={`w-full resize-none ${
+                          editIndices.includes(index)
+                            ? ""
+                            : "readonly bg-yellow-100"
+                        }`}
+                        readOnly={!editIndices.includes(index)} // Set readOnly based on editIndices state
+                      />
+                    </td>
+                    {/*Option One*/}
                     <td className="border-b py-2 px-4">
                       <TextareaAutosize
                         type="text"
@@ -203,9 +327,15 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
                         onChange={(e) =>
                           handleInputChange(index, "option_one", e.target.value)
                         }
-                        className="w-full resize-none"
+                        className={`w-full resize-none ${
+                          editIndices.includes(index)
+                            ? ""
+                            : "readonly bg-yellow-100"
+                        }`}
+                        readOnly={!editIndices.includes(index)} // Set readOnly based on editIndices state
                       />
                     </td>
+                    {/*Option Two*/}
                     <td className="border-b py-2 px-4">
                       <TextareaAutosize
                         type="text"
@@ -213,9 +343,15 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
                         onChange={(e) =>
                           handleInputChange(index, "option_two", e.target.value)
                         }
-                        className="w-full resize-none"
+                        className={`w-full resize-none ${
+                          editIndices.includes(index)
+                            ? ""
+                            : "readonly bg-yellow-100"
+                        }`}
+                        readOnly={!editIndices.includes(index)} // Set readOnly based on editIndices state
                       />
                     </td>
+                    {/*Option Three*/}
                     <td className="border-b py-2 px-4">
                       <TextareaAutosize
                         type="text"
@@ -227,54 +363,13 @@ const EditMCQModal = ({ activityId, activityName, onClose }) => {
                             e.target.value
                           )
                         }
-                        className="w-full resize-none"
+                        className={`w-full resize-none ${
+                          editIndices.includes(index)
+                            ? ""
+                            : "readonly bg-yellow-100"
+                        }`}
+                        readOnly={!editIndices.includes(index)} // Set readOnly based on editIndices state
                       />
-                    </td>
-                    <td className="border-b py-2 px-4">
-                      <TextareaAutosize
-                        type="text"
-                        value={question.option_four}
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            "option_four",
-                            e.target.value
-                          )
-                        }
-                        className="w-full resize-none"
-                      />
-                    </td>
-                    <td className="border-b py-2 px-4">
-                      <TextareaAutosize
-                        type="text"
-                        value={question.correct_option}
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            "correct_option",
-                            e.target.value
-                          )
-                        }
-                        className="w-full resize-none"
-                      />
-                    </td>
-                    <td className="border-b py-2 px-4">
-                      <TextareaAutosize
-                        type="text"
-                        value={question.topic_name}
-                        onChange={(e) =>
-                          handleInputChange(index, "topic_name", e.target.value)
-                        }
-                        className="w-full resize-none"
-                      />
-                    </td>
-                    <td className="border-b py-2 px-4">
-                      <button
-                        onClick={() => removeQuestion(index)} // Bind removeQuestion function
-                        className="rounded bg-red-500 p-4 font-bold text-white hover:bg-red-600"
-                      >
-                        Remove
-                      </button>
                     </td>
                   </tr>
                 ))}
